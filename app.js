@@ -64,4 +64,4 @@ var serverUpdate = function()
 
 
     
-setInterval(serverUpdate ,1000/25);
+setInterval(serverUpdate ,1000/60);
