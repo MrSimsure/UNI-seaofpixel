@@ -1,36 +1,33 @@
-
-
 <div id="page_login">
     Username: <input id="login_username" type="text"></input>
     <button id="login_button">Logga</button>
 </div>
 
-<div id="page_game" style="display:none">
+ <div id="page_game" style="display:none">
     <canvas id="canvas" width="1920" height="1080" style="border:1px solid #000000;"></canvas>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
-//<script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+<script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
 <script src="/client/game.js"></script>
 
-
-<script>
+ <script>
     var c = document.getElementById("canvas");
     var ctx = c.getContext("2d");
-
+    
     var page_login = document.getElementById("page_login");
     var page_game = document.getElementById("page_game");
-
+    
     var login_username = document.getElementById("login_username");
     var login_button = document.getElementById("login_button");
-
+    
     //connettiti al server
     var socket = io();
     PlayersData = {};
-
+    
     var sprPlayer = new Image();
     sprPlayer.src = "/client/img/spr_player.png";
-
+    
     login_button.onclick = function()
     {
         //setup_game();
@@ -39,61 +36,58 @@
         page_game.style.display = "inline-block";
     }
 
-
+    
     c.addEventListener("touchstart", eventTouch, false);
-   
     function eventTouch(evt)
     {
-    	evt.preventDefault();
-    	
-    	var touches = evt.changedTouches;
-    	
+    	evt.preventDefault();   	
+    	var touches = evt.changedTouches;  	
     	for (var i = 0; i < touches.length; i++) 
     	{
     		socket.emit("touch", {x:touches[i].pageX, y:touches[i].pageY}); 
     	}
     }
    
-   
+    
     document.onkeydown = function(event)
     {
         if(event.keyCode == 68) //d
         { socket.emit("keyPress", {id:"right", state:true}); }
-
-        if(event.keyCode == 83) //s
+         if(event.keyCode == 83) //s
         { socket.emit("keyPress", {id:"down", state:true}); }
-
-        if(event.keyCode == 65) //a
+         if(event.keyCode == 65) //a
         { socket.emit("keyPress", {id:"left", state:true}); }
-
-        if(event.keyCode == 87) //w
+         if(event.keyCode == 87) //w
         { socket.emit("keyPress", {id:"up", state:true}); }
     }
-
-
+    
     document.onkeyup = function(event)
     {
         if(event.keyCode == 68) //d
         { socket.emit("keyPress", {id:"right", state:false}); }
-
-        if(event.keyCode == 83) //s
+         if(event.keyCode == 83) //s
         { socket.emit("keyPress", {id:"down", state:false}); }
-
-        if(event.keyCode == 65) //a
+         if(event.keyCode == 65) //a
         { socket.emit("keyPress", {id:"left", state:false}); }
-
-        if(event.keyCode == 87) //w
+         if(event.keyCode == 87) //w
         { socket.emit("keyPress", {id:"up", state:false}); }
     }    
-
-
+    
     socket.on('newPositions',function(data)
     {
         ctx.clearRect(0, 0, c.width, c.height);
-
+        
         for(var i = 0 ; i < data.players.length; i++)
         {
             ctx.drawImage(sprPlayer, data.players[i].x, data.players[i].y);
             ctx.fillText(data.players[i].name,data.players[i].x,data.players[i].y-32);
-
-           //PlayersData[data.p
+            //PlayersData[data.players[i].id] = {id: data.players[i].id, x : data.players[i].x, y : data.players[i].y};
+        }
+           
+        for(var i = 0 ; i < data.bullets.length; i++)
+        {
+            ctx.fillStyle = "#FF0000";
+            ctx.fillRect(data.bullets[i].x-5,data.bullets[i].y-5,10,10);     
+        }
+    });
+</script>
