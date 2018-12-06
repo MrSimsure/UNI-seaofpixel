@@ -31,12 +31,12 @@ io.sockets.on("connection", function(socket)
             Player.onConnect(socket,data.name);
         });
 
-		socket.on("touch", function(data)
-         {
-         	Player.list[socket.id].targetX = data.x;
-			Player.list[socket.id].targetY = data.y;
-        });
-
+        socket.on("touch", function(data)
+        {
+            Player.list[socket.id].targetX = data.x;
+           Player.list[socket.id].targetY = data.y;
+       });
+       
         //quando un giocatore si disconnette eliminalo dalla lista giocatori
         socket.on("disconnect", function()
         {
@@ -62,4 +62,12 @@ var serverUpdate = function()
 
         //invia i dati ad ogni client
         for(var i in socketList)
-      
+        {
+            var current = socketList[i];
+            current.emit("newPositions", pack);
+        }        
+}
+
+
+    
+setInterval(serverUpdate ,1000/60);
