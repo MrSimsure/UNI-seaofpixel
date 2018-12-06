@@ -40,7 +40,21 @@
     }
 
 
-
+    c.addEventListener("touchstart", eventTouch, false);
+   
+    function eventTouch(evt)
+    {
+    	evt.preventDefault();
+    	
+    	var touches = evt.changedTouches;
+    	
+    	for (var i = 0; i < touches.length; i++) 
+    	{
+    		socket.emit("touch", {x:touches[i].pageX, y:touches[i].pageY}); 
+    	}
+    }
+   
+   
     document.onkeydown = function(event)
     {
         if(event.keyCode == 68) //d
@@ -82,13 +96,4 @@
             ctx.drawImage(sprPlayer, data.players[i].x, data.players[i].y);
             ctx.fillText(data.players[i].name,data.players[i].x,data.players[i].y-32);
 
-           //PlayersData[data.players[i].id] = {id: data.players[i].id, x : data.players[i].x, y : data.players[i].y};
-        }
-           
-        for(var i = 0 ; i < data.bullets.length; i++)
-        {
-            ctx.fillStyle = "#FF0000";
-            ctx.fillRect(data.bullets[i].x-5,data.bullets[i].y-5,10,10);     
-        }
-    });
-</script>
+           //PlayersData[data.p

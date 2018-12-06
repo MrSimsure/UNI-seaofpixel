@@ -13,10 +13,39 @@ Player = function(name, id)
 
     self.speed = 10
 
-
+    targetX = -1;
+    targetY = -1;
 
     self.updatePosition = function()
-    {   
+    {  
+    	if(self.targetX != -1)
+    	{
+    		if(self.targetX < self.x)
+    		{
+    			self.x -= self.speed;
+    		}
+    		else if(self.targetX > self.x)
+    		{
+    		self.x += self.speed;
+    		}
+    		else {self.targetX = -1;}
+    	}
+    	
+    	
+    	
+    	if(self.targetY != -1)
+    	{
+    		if(self.targetY < self.y)
+    		{
+    		self.y -= self.speed;
+ 		   	}
+	    	else if(self.targetY > self.y)
+	    	{
+	    	self.y += self.speed;
+	    	}
+    		else {self.targetY = -1;}
+    	}
+    	
         if(self.pRight) {self.x += self.speed;}
         if(self.pLeft) {self.x -= self.speed;}
         if(self.pUp) {self.y -= self.speed;}
@@ -46,36 +75,4 @@ Player.onConnect = function(socket,name)
         {player.pUp = data.state;}
     
         else if(data.id == "down")
-        {player.pDown = data.state;}
-    });
-}
-
-
-Player.onDisconnect = function(socket)
-{
-    delete Player.list[socket.id];
-}
-
-
-Player.update = function()
-{
-    var pack = [];
-
-    //aggiorna la posizione di ogni player ed inpacchetta i dati per inviarli
-    for(var i in Player.list)
-    {
-        var current = Player.list[i];
-        current.updatePosition();
-
-        pack.push
-        ({
-            id : current.id,
-            name : current.name,
-            x : current.x,
-            y : current.y
-        });
-    }
-
-    return pack;
-
-}
+        {player.pDown = d
