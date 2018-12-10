@@ -13,20 +13,12 @@ var login_username = document.getElementById("login_username");
 var login_button = document.getElementById("login_button");
 
 
-var joystick = new VirtualJoystick(
-                {
-                mouseSupport: true,
-		        stationaryBase: true,
-                baseX: 200,
-                baseY: 200,
-		        limitStickTravel: true,
-		        stickRadius: 50
-                });
 
 //connettiti al server
 var socket = io();
 var id = 0;
 PlayersData = {};
+var joystick  = null;
 
 window.onload = function() 
 {

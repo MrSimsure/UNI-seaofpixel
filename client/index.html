@@ -44,6 +44,17 @@ const WINDOW_HEIGHT = window.innerHeight || document.documentElement.clientHeigh
         socket.emit("login", {name:login_username.value});
         page_login.style.display = "none";
         page_game.style.display = "inline-block";
+
+        joystick = new VirtualJoystick(
+                {
+                mouseSupport: true,
+		        stationaryBase: true,
+                baseX: 200,
+                baseY: 200,
+		        limitStickTravel: true,
+		        stickRadius: 50
+                });
+
     }
 
     
