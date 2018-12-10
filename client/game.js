@@ -195,52 +195,23 @@ window.Game = {};
         temp.canvas.width = this.width;
         temp.canvas.height = this.height;        
 
-        var rows = ~~(this.width/64) + 1;
-        var columns = ~~(this.height/64) + 1;
+        var rows = ~~(this.width/128) + 1;
+        var columns = ~~(this.height/128) + 1;
 
-        var color = "green";   
-        temp.save();   
 
-        for (var x = 0, i = 0; i < rows; x+=64, i++) 
-        {  
-            temp.beginPath();    
-            for (var y = 0, j=0; j < columns; y+=64, j++) 
-            {        
-                temp.rect (x, y, 64, 64);       
-                //temp.drawImage(sprGround, x, y); 
+        for (var x = 0, i = 0; i < rows; x+=128, i++) 
+        {    
+            for (var y = 0, j=0; j < columns; y+=128, j++) 
+            {          
+                temp.drawImage(sprGround, x, y,128,128); 
             }
-            temp.fillStyle = color;
-            temp.fill();
-            temp.closePath();   
-         
         }   
-        
 
-        /*
-        var color = "red";              
-        temp.save();         
-        temp.fillStyle = "red";          
-        for (var x = 0, i = 0; i < rows; x+=44, i++) 
-        {
-            temp.beginPath();            
-            for (var y = 0, j=0; j < columns; y+=44, j++) 
-            {            
-                temp.rect (x, y, 40, 40);                
-            }
-            color = (color == "red" ? "blue" : "red");
-            temp.fillStyle = color;
-            temp.fill();
-            temp.closePath();            
-        }       
-        */
-
-       temp.restore();  
 
         // store the generate map as this image texture
         this.image = new Image();
-        this.image.src = temp.canvas.toDataURL("image/png");                 
+        this.image.src = temp.canvas.toDataURL("image/png", 1.0);                 
 
-        // clear context
         temp = null;
     }
 

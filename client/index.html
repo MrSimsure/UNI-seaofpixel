@@ -1,3 +1,5 @@
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+
 <div id="page_login">
     Username: <input id="login_username" type="text"></input>
     <button id="login_button">Logga</button>
@@ -7,6 +9,7 @@
     <canvas id="canvas" width="1900" height="920" style="border:1px solid #000000;"></canvas>
 </div>
 
+<script src="/client/virtualjoystick.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/client/load.js"></script>
 <script src="/client/game.js"></script>
@@ -15,7 +18,9 @@
 
 
  <script>
-   
+
+
+
 
     socket.on('connection',function(data)
     {    
@@ -55,6 +60,19 @@
         { socket.emit("keyPress", {id:"up", state:false}); }
     }    
     
+    
+   setInterval(function()
+   {
+        if( joystick.right() )
+        { socket.emit("keyPress", {id:"right", state:true}); } else { socket.emit("keyPress", {id:"right", state:false}); }
+        if( joystick.left() )
+        {  socket.emit("keyPress", {id:"left", state:true});} else {  socket.emit("keyPress", {id:"left", state:false});}
+        if( joystick.up() )
+        {  socket.emit("keyPress", {id:"up", state:true}); } else {  socket.emit("keyPress", {id:"up", state:false}); }
+        if( joystick.down() )
+        {  socket.emit("keyPress", {id:"down", state:true}); } else {  socket.emit("keyPress", {id:"down", state:false}); }
+   } ,1000/30);  
+
 
     socket.on('newPositions',function(data)
     {
@@ -84,5 +102,7 @@
             ctx.fillStyle = "#FF0000";
             ctx.fillRect(data.bullets[i].x-5-camera.xView, data.bullets[i].y-5-camera.yView, 10, 10);     
         }
+
+        //controller.draw();
     });
 </script>
