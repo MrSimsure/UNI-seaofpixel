@@ -11,36 +11,32 @@ Player = function(name, id)
 
     self.speed = 10,
 
-    targetX = -1,
-    targetY = -1
+    self.targetX = 100,
+    self.targetY = 5
  
 
     self.updatePosition = function()
     {  
-         if(self.targetX != -1)
-         {
-             if(self.targetX < self.x)
-             { self.x -= self.speed;}
-             else if(self.targetX > self.x)
-             {self.x += self.speed;}
-             else {self.targetX = -1;}
-         }
-                 
-         if(self.targetY != -1)
-         {
-             if(self.targetY < self.y)
-             {self.y -= self.speed;}
-             else if(self.targetY > self.y)
-             {self.y += self.speed;}
-             else {self.targetY = -1;}
-         }
+        /*
+        if(self.targetX != -1 || self.targetY != -1)
+        {
+        var dir = point_direction(self.x,self.y,self.targetX,self.targetY);
 
+        if(self.targetX != -1)
+        {self.x += lengthdir_x(self.speed,dir);}
+        if(self.targetY != -1)
+        {self.y += lengthdir_y(self.speed,dir);}
+        
+        }
+        */
         if(self.pRight) {self.x += self.speed;}
         if(self.pLeft) {self.x -= self.speed;}
         if(self.pUp) {self.y -= self.speed;}
         if(self.pDown) {self.y += self.speed;}
     }
-     Player.list[id] = self;
+
+
+    Player.list[id] = self;
     return self;
 }
 

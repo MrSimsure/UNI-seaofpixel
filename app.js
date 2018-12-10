@@ -1,6 +1,8 @@
+require("./server/engine.js");
 require("./server/entity.js");
 require("./server/player.js");
 require("./server/bullet.js");
+
 
 var express = require("express");
 var app = express();
@@ -23,7 +25,10 @@ io.sockets.on("connection", function(socket)
 {
 
         socketList[socket.id] = socket;
+        socket.emit("connection", socket.id);
+
         console.log("connesso  "+socketList[socket.id].id);
+        
 
         //quando ricevi un messaggio dal client
          socket.on("login", function(data)
@@ -31,12 +36,7 @@ io.sockets.on("connection", function(socket)
             Player.onConnect(socket,data.name);
         });
 
-        socket.on("touch", function(data)
-        {
-            Player.list[socket.id].targetX = data.x;
-           Player.list[socket.id].targetY = data.y;
-       });
-       
+
         //quando un giocatore si disconnette eliminalo dalla lista giocatori
         socket.on("disconnect", function()
         {
@@ -70,4 +70,4 @@ var serverUpdate = function()
 
 
     
-setInterval(serverUpdate ,1000/60);
+setInterval(serverUpdate ,1000/30);

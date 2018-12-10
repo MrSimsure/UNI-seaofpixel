@@ -4,50 +4,32 @@
 </div>
 
  <div id="page_game" style="display:none">
-    <canvas id="canvas" width="1920" height="1080" style="border:1px solid #000000;"></canvas>
+    <canvas id="canvas" width="1900" height="920" style="border:1px solid #000000;"></canvas>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+<script src="/client/load.js"></script>
 <script src="/client/game.js"></script>
+<script src="/client/init.js"></script>
+
+
 
  <script>
-    var c = document.getElementById("canvas");
-    var ctx = c.getContext("2d");
-    
-    var page_login = document.getElementById("page_login");
-    var page_game = document.getElementById("page_game");
-    
-    var login_username = document.getElementById("login_username");
-    var login_button = document.getElementById("login_button");
-    
-    //connettiti al server
-    var socket = io();
-    PlayersData = {};
-    
-    var sprPlayer = new Image();
-    sprPlayer.src = "/client/img/spr_player.png";
-    
+   
+
+    socket.on('connection',function(data)
+    {    
+        id = data
+        console.log("my socket id = "+id);
+    });
+
     login_button.onclick = function()
     {
-        //setup_game();
         socket.emit("login", {name:login_username.value});
         page_login.style.display = "none";
         page_game.style.display = "inline-block";
     }
 
-    
-    c.addEventListener("touchstart", eventTouch, false);
-    function eventTouch(evt)
-    {
-    	evt.preventDefault();   	
-    	var touches = evt.changedTouches;  	
-    	for (var i = 0; i < touches.length; i++) 
-    	{
-    		socket.emit("touch", {x:touches[i].pageX, y:touches[i].pageY}); 
-    	}
-    }
-   
     
     document.onkeydown = function(event)
     {
@@ -73,21 +55,34 @@
         { socket.emit("keyPress", {id:"up", state:false}); }
     }    
     
+
     socket.on('newPositions',function(data)
     {
-        ctx.clearRect(0, 0, c.width, c.height);
-        
+        //trova il giocatore appartenente a questo client
         for(var i = 0 ; i < data.players.length; i++)
         {
-            ctx.drawImage(sprPlayer, data.players[i].x, data.players[i].y);
-            ctx.fillText(data.players[i].name,data.players[i].x,data.players[i].y-32);
-            //PlayersData[data.players[i].id] = {id: data.players[i].id, x : data.players[i].x, y : data.players[i].y};
+            if(data.players[i].id == id)
+            {camera.update(data.players[i].x, data.players[i].y);}
+        }
+        
+        //pulisci il canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        //disegna la mappa
+        room.map.draw(ctx, camera.xView, camera.yView);
+
+        //disegna tutti i giocatori
+        for(var i = 0 ; i < data.players.length; i++)
+        {
+                ctx.drawImage(sprPlayer, data.players[i].x-camera.xView,  data.players[i].y-camera.yView);
+                ctx.fillText(data.players[i].name, data.players[i].x-camera.xView,  data.players[i].y-camera.yView-16);
         }
            
+        //disegna tutti i proiettili
         for(var i = 0 ; i < data.bullets.length; i++)
         {
             ctx.fillStyle = "#FF0000";
-            ctx.fillRect(data.bullets[i].x-5,data.bullets[i].y-5,10,10);     
+            ctx.fillRect(data.bullets[i].x-5-camera.xView, data.bullets[i].y-5-camera.yView, 10, 10);     
         }
     });
 </script>
