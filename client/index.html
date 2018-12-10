@@ -1,7 +1,7 @@
 
 <script>
-const WINDOW_WIDTH = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-const WINDOW_HEIGHT = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+const WINDOW_WIDTH = screen.width-20
+const WINDOW_HEIGHT = screen.height-20
 </script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
@@ -17,7 +17,7 @@ const WINDOW_HEIGHT = window.innerHeight || document.documentElement.clientHeigh
 </div>
 
  <div id="page_game" style="display:none">
-    <canvas id="canvas" width="1900" height="920" style="border:1px solid #000000;"></canvas>
+    <canvas id="canvas" width="device-width" height="device-width" style="border:1px solid #000000;"></canvas>
 </div>
 
 <script src="/client/virtualjoystick.js"></script>
