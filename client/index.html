@@ -12,12 +12,12 @@
     <canvas id="canvas" width="480" height="270" style="border:1px solid #000000;"></canvas>
 </div>
 
-<script src="/client/virtualjoystick.js"></script>
+<script src="/client/js/virtualjoystick.js"></script>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/client/load.js"></script>
-<script src="/client/game.js"></script>
-<script src="/client/init.js"></script>
-
+<script src="/client/js/load.js"></script>
+<script src="/client/js/game.js"></script>
+<script src="/client/js/init.js"></script>
+<script src="/client/js/clientEntity.js"></script>
 
 
 <script>
@@ -92,9 +92,12 @@
 
     socket.on('newPositions',function(data)
     {
-        
+        if(Math.random() < 1.0)
+        {
+            Onda(Math.random()*room.width,  Math.random()*room.height);
+        }
         //trova il giocatore appartenente a questo client
-        for(var i = 0 ; i < data.players.length; i++)
+        for(let i = 0 ; i < data.players.length; i++)
         {
             if(data.players[i].id == id)
             {camera.update(data.players[i].x, data.players[i].y);}
@@ -105,26 +108,56 @@
         
         //disegna la mappa
         room.map.draw(ctx, camera.xView, camera.yView);
+        
+        //aggiorna scie
+        for(var i=Onda.list.length-1 ; i >= 0; i--)
+        {       
+            var current = Onda.list[i];
+            current.update();
+            current.draw();
+        }
+
+        //aggiorna onde
+        for(var i=Scia.list.length-1 ; i >= 0; i--)
+        {       
+            var current = Scia.list[i];
+            current.update();
+            current.draw();
+        }
 
         //disegna tutti i giocatori
         for(var i = 0 ; i < data.players.length; i++)
         {
-                for(var n=0; n<23 ; n++)
-                {
-                    drawFrame(ctx,stripBoat, n, data.players[i].x-camera.xView,  data.players[i].y-camera.yView-4*n, data.players[i].angle);
-                }
-                //drawSprite(ctx,sprPlayer, data.players[i].x-camera.xView,  data.players[i].y-camera.yView, 45);
-                //ctx.drawImage(sprPlayer, data.players[i].x-camera.xView,  data.players[i].y-camera.yView);
-                ctx.fillText(data.players[i].name, data.players[i].x-camera.xView,  data.players[i].y-camera.yView-128);
+            var playerX = data.players[i].x-camera.xView;
+            var playerY = data.players[i].y-camera.yView;
+ 
+            if(Math.random() < 0.8)
+            {
+                Scia(data.players[i].x,  data.players[i].y);
+            }
+
+    
+            for(var n=0; n<23 ; n++)
+            {
+                drawFrame(stripBoat, n, playerX,  playerY-4*n, data.players[i].angle);
+            }
+
+            ctx.font = "30px Georgia";
+            ctx.fillText(data.players[i].name, playerX-(data.players[i].name.length*8),  playerY-128);
         }
-           
+
+                    
+                    
+
+        /*  
         //disegna tutti i proiettili
-        for(var i = 0 ; i < data.bullets.length; i++)
+        for(let i = 0 ; i < data.bullets.length; i++)
         {
             ctx.fillStyle = "#FF0000";
             ctx.fillRect(data.bullets[i].x-5-camera.xView, data.bullets[i].y-5-camera.yView, 10, 10);     
         }
 
         //controller.draw();
+        */
     });
 </script>

@@ -39,7 +39,7 @@ Bullet.update = function()
 {
     if(Math.random() < 1.0)
     {
-        Bullet(Math.random()*360);
+        //Bullet(Math.random()*360);
     }
 
     var pack = [];

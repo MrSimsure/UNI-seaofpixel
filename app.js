@@ -57,8 +57,8 @@ var serverUpdate = function()
 {
         var pack = 
         {
-            players:Player.update(),
-            bullets:Bullet.update()
+            players:Player.update()
+           // bullets:Bullet.update()
         }
 
         //invia i dati ad ogni client

@@ -12,15 +12,11 @@ Math.degrees = function(radians)
 
 lengthdir_x = function(len,dir)
 {
-    //dir+=180;
-    //dir = dir-(Math.floor(dir/360)*360);
     return Math.cos(dir/180*Math.PI)*len;
 }
 
 lengthdir_y = function(len,dir)
 {
-    //dir+=180;
-    //dir = dir-(Math.floor(dir/360)*360);
     return Math.sin(dir/180*Math.PI)*len;
 }
 

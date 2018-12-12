@@ -1,5 +1,6 @@
 window.Game = {};
 
+const TO_RADIANS = Math.PI/180;
 
 // wrapper for "class" Rectangle
 (function()
@@ -169,25 +170,22 @@ window.Game = {};
 
 
 
-var drawSprite = function(ctx,image,x,y,angle)
+var drawSprite = function(image,x,y,angle,scale)
 {
-    var TO_RADIANS = Math.PI/180; 
-
     ctx.save(); 
     ctx.translate(x, y);  
     ctx.rotate(angle * TO_RADIANS);
+    ctx.scale(scale, scale);
 
     ctx.drawImage(image, -(image.width/2), -(image.height/2));
 
-    ctx.restore(); 
-    
+    ctx.restore();    
 }
 
 
-var drawFrame = function(ctx,spriteStrip,frame,x,y,angle)
-{
-    var TO_RADIANS = Math.PI/180; 
 
+var drawFrame = function(spriteStrip,frame,x,y,angle)
+{
     ctx.save(); 
     ctx.translate(x, y);  
     ctx.rotate(angle * TO_RADIANS);
@@ -204,7 +202,5 @@ var drawFrame = function(ctx,spriteStrip,frame,x,y,angle)
                 spriteStrip.height);
 
    ctx.restore(); 
-
-
  }
     
