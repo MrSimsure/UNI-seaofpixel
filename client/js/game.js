@@ -137,6 +137,7 @@ const TO_RADIANS = Math.PI/180;
         temp.canvas.width = this.width;
         temp.canvas.height = this.height;        
 
+
         var rows = ~~(this.width/128) + 1;
         var columns = ~~(this.height/128) + 1;
 
@@ -159,7 +160,7 @@ const TO_RADIANS = Math.PI/180;
 
     // draw the map adjusted to camera
     Map.prototype.draw = function(context, xView, yView)
-    {                   
+    {               
         context.drawImage(this.image, 0, 0, this.image.width, this.image.height, -xView, -yView, this.image.width, this.image.height);     
     }
 
@@ -175,7 +176,7 @@ var drawSprite = function(image,x,y,angle,scale)
     ctx.save(); 
     ctx.translate(x, y);  
     ctx.rotate(angle * TO_RADIANS);
-    ctx.scale(scale, scale);
+    ctx.scale(scale*SETTINGS.globalScale, scale*SETTINGS.globalScale);
 
     ctx.drawImage(image, -(image.width/2), -(image.height/2));
 
@@ -189,7 +190,7 @@ var drawFrame = function(spriteStrip,frame,x,y,angle)
     ctx.save(); 
     ctx.translate(x, y);  
     ctx.rotate(angle * TO_RADIANS);
-    ctx.scale(4, 4);
+    ctx.scale(4*SETTINGS.globalScale, 4*SETTINGS.globalScale);
     ctx.drawImage(
                 spriteStrip.image, 
                 frame * spriteStrip.width, 

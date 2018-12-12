@@ -37,9 +37,10 @@ SETTINGS =
     WINDOW_WIDTH : screen.width-20,
     WINDOW_HEIGHT : screen.height-20,
     onMobile : false,
+    globalScale:1
 }
 
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) 
-{SETTINGS.onMobile = true;}
+{SETTINGS.onMobile = true;      SETTINGS.globalScale = 0.3;}
 else
 {SETTINGS.onMobile = false;}

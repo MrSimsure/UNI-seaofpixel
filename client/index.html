@@ -100,7 +100,7 @@
         for(let i = 0 ; i < data.players.length; i++)
         {
             if(data.players[i].id == id)
-            {camera.update(data.players[i].x, data.players[i].y);}
+            {camera.update(data.players[i].x*SETTINGS.globalScale, data.players[i].y*SETTINGS.globalScale);}
         }
         
         //pulisci il canvas
@@ -128,18 +128,18 @@
         //disegna tutti i giocatori
         for(var i = 0 ; i < data.players.length; i++)
         {
-            var playerX = data.players[i].x-camera.xView;
-            var playerY = data.players[i].y-camera.yView;
+            var playerX = data.players[i].x*SETTINGS.globalScale-camera.xView;
+            var playerY = data.players[i].y*SETTINGS.globalScale-camera.yView;
  
             if(Math.random() < 0.8)
             {
-                Scia(data.players[i].x,  data.players[i].y);
+                Scia(data.players[i].x*SETTINGS.globalScale,  data.players[i].y*SETTINGS.globalScale);
             }
 
     
             for(var n=0; n<23 ; n++)
             {
-                drawFrame(stripBoat, n, playerX,  playerY-4*n, data.players[i].angle);
+                drawFrame(stripBoat, n, playerX,  playerY-4*SETTINGS.globalScale*n, data.players[i].angle);
             }
 
             ctx.font = "30px Georgia";
