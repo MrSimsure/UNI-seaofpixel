@@ -34,6 +34,7 @@ window.Game = {};
 })();   
 
 
+// wrapper for "class" Camera
 (function()
 {
     var AXIS = 
@@ -116,66 +117,6 @@ window.Game = {};
 })();
 
 
-// wrapper for "class" Player
-(function(){
-    function Player(x, y){
-        // (x, y) = center of object
-        // ATTENTION:
-        // it represents the player position on the world(room), not the canvas position
-        this.x = x;
-        this.y = y;             
-
-        // move speed in pixels per second
-        this.speed = 200;       
-
-        // render properties
-        this.width = 50;
-        this.height = 50;
-    }
-
-    Player.prototype.update = function(step, worldWidth, worldHeight)
-    {
-        // check controls and move the player accordingly
-        if(Game.controls.left)
-            this.x -= this.speed * step;
-        if(Game.controls.up)
-            this.y -= this.speed * step;
-        if(Game.controls.right)
-            this.x += this.speed * step;
-        if(Game.controls.down)
-            this.y += this.speed * step;        
-
-        // don't let player leaves the world's boundary
-        if(this.x - this.width/2 < 0){
-            this.x = this.width/2;
-        }
-        if(this.y - this.height/2 < 0){
-            this.y = this.height/2;
-        }
-        if(this.x + this.width/2 > worldWidth){
-            this.x = worldWidth - this.width/2;
-        }
-        if(this.y + this.height/2 > worldHeight){
-            this.y = worldHeight - this.height/2;
-        }
-    }
-
-    Player.prototype.draw = function(context, xView, yView)
-    {        
-        // draw a simple rectangle shape as our player model
-        context.save();     
-        context.fillStyle = "black";
-        // before draw we need to convert player world's position to canvas position            
-        context.fillRect((this.x-this.width/2) - xView, (this.y-this.height/2) - yView, this.width, this.height);
-        context.restore();          
-    }
-
-    // add "class" Player to our Game object
-    Game.Player = Player;
-
-})();
-
-
 // wrapper for "class" Map
 (function(){
     function Map(width, height)
@@ -203,7 +144,7 @@ window.Game = {};
         {    
             for (var y = 0, j=0; j < columns; y+=128, j++) 
             {          
-                temp.drawImage(sprGround, x, y,128,128); 
+                temp.drawImage(sprWater, x, y,128,128); 
             }
         }   
 
@@ -226,3 +167,44 @@ window.Game = {};
 
 })();
 
+
+
+var drawSprite = function(ctx,image,x,y,angle)
+{
+    var TO_RADIANS = Math.PI/180; 
+
+    ctx.save(); 
+    ctx.translate(x, y);  
+    ctx.rotate(angle * TO_RADIANS);
+
+    ctx.drawImage(image, -(image.width/2), -(image.height/2));
+
+    ctx.restore(); 
+    
+}
+
+
+var drawFrame = function(ctx,spriteStrip,frame,x,y,angle)
+{
+    var TO_RADIANS = Math.PI/180; 
+
+    ctx.save(); 
+    ctx.translate(x, y);  
+    ctx.rotate(angle * TO_RADIANS);
+    ctx.scale(4, 4);
+    ctx.drawImage(
+                spriteStrip.image, 
+                frame * spriteStrip.width, 
+                0, 
+                spriteStrip.width , 
+                spriteStrip.height, 
+                -(spriteStrip.width/2), 
+                -(spriteStrip.height/2), 
+                spriteStrip.width , 
+                spriteStrip.height);
+
+   ctx.restore(); 
+
+
+ }
+    

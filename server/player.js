@@ -12,27 +12,31 @@ Player = function(name, id)
     self.speed = 10,
 
     self.targetX = 100,
-    self.targetY = 5
+    self.targetY = 5,
  
+    self.angle = 0
 
     self.updatePosition = function()
     {  
-        /*
-        if(self.targetX != -1 || self.targetY != -1)
+        if(self.pRight) 
         {
-        var dir = point_direction(self.x,self.y,self.targetX,self.targetY);
-
-        if(self.targetX != -1)
-        {self.x += lengthdir_x(self.speed,dir);}
-        if(self.targetY != -1)
-        {self.y += lengthdir_y(self.speed,dir);}
-        
+            self.angle -= 3; 
+            if(self.angle < 0) 
+            {self.angle = 360;}
         }
-        */
-        if(self.pRight) {self.x += self.speed;}
-        if(self.pLeft) {self.x -= self.speed;}
-        if(self.pUp) {self.y -= self.speed;}
-        if(self.pDown) {self.y += self.speed;}
+
+        if(self.pLeft)
+        {
+            self.angle += 3; 
+            if(self.angle > 360) 
+            {self.angle = 0;}
+        }
+        if(self.pUp) 
+        {
+            self.x+= lengthdir_x(self.speed,self.angle);   
+            self.y+= lengthdir_y(self.speed,self.angle);
+        }
+        //if(self.pDown) {self.y += self.speed;}
     }
 
 
@@ -83,7 +87,8 @@ Player.update = function()
             id : current.id,
             name : current.name,
             x : current.x,
-            y : current.y
+            y : current.y,
+            angle: current.angle
         });
     }
      return pack;

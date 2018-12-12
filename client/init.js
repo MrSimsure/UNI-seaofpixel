@@ -1,10 +1,11 @@
 
 
 var canvas = document.getElementById("canvas");
-canvas.width = WINDOW_WIDTH;
-canvas.height = WINDOW_HEIGHT;
+canvas.width = SETTINGS.WINDOW_WIDTH;
+canvas.height = SETTINGS.WINDOW_HEIGHT;
 
 var ctx = canvas.getContext("2d");
+ctx.imageSmoothingEnabled = false;
 
 var page_login = document.getElementById("page_login");
 var page_game = document.getElementById("page_game");
