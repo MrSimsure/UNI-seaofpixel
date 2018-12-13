@@ -32,6 +32,7 @@
 
     login_button.onclick = function()
     {
+        openFullscreen();
         socket.emit("login", {name:login_username.value});
         page_login.style.display = "none";
         page_game.style.display = "inline-block";
@@ -94,6 +95,7 @@
 
     socket.on('newPositions',function(data)
     {
+        //crea le onde
         if(Math.random() < 1.0)
         {
             Onda(Math.random()*room.width*SETTINGS.globalScaleX,  Math.random()*room.height*SETTINGS.globalScaleY);
@@ -103,6 +105,7 @@
             Onda(Math.random()*room.width*SETTINGS.globalScaleX,  Math.random()*room.height*SETTINGS.globalScaleY);
             Onda(Math.random()*room.width*SETTINGS.globalScaleX,  Math.random()*room.height*SETTINGS.globalScaleY);
         }
+
         //trova il giocatore appartenente a questo client
         for(let i = 0 ; i < data.players.length; i++)
         {
