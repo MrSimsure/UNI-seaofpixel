@@ -4,6 +4,7 @@ var canvas = document.getElementById("canvas");
 canvas.width = SETTINGS.WINDOW_WIDTH;
 canvas.height = SETTINGS.WINDOW_HEIGHT;
 
+
 var ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false;
 

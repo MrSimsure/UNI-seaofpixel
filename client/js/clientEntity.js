@@ -7,13 +7,13 @@
         num: Scia.list.length,
         x:x,
         y:y,
-        size:4,
+        size:1,
     }
  
     
     self.update = function()
     {
-        self.size -= 0.2;
+        self.size -= 0.05;
         if(self.size <= 0)
         {
             var index = Scia.list.indexOf(self);
@@ -45,7 +45,7 @@
         x:x,
         y:y,
         grow:false,
-        maxSize: 4,
+        maxSize: 1,
         size:0,
         speed : Math.random()*2
     }
@@ -57,7 +57,7 @@
         
         if(self.grow)
         {
-            self.size -= 0.05;
+            self.size -= 0.01;
             if(self.size <= 0)
             {
                 var index = Onda.list.indexOf(self);
@@ -67,7 +67,7 @@
         else
         {
             if(self.size <= self.maxSize)
-            {self.size += 0.05;}
+            {self.size += 0.01;}
             else
             {self.grow = true;}
         }

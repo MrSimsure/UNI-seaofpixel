@@ -1,0 +1,7 @@
+{
+    "short_name": "Seas of Pixel",
+    "name": "Seas of Pixel",
+    "start_url": "/client/index.html",
+    "display": "fullscreen",
+    "orientation": "landscape"
+  }

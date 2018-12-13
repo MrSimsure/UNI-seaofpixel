@@ -31,16 +31,22 @@ sprOnda = loadSprite("spr_onda");
 stripBoat = loadStrip("spr_nave",23,40,40);
 
 
-
+console.log(screen.width+"  "+screen.height);
 SETTINGS =
 {
-    WINDOW_WIDTH : screen.width-20,
-    WINDOW_HEIGHT : screen.height-20,
+    WINDOW_WIDTH : 480,//screen.width-20,
+    WINDOW_HEIGHT : 270,//screen.height-20,
     onMobile : false,
-    globalScale:1
+    globalScaleX:1,
+    globalScaleY:1
 }
 
+SETTINGS.globalScaleX = (screen.width-20)/480;      SETTINGS.globalScaleY = (screen.height-20)/270;
+
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) 
-{SETTINGS.onMobile = true;      SETTINGS.globalScale = 0.3;}
+{SETTINGS.onMobile = true;}
 else
 {SETTINGS.onMobile = false;}
+
+SETTINGS.WINDOW_WIDTH *= SETTINGS.globalScaleX;
+SETTINGS.WINDOW_HEIGHT *= SETTINGS.globalScaleY;

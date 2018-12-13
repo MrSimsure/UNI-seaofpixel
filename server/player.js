@@ -9,7 +9,7 @@ Player = function(name, id)
     self.pUp = false,
     self.pDown = false,
 
-    self.speed = 10,
+    self.speed = 4,
 
     self.targetX = 100,
     self.targetY = 5,
