@@ -1,3 +1,4 @@
+
 window.Game = {};
 
 const TO_RADIANS = Math.PI/180;
@@ -161,7 +162,7 @@ const TO_RADIANS = Math.PI/180;
     // draw the map adjusted to camera
     Map.prototype.draw = function(context, xView, yView)
     {   
-        context.drawImage(this.image, 0, 0, this.image.width*4, this.image.height*4, -xView, -yView, this.image.width*4, this.image.height*4);     
+        context.drawImage(this.image, 0, 0, this.image.width*4, this.image.height*4, -xView, -yView, this.image.width*4, this.image.height*4);       
     }
 
     // add "class" Map to our Game object
@@ -185,6 +186,7 @@ var drawSprite = function(image,x,y,angle,scale)
 
 
 
+
 var drawFrame = function(spriteStrip,frame,x,y,angle)
 {
     ctx.save(); 
@@ -203,5 +205,5 @@ var drawFrame = function(spriteStrip,frame,x,y,angle)
                 spriteStrip.height);
 
    ctx.restore(); 
- }
-    
+ 
+}

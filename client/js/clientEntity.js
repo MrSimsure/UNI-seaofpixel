@@ -1,4 +1,22 @@
 
+Players = function(id,x,y,name,angle)
+{
+   var self = 
+   {
+       id: id,
+       x:x,
+       y:y,
+       name:name,
+       angle:angle,
+   }
+
+
+   Players.list[self.id] = self;
+   return self;
+}
+Players.list = [];
+
+
 
  Scia = function(x,y)
  {
@@ -13,8 +31,8 @@
     
     self.update = function()
     {
-        self.size -= 0.05;
-        if(self.size <= 0)
+        self.size -= 0.07;
+        if(self.size <= 0.1)
         {
             var index = Scia.list.indexOf(self);
             Scia.list.splice(index,1);

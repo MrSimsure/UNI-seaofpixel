@@ -26,18 +26,22 @@ function loadStrip(name , frameNum ,width, height)
 var elem = document.documentElement;
 
 /* View in fullscreen */
-function openFullscreen() {
-  if (elem.requestFullscreen) {
+function openFullscreen() 
+{
+  if (elem.requestFullscreen) 
+  {
     elem.requestFullscreen();
-  } else if (elem.mozRequestFullScreen) { /* Firefox */
+  } else if (elem.mozRequestFullScreen) 
+  { /* Firefox */
     elem.mozRequestFullScreen();
-  } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+  } else if (elem.webkitRequestFullscreen) 
+  { /* Chrome, Safari and Opera */
     elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) { /* IE/Edge */
+  } else if (elem.msRequestFullscreen) 
+  { /* IE/Edge */
     elem.msRequestFullscreen();
   }
 }
-
 
 
 sprPlayer = loadSprite("spr_player");

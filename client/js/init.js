@@ -22,16 +22,17 @@ var id = 0;
 PlayersData = {};
 var joystick  = null;
 
-window.onload = function() 
-{
-    // setup an object that represents the room
-    room = 
-    {
-        width: 3000,
-        height: 3000,
-        map: new Game.Map(3000, 3000)
-    };
-    room.map.generate();
+//window.onload = function()
 
-    camera = new Game.Camera(0, 0, canvas, room);   
-}
+// setup an object that represents the room
+room = 
+{
+    width: 3000,
+    height: 3000,
+    map: new Game.Map(3000, 3000)
+};
+
+sprWater.onload = function()  {
+room.map.generate();}
+
+camera = new Game.Camera(0, 0, canvas, room);   

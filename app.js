@@ -41,6 +41,13 @@ io.sockets.on("connection", function(socket)
         //quando un giocatore si disconnette eliminalo dalla lista giocatori
         socket.on("disconnect", function()
         {
+            //invia i dati ad ogni client
+            for(var i in socketList)
+            {
+                var current = socketList[i];
+                current.emit("disconnection", socket.id);
+            } 
+
             delete socketList[socket.id];
             Player.onDisconnect(socket);
         });

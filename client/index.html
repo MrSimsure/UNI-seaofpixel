@@ -9,8 +9,7 @@
     Username: <input id="login_username" type="text"></input>
     <button id="login_button">Logga</button>
 </div>
-
- <div id="page_game" style="display:none">
+ <div id="page_game" style="display:none; position:absolute; top:50px; left:200px; z-index:1">
     <canvas id="canvas" width="480" height="270" style="border:1px solid #000000;"></canvas>
 </div>
 
@@ -24,6 +23,8 @@
 
 <script>
 
+    var moving = false;
+
     socket.on('connection',function(data)
     {    
         id = data
@@ -32,7 +33,9 @@
 
     login_button.onclick = function()
     {
-        openFullscreen();
+        if(SETTINGS.onMobile)
+        {openFullscreen();}
+        
         socket.emit("login", {name:login_username.value});
         page_login.style.display = "none";
         page_game.style.display = "inline-block";
@@ -61,7 +64,7 @@
          if(event.keyCode == 65) //a
         { socket.emit("keyPress", {id:"left", state:true}); }
          if(event.keyCode == 87) //w
-        { socket.emit("keyPress", {id:"up", state:true}); }
+        { socket.emit("keyPress", {id:"up", state:true}); moving = true;}
     }
     
     document.onkeyup = function(event)
@@ -73,12 +76,26 @@
          if(event.keyCode == 65) //a
         { socket.emit("keyPress", {id:"left", state:false}); }
          if(event.keyCode == 87) //w
-        { socket.emit("keyPress", {id:"up", state:false}); }
+        { socket.emit("keyPress", {id:"up", state:false}); moving = false;}
     }    
     
     
-   setInterval(function()
-   {
+
+    update = function()
+    {
+
+        //trova il giocatore appartenente a questo client
+        for(var i in Players.list)
+        {
+            var current = Players.list[i];
+
+            Scia(current.x*SETTINGS.globalScaleX,  current.y*SETTINGS.globalScaleY);
+    
+            if(current.id == id)
+            {camera.update(current.x*SETTINGS.globalScaleX, current.y*SETTINGS.globalScaleY);}
+        }
+
+
         if(SETTINGS.onMobile == true && joystick != null)
         {
             if( joystick.right() )
@@ -90,11 +107,8 @@
             if( joystick.down() )
             {  socket.emit("keyPress", {id:"down", state:true}); } else {  socket.emit("keyPress", {id:"down", state:false}); }
         }
-   } ,1000/30);  
 
 
-    socket.on('newPositions',function(data)
-    {
         //crea le onde
         if(Math.random() < 1.0)
         {
@@ -105,22 +119,18 @@
             Onda(Math.random()*room.width*SETTINGS.globalScaleX,  Math.random()*room.height*SETTINGS.globalScaleY);
             Onda(Math.random()*room.width*SETTINGS.globalScaleX,  Math.random()*room.height*SETTINGS.globalScaleY);
         }
+    }
 
-        //trova il giocatore appartenente a questo client
-        for(let i = 0 ; i < data.players.length; i++)
-        {
-            if(data.players[i].id == id)
-            {camera.update(data.players[i].x*SETTINGS.globalScaleX, data.players[i].y*SETTINGS.globalScaleY);}
-        }
-        
+
+    draw = function()
+    {
+
         //pulisci il canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
 
         //disegna la mappa
         room.map.draw(ctx, camera.xView, camera.yView);
 
-        
         //aggiorna scie
         for(var i=Onda.list.length-1 ; i >= 0; i--)
         {       
@@ -137,39 +147,66 @@
             current.draw();
         }
 
+
+        
         //disegna tutti i giocatori
-        for(var i = 0 ; i < data.players.length; i++)
+        for(var i in Players.list)
         {
-            var playerX = data.players[i].x*SETTINGS.globalScaleX-camera.xView;
-            var playerY = data.players[i].y*SETTINGS.globalScaleY-camera.yView;
+            var current = Players.list[i];
+
+            var playerX = current.x*SETTINGS.globalScaleX-camera.xView;
+            var playerY = current.y*SETTINGS.globalScaleY-camera.yView;
  
-            if(Math.random() < 0.8)
-            {
-                Scia(data.players[i].x*SETTINGS.globalScaleX,  data.players[i].y*SETTINGS.globalScaleY);
-            }
+ 
 
     
             for(var n=0; n<23 ; n++)
             {
-                drawFrame(stripBoat, n, playerX,  playerY-SETTINGS.globalScaleY*n, data.players[i].angle);
+                drawFrame(stripBoat, n, playerX,  playerY-SETTINGS.globalScaleY*n, current.angle);
             }
 
             ctx.font = (30*SETTINGS.globalScaleX)+"px Georgia";
-            ctx.fillText(data.players[i].name, playerX-(data.players[i].name.length*8),  playerY-128);
+            ctx.fillText(current.name, playerX-(current.name.length*8),  playerY-128);
         }
+    }
 
-                    
-                    
+    clientUpdate = function()
+    {
+        update();
+        draw();
+    }
 
-        /*  
-        //disegna tutti i proiettili
-        for(let i = 0 ; i < data.bullets.length; i++)
-        {
-            ctx.fillStyle = "#FF0000";
-            ctx.fillRect(data.bullets[i].x-5-camera.xView, data.bullets[i].y-5-camera.yView, 10, 10);     
-        }
+    //sprScia.onload = function()
+    {setInterval(clientUpdate ,1000/30); }
+    
 
-        //controller.draw();
-        */
+    
+    socket.on('disconnection',function(data)
+    {
+        delete Players.list[data];
     });
+    
+    socket.on('newPositions',function(data)
+    {
+            //disegna tutti i giocatori
+            for(var i = 0 ; i < data.players.length; i++)
+            {
+                var current = data.players[i];
+
+                if(Players.list[current.id] == undefined)
+                {
+                    
+                    Players(current.id, current.x, current.y, current.name, current.angle);
+                    
+                }
+                else
+                {
+                    
+                    Players.list[current.id].x = current.x;
+                    Players.list[current.id].y = current.y;
+                    Players.list[current.id].angle = current.angle;
+                }
+            }
+    });
+
 </script>
