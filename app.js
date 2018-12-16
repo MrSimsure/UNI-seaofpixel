@@ -1,7 +1,7 @@
 require("./server/engine.js");
 require("./server/entity.js");
 require("./server/player.js");
-require("./server/bullet.js");
+require("./server/ball.js");
 
 
 
@@ -32,11 +32,19 @@ io.sockets.on("connection", function(socket)
         
 
         //quando ricevi un messaggio dal client
-         socket.on("login", function(data)
-         {console.log(data.name);
+        socket.on("login", function(data)
+        {
             Player.onConnect(socket,data.name);
         });
 
+
+        //quando ricevi un messaggio dal client
+        socket.on("shoot", function(data)
+        {
+            var current =  Player.list[socket.id];
+            Balls(current.x,current.y,current.angle+90)
+            Balls(current.x,current.y,current.angle+270)
+        });
 
         //quando un giocatore si disconnette eliminalo dalla lista giocatori
         socket.on("disconnect", function()
@@ -64,8 +72,8 @@ var serverUpdate = function()
 {
         var pack = 
         {
-            players:Player.update()
-           // bullets:Bullet.update()
+            players:Player.update(),
+            balls:Balls.update(socketList)
         }
 
         //invia i dati ad ogni client

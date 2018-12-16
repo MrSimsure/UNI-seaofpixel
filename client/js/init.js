@@ -32,7 +32,9 @@ room =
     map: new Game.Map(3000, 3000)
 };
 
-sprWater.onload = function()  {
-room.map.generate();}
+sprWater.onload = function()  
+{
+room.map.generate();
+}
 
 camera = new Game.Camera(0, 0, canvas, room);   

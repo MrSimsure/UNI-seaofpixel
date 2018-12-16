@@ -1,59 +1,62 @@
 
 
-Bullet = function(direction)
+Balls = function(x,y,direction)
 {
     var self = Entity();
 
+    self.x = x;
+    self.y = y;
     self.id = Math.random();
-    self.speed = 4;
+    self.speed = 8;
     self.spdX = Math.cos(direction/180*Math.PI)*self.speed;
     self.spdY = Math.sin(direction/180*Math.PI)*self.speed;
 
     self.timer = 0;
-    self.toRemove = false;
 
 
     var superUpdate = self.update;
-    self.update = function()
+    self.update = function(socketList)
     {
         self.timer += 1 ;
 
-        if(self.timer > 40)
+        if(self.timer > 100)
         {
-            delete Bullet.list[self.id];      
+            //invia i dati ad ogni client
+            for(var i in socketList)
+            {
+                var current = socketList[i];
+                current.emit("ballEnd", self.id);
+            } 
+            delete Balls.list[self.id];      
         }
               
         superUpdate();
     }
 
-    Bullet.list[self.id] = self;
+    Balls.list[self.id] = self;
 
     return self;
 }
 
 
-Bullet.list = {};
+Balls.list = {};
 
 
-Bullet.update = function()
+Balls.update = function()
 {
-    if(Math.random() < 1.0)
-    {
-        //Bullet(Math.random()*360);
-    }
-
     var pack = [];
 
     //aggiorna la posizione di ogni player ed inpacchetta i dati per inviarli
-    for(var i in Bullet.list)
+    for(var i in Balls.list)
     {
-        var current = Bullet.list[i];
+        var current = Balls.list[i];
         if(current != null)
         {
             current.update();
 
             pack.push
             ({
+                id : current.id,
                 x : current.x,
                 y : current.y
             });

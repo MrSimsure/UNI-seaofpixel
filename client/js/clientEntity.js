@@ -1,4 +1,4 @@
-
+///PLAYERS///////////////////////////////////////////////////////////
 Players = function(id,x,y,name,angle)
 {
    var self = 
@@ -17,7 +17,24 @@ Players = function(id,x,y,name,angle)
 Players.list = [];
 
 
+///PLAYERS///////////////////////////////////////////////////////////
+Balls = function(id,x,y)
+{
+   var self = 
+   {
+       id:id,
+       x:x,
+       y:y,  
+   }
 
+
+   Balls.list[self.id] = self;
+   return self;
+}
+Balls.list = [];
+
+
+///SCIA///////////////////////////////////////////////////////////
  Scia = function(x,y)
  {
     var self = 
@@ -54,7 +71,7 @@ Players.list = [];
 
 
 
- 
+ ///ONDA///////////////////////////////////////////////////////////
  Onda = function(x,y)
  {
     var self = 

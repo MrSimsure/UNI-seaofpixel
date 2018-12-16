@@ -10,9 +10,6 @@ Player = function(name, id)
     self.pDown = false,
 
     self.speed = 4,
-
-    self.targetX = 100,
-    self.targetY = 5,
  
     self.angle = 0
 
@@ -47,7 +44,7 @@ Player = function(name, id)
  Player.list = {};
 
 
- Player.onConnect = function(socket,name)
+Player.onConnect = function(socket,name)
 {
     var player = Player(name,socket.id);
      //quando ricevi un messaggio dal client
