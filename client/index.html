@@ -33,8 +33,8 @@
 
     login_button.onclick = function()
     {
-        //if(SETTINGS.onMobile)
-        //{openFullscreen();}
+        if(SETTINGS.onMobile)
+        {openFullscreen();}
         
         socket.emit("login", {name:login_username.value});
         page_login.style.display = "none";
