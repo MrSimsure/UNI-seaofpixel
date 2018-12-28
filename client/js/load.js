@@ -27,9 +27,8 @@ function openFullscreen()
 {
     var elem = document.documentElement;
     if (elem.requestFullscreen) 
-    {
-      elem.requestFullscreen();
-    } else if (elem.mozRequestFullScreen) 
+    {elem.requestFullscreen();} 
+    else if (elem.mozRequestFullScreen) 
     { /* Firefox */
       elem.mozRequestFullScreen();
     } else if (elem.webkitRequestFullscreen) 

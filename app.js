@@ -42,8 +42,20 @@ io.sockets.on("connection", function(socket)
         socket.on("shoot", function(data)
         {
             var current =  Player.list[socket.id];
-            Balls(current.x,current.y,current.angle+90)
-            Balls(current.x,current.y,current.angle+270)
+
+            if(data.state == true)
+            {
+                if(current.shoot == false)
+                {
+                    Balls(current.x,current.y,current.angle+90)
+                    Balls(current.x,current.y,current.angle+270)
+                }
+                current.shoot = true;
+            }
+            else
+            {
+                current.shoot = false;
+            }
         });
 
         //quando un giocatore si disconnette eliminalo dalla lista giocatori

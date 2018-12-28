@@ -10,7 +10,7 @@ Player = function(name, id)
     self.pDown = false,
 
     self.speed = 4,
- 
+    self.shoot = false,
     self.angle = 0
 
     self.updatePosition = function()
