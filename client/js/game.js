@@ -185,8 +185,6 @@ var drawSprite = function(image,x,y,angle,scale)
 }
 
 
-
-
 var drawFrame = function(spriteStrip,frame,x,y,angle)
 {
     ctx.save(); 

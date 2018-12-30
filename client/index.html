@@ -1,7 +1,6 @@
 
 <link rel="manifest" href="/client/manifest.json">
-
-<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0">
+<meta name="viewport" content="minimal-ui, width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0">
 
 <style> section { position: absolute; top:0; bottom:0; left:0; right:0;overflow: hidden;} </style>
 
@@ -13,6 +12,7 @@
     <canvas id="canvas" width="480" height="270" style="border:1px solid #000000;"></canvas>
 </div>
 
+<script src="/client/js/engine.js"></script>
 <script src="/client/js/virtualjoystick.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/client/js/load.js"></script>
@@ -25,23 +25,22 @@
 
     var moving = false;
 
+    //CONNESSIONE
     socket.on('connection',function(data)
     {    
         id = data
         console.log("my socket id = "+id);
     });
 
+
+    //LOGIN
     login_button.onclick = function()
     {
+        //SE MOBILE FULLSCREEN E JOYSTICK
         if(SETTINGS.onMobile)
-        {openFullscreen();}
-        
-        socket.emit("login", {name:login_username.value});
-        page_login.style.display = "none";
-        page_game.style.display = "inline-block";
-
-        if(SETTINGS.onMobile == true)
         {
+            openFullscreen();     
+            
             joystick = new VirtualJoystick(
                         {
                         mouseSupport: true,
@@ -52,6 +51,19 @@
                         stickRadius: 50
                         });
         }
+
+        //RISCALA IL CANVAS
+        setTimeout(function () 
+        {
+            setScaleFactor()
+            canvasResize()
+        }, 200);
+
+        //INVIA I DATI DI LOGIN E PASSA AL GIOCO
+        socket.emit("login", {name:login_username.value});
+
+        page_login.style.display = "none";
+        page_game.style.display = "inline-block";
     }
 
     
@@ -83,7 +95,25 @@
         { socket.emit("shoot", {id:"space", state:false});}
     }    
     
+
+    function touchStart(ev) 
+    {
+        { socket.emit("shoot", {id:"space", state:true});}
+    };
+
     
+    function touchEnd(ev) 
+    {
+        { socket.emit("shoot", {id:"space", state:false});}
+    };
+
+
+    canvas.addEventListener('touchstart', touchStart, false);
+    canvas.addEventListener('touchend', touchEnd, false);
+
+
+
+
 
     update = function()
     {
@@ -171,7 +201,7 @@
             ctx.fillText(current.name, playerX-(current.name.length*8),  playerY-128);
         }
 
-console.log(Balls.list.length)
+
         //disegna tutti i giocatori
         for(var i in Balls.list)
         {

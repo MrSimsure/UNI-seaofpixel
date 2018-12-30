@@ -242,6 +242,7 @@ VirtualJoystick.prototype._onMouseMove	= function(event)
 
 VirtualJoystick.prototype._onTouchStart	= function(event)
 {
+	
 	// if there is already a touch inprogress do nothing
 	if( this._touchIdx !== null )	return;
 
@@ -261,7 +262,12 @@ VirtualJoystick.prototype._onTouchStart	= function(event)
 	// forward the action
 	var x		= touch.pageX;
 	var y		= touch.pageY;
-	return this._onDown(x, y)
+
+
+	if(point_distance(this._baseX,this._baseY, touch.pageX,touch.pageY) < 100)
+	{return this._onDown(x, y)}
+	else
+	{return null}
 }
 
 VirtualJoystick.prototype._onTouchEnd	= function(event)

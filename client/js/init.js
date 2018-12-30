@@ -1,4 +1,14 @@
 
+function canvasResize()
+{
+    canvas.width = SETTINGS.WINDOW_WIDTH;
+    canvas.height = SETTINGS.WINDOW_HEIGHT; 
+    
+    ctx.imageSmoothingEnabled = false;
+
+    camera = new Game.Camera(0, 0, canvas, room);   
+
+}
 
 var canvas = document.getElementById("canvas");
 canvas.width = SETTINGS.WINDOW_WIDTH;
@@ -34,7 +44,7 @@ room =
 
 sprWater.onload = function()  
 {
-room.map.generate();
+    room.map.generate();
 }
 
 camera = new Game.Camera(0, 0, canvas, room);   
