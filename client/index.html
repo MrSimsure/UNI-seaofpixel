@@ -24,6 +24,7 @@
 <script>
 
     var moving = false;
+    var fps;
 
     //CONNESSIONE
     socket.on('connection',function(data)
@@ -114,9 +115,13 @@
 
 
 
-
+    var lastLoop;
     update = function()
     {
+        var thisLoop = new Date();
+        if(Math.random() > 0.8)
+        {fps = Math.floor(1000 / (thisLoop - lastLoop));}
+        lastLoop = thisLoop;
 
         //trova il giocatore appartenente a questo client
         for(var i in Players.list)
@@ -162,6 +167,7 @@
         //pulisci il canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+
         //disegna la mappa
         room.map.draw(ctx, camera.xView, camera.yView);
 
@@ -197,7 +203,7 @@
                 drawFrame(stripBoat, n, playerX,  playerY-SETTINGS.globalScaleY*n, current.angle);
             }
 
-            ctx.font = (30*SETTINGS.globalScaleX)+"px Georgia";
+            ctx.font = (20*SETTINGS.globalScaleX)+"px Georgia";
             ctx.fillText(current.name, playerX-(current.name.length*8),  playerY-128);
         }
 
@@ -212,6 +218,11 @@
  
             drawSprite(sprBall, ballX,  ballY, 0, 0.4);           
         }
+
+
+        ctx.font = (10*SETTINGS.globalScaleX)+"px Georgia";
+        ctx.fillText(fps, 10,  30);
+
     }
 
 
@@ -225,6 +236,9 @@
     //sprScia.onload = function()
     {setInterval(clientUpdate ,1000/30); }
     
+
+
+
 
     socket.on('ballEnd',function(data)
     {
