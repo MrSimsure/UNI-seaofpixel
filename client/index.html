@@ -13,12 +13,12 @@
 </div>
 
 <script src="/client/js/engine.js"></script>
+
 <script src="/client/js/virtualjoystick.js"></script>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/client/js/load.js"></script>
+
 <script src="/client/js/game.js"></script>
-<script src="/client/js/init.js"></script>
-<script src="/client/js/clientEntity.js"></script>
+<script src="/client/js/load.js"></script>
 
 
 <script>
@@ -40,7 +40,7 @@
         //SE MOBILE FULLSCREEN E JOYSTICK
         if(SETTINGS.onMobile)
         {
-            openFullscreen();     
+            SETTINGS.openFullscreen();     
             
             joystick = new VirtualJoystick(
                         {
@@ -56,8 +56,8 @@
         //RISCALA IL CANVAS
         setTimeout(function () 
         {
-            setScaleFactor()
-            canvasResize()
+            SETTINGS.setScaleFactor()
+            SETTINGS.canvasResize()
         }, 200);
 
         //INVIA I DATI DI LOGIN E PASSA AL GIOCO
@@ -119,111 +119,89 @@
     var lastLoop;
     update = function()
     {
-        var thisLoop = new Date();
-        if(Math.random() > 0.8)
-        {fps = Math.floor(1000 / (thisLoop - lastLoop));}
-        lastLoop = thisLoop;
-
-        //trova il giocatore appartenente a questo client
-        for(var i in Players.list)
-        {
-            var current = Players.list[i];
-
-            Scia(current.x*SETTINGS.globalScaleX,  current.y*SETTINGS.globalScaleY);
-    
-            if(current.id == id)
-            {camera.update(current.x*SETTINGS.globalScaleX, current.y*SETTINGS.globalScaleY);}
-        }
+            //aggiorna fps
+            var thisLoop = new Date();
+            if(Math.random() > 0.8)
+            {fps = Math.floor(1000 / (thisLoop - lastLoop));}
+            lastLoop = thisLoop;
 
 
-        if(SETTINGS.onMobile == true && joystick != null)
-        {
-            if( joystick.right() )
-            { socket.emit("keyPress", {id:"right", state:true}); } else { socket.emit("keyPress", {id:"right", state:false}); }
-            if( joystick.left() )
-            {  socket.emit("keyPress", {id:"left", state:true});} else {  socket.emit("keyPress", {id:"left", state:false});}
-            if( joystick.up() )
-            {  socket.emit("keyPress", {id:"up", state:true}); } else {  socket.emit("keyPress", {id:"up", state:false}); }
-            if( joystick.down() )
-            {  socket.emit("keyPress", {id:"down", state:true}); } else {  socket.emit("keyPress", {id:"down", state:false}); }
-        }
+            //trova il giocatore appartenente a questo client
+            for(var i in  GAME.Players.list)
+            {
+                var current =  GAME.Players.list[i];
+
+                GAME.Scia(current.x*SETTINGS.globalScaleX,  current.y*SETTINGS.globalScaleY);
+        
+                if(current.id == id)
+                {
+                    GAME.Onda( (current.x*SETTINGS.globalScaleX)+random_range(-2000,2000) , (current.y*SETTINGS.globalScaleY)+random_range(-2000,2000));
+
+                    camera.update(current.x*SETTINGS.globalScaleX, current.y*SETTINGS.globalScaleY);
+                }
+            }
 
 
-        //crea le onde
-        if(Math.random() < 1.0)
-        {
-            Onda(Math.random()*room.width*SETTINGS.globalScaleX,  Math.random()*room.height*SETTINGS.globalScaleY);
-            Onda(Math.random()*room.width*SETTINGS.globalScaleX,  Math.random()*room.height*SETTINGS.globalScaleY);
-            Onda(Math.random()*room.width*SETTINGS.globalScaleX,  Math.random()*room.height*SETTINGS.globalScaleY);
-            Onda(Math.random()*room.width*SETTINGS.globalScaleX,  Math.random()*room.height*SETTINGS.globalScaleY);
-            Onda(Math.random()*room.width*SETTINGS.globalScaleX,  Math.random()*room.height*SETTINGS.globalScaleY);
-            Onda(Math.random()*room.width*SETTINGS.globalScaleX,  Math.random()*room.height*SETTINGS.globalScaleY);
-        }
+            if(SETTINGS.onMobile == true && joystick != null)
+            {
+                if( joystick.right() )
+                { socket.emit("keyPress", {id:"right", state:true}); } else { socket.emit("keyPress", {id:"right", state:false}); }
+                if( joystick.left() )
+                {  socket.emit("keyPress", {id:"left", state:true});} else {  socket.emit("keyPress", {id:"left", state:false});}
+                if( joystick.up() )
+                {  socket.emit("keyPress", {id:"up", state:true}); } else {  socket.emit("keyPress", {id:"up", state:false}); }
+                if( joystick.down() )
+                {  socket.emit("keyPress", {id:"down", state:true}); } else {  socket.emit("keyPress", {id:"down", state:false}); }
+            }
+
+
+
     }
 
 
     draw = function()
     {
+            //pulisci il canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        //pulisci il canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-
-        //disegna la mappa
-        room.map.draw(ctx, camera.xView, camera.yView);
-
-        //aggiorna scie
-        for(var i=Onda.list.length-1 ; i >= 0; i--)
-        {       
-            var current = Onda.list[i];
-            current.update();
-            current.draw();
-        }
-
-        //aggiorna onde
-        for(var i=Scia.list.length-1 ; i >= 0; i--)
-        {       
-            var current = Scia.list[i];
-            current.update();
-            current.draw();
-        }
+            //disegna la mappa
+            room.map.draw(ctx, camera.xView, camera.yView);
 
 
-        
-        //disegna tutti i giocatori
-        for(var i in Players.list)
-        {
-            var current = Players.list[i];
-
-            var playerX = current.x*SETTINGS.globalScaleX-camera.xView;
-            var playerY = current.y*SETTINGS.globalScaleY-camera.yView;
- 
-
-            for(var n=0; n<23 ; n++)
-            {
-                drawFrame(stripBoat, n, playerX,  playerY-SETTINGS.globalScaleY*n, current.angle);
+            //aggiorna e disegna le scie
+            for(var i=  GAME.Onda.list.length-1 ; i >= 0; i--)
+            {       
+                var current =  GAME.Onda.list[i];
+                current.update();
+                current.draw();
             }
 
-            ctx.font = (20*SETTINGS.globalScaleX)+"px Georgia";
-            ctx.fillText(current.name, playerX-(current.name.length*8),  playerY-128);
-        }
+            //aggiorna e disegna le onde
+            for(var i=  GAME.Scia.list.length-1 ; i >= 0; i--)
+            {       
+                var current =  GAME.Scia.list[i];
+                current.update();
+                current.draw();
+            }
 
+        
+            //disegna tutti i giocatori
+            for(var i in  GAME.Players.list)
+            {
+                var current =  GAME.Players.list[i];
+                current.draw();
+            }
 
-        //disegna tutti i giocatori
-        for(var i in Balls.list)
-        {
-            var current = Balls.list[i];
+            //disegna palle di cannone
+            for(var i in  GAME.Balls.list)
+            {
+                var current =  GAME.Balls.list[i];
+                current.draw();
+            }
 
-            var ballX = current.x*SETTINGS.globalScaleX-camera.xView;
-            var ballY = current.y*SETTINGS.globalScaleY-camera.yView;
- 
-            drawSprite(sprBall, ballX,  ballY, 0, 0.4);           
-        }
-
-
-        ctx.font = (10*SETTINGS.globalScaleX)+"px Georgia";
-        ctx.fillText(fps, 10,  30);
-
+            //disegna fps
+            ctx.font = (10*SETTINGS.globalScaleX)+"px Georgia";
+            ctx.fillText(fps, 10,  30);
     }
 
 
@@ -232,10 +210,11 @@
     {
         update();
         draw();
+
     }
 
-    //sprScia.onload = function()
-    {setInterval(clientUpdate ,1000/30); }
+
+    setInterval(clientUpdate ,1000/30); 
     
 
 
@@ -243,47 +222,48 @@
 
     socket.on('ballEnd',function(data)
     {
-        delete Balls.list[data];
+        delete GAME.Balls.list[data];
     });
 
     socket.on('disconnection',function(data)
     {
-        delete Players.list[data];
+        delete GAME.Players.list[data];
     });
     
+
     socket.on('newPositions',function(data)
     {
-            //disegna tutti i giocatori
+            //aggiorna posizione giocatori
             for(var i = 0 ; i < data.players.length; i++)
             {
                 var current = data.players[i];
 
-                if(Players.list[current.id] == undefined)
+                if(GAME.Players.list[current.id] == undefined)
                 {          
-                    Players(current.id, current.x, current.y, current.name, current.angle);
+                    GAME.Players(current.id, current.x, current.y, current.name, current.angle);
                 }
                 else
                 {            
-                    Players.list[current.id].x = current.x;
-                    Players.list[current.id].y = current.y;
-                    Players.list[current.id].angle = current.angle;
+                    GAME.Players.list[current.id].x = current.x;
+                    GAME.Players.list[current.id].y = current.y;
+                    GAME.Players.list[current.id].angle = current.angle;
                 }
             }
 
 
-            //disegna tutti i giocatori
+            //aggiorna posizione palle (haha che simpatia vero?)
             for(var i = 0 ; i < data.balls.length; i++)
             {
                 var current = data.balls[i];
 
-                if(Balls.list[current.id] == undefined)
+                if(GAME.Balls.list[current.id] == undefined)
                 {          
-                    Balls(current.id,current.x, current.y);
+                    GAME.Balls(current.id,current.x, current.y);
                 }
                 else
                 {            
-                    Balls.list[current.id].x = current.x;
-                    Balls.list[current.id].y = current.y;
+                    GAME.Balls.list[current.id].x = current.x;
+                    GAME.Balls.list[current.id].y = current.y;
                 }
             }
     });

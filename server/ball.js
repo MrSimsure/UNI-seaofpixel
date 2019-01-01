@@ -21,11 +21,10 @@ Balls = function(x,y,direction)
 
         if(self.timer > 100)
         {
-            //invia i dati ad ogni client
             for(var i in socketList)
             {
                 var current = socketList[i];
-                current.emit("ballEnd", self.id);
+                current.emit("ballEnd", self.id);             
             } 
             delete Balls.list[self.id];      
         }
