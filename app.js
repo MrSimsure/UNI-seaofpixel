@@ -9,7 +9,6 @@ var express = require("express");
 var app = express();
 var server = require("http").Server(app);
 
-
 app.get("/", function(req, res)  { res.sendFile(__dirname + "/client/index.html");});   
 app.use("/client", express.static(__dirname + "/client"));
 server.listen(process.env.PORT || 8080);
@@ -29,7 +28,13 @@ io.sockets.on("connection", function(socket)
         socket.emit("connection", socket.id);
 
         console.log("connesso  "+socketList[socket.id].id);
-        
+  
+
+        socket.on("ping", function() 
+        {
+            socket.emit("pong");
+        });
+       
 
         //quando ricevi un messaggio dal client
         socket.on("login", function(data)

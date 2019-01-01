@@ -1,7 +1,7 @@
 
 
-sprPlayer =  GAME.loadSprite("spr_player");
-sprWater =  GAME.loadSprite("spr_water");
+sprPlayer= GAME.loadSprite("spr_player");
+sprWater = GAME.loadSprite("spr_water");
 sprScia =  GAME.loadSprite("spr_scia");
 sprOnda =  GAME.loadSprite("spr_onda");
 sprBall =  GAME.loadSprite("spr_ball");
@@ -31,7 +31,7 @@ var login_button = document.getElementById("login_button");
 //connettiti al server
 var socket = io();
 var id = 0;
-PlayersData = {};
+var PlayersData = {};
 var joystick  = null;
 
 //window.onload = function()
@@ -43,6 +43,7 @@ room =
     height: 8000,
     map: GAME.Map(8000, 8000)
 };
+
 
 sprWater.onload = function()  
 {

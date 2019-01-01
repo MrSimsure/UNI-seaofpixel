@@ -2,6 +2,11 @@
 <link rel="manifest" href="/client/manifest.json">
 <meta name="viewport" content="minimal-ui, width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0">
 
+<meta charset="utf-8">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="expires" content="0">
+
 <style> section { position: absolute; top:0; bottom:0; left:0; right:0;overflow: hidden;} </style>
 
 <div id="page_login">
@@ -25,6 +30,7 @@
 
     var moving = false;
     var fps;
+    var upd;
 
     //CONNESSIONE
     socket.on('connection',function(data)
@@ -32,6 +38,10 @@
         id = data
         console.log("my socket id = "+id);
     });
+
+
+
+
 
 
     //LOGIN
@@ -96,6 +106,7 @@
         { socket.emit("shoot", {id:"space", state:false});}
     }    
     
+
 
     function touchStart(ev) 
     {
@@ -201,13 +212,17 @@
 
             //disegna fps
             ctx.font = (10*SETTINGS.globalScaleX)+"px Georgia";
-            ctx.fillText(fps, 10,  30);
+            ctx.fillText("FPS:"+fps, 10,  30);
+            ctx.fillText("PING:"+latency, 10,  90);
     }
 
 
 
     clientUpdate = function()
     {
+        startTime = Date.now();
+        socket.emit("ping");
+
         update();
         draw();
 
@@ -216,8 +231,14 @@
 
     setInterval(clientUpdate ,1000/30); 
     
+    var startTime;
+    var latency = 0;
 
 
+    socket.on("pong", function() 
+    {
+        latency = Date.now() - startTime;
+    });
 
 
     socket.on('ballEnd',function(data)
@@ -229,10 +250,11 @@
     {
         delete GAME.Players.list[data];
     });
-    
+
 
     socket.on('newPositions',function(data)
     {
+           
             //aggiorna posizione giocatori
             for(var i = 0 ; i < data.players.length; i++)
             {
