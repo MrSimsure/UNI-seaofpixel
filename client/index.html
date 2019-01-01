@@ -2,10 +2,7 @@
 <link rel="manifest" href="/client/manifest.json">
 <meta name="viewport" content="minimal-ui, width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0">
 
-<meta charset="utf-8">
-<meta http-equiv="pragma" content="no-cache">
-<meta http-equiv="cache-control" content="no-cache">
-<meta http-equiv="expires" content="0">
+
 
 <style> section { position: absolute; top:0; bottom:0; left:0; right:0;overflow: hidden;} </style>
 
@@ -220,9 +217,6 @@
 
     clientUpdate = function()
     {
-        startTime = Date.now();
-        socket.emit("ping");
-
         update();
         draw();
 
@@ -231,14 +225,8 @@
 
     setInterval(clientUpdate ,1000/30); 
     
-    var startTime;
-    var latency = 0;
 
 
-    socket.on("pong", function() 
-    {
-        latency = Date.now() - startTime;
-    });
 
 
     socket.on('ballEnd',function(data)
