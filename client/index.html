@@ -3,7 +3,6 @@
 <meta name="viewport" content="minimal-ui, width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0">
 
 
-
 <style> section { position: absolute; top:0; bottom:0; left:0; right:0;overflow: hidden;} </style>
 
 <div id="page_login">
@@ -35,9 +34,6 @@
         id = data
         console.log("my socket id = "+id);
     });
-
-
-
 
 
 
@@ -143,7 +139,7 @@
         
                 if(current.id == id)
                 {
-                    GAME.Onda( (current.x*SETTINGS.globalScaleX)+random_range(-2000,2000) , (current.y*SETTINGS.globalScaleY)+random_range(-2000,2000));
+                    //GAME.Onda( (current.x*SETTINGS.globalScaleX)+random_range(-2000,2000) , (current.y*SETTINGS.globalScaleY)+random_range(-2000,2000));
 
                     camera.update(current.x*SETTINGS.globalScaleX, current.y*SETTINGS.globalScaleY);
                 }
@@ -210,7 +206,6 @@
             //disegna fps
             ctx.font = (10*SETTINGS.globalScaleX)+"px Georgia";
             ctx.fillText("FPS:"+fps, 10,  30);
-            ctx.fillText("PING:"+latency, 10,  90);
     }
 
 
@@ -225,8 +220,6 @@
 
     setInterval(clientUpdate ,1000/30); 
     
-
-
 
 
     socket.on('ballEnd',function(data)

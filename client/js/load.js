@@ -39,9 +39,9 @@ var joystick  = null;
 // setup an object that represents the room
 room = 
 {
-    width: 8000,
-    height: 8000,
-    map: GAME.Map(8000, 8000)
+    width: 3000,
+    height: 3000,
+    map: GAME.Map(3000, 3000)
 };
 
 
