@@ -30,10 +30,6 @@ io.sockets.on("connection", function(socket)
         console.log("connesso  "+socketList[socket.id].id);
   
 
-        socket.on("ping", function() 
-        {
-            socket.emit("pong");
-        });
        
 
         //quando ricevi un messaggio dal client
