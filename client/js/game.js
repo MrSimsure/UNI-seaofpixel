@@ -300,7 +300,7 @@ GAME.Players = function(id,x,y,name,angle)
         }
 
         ctx.font = (20*SETTINGS.globalScaleX)+"px Georgia";
-        ctx.fillText(self.name, playerX-(self.name.length*8),  playerY-128);
+        ctx.fillText(self.name, playerX-(self.name.length*8),  playerY-64);
    }
 
    GAME.Players.list[self.id] = self;
