@@ -140,8 +140,12 @@
                 if(current.id == id)
                 {
                     //GAME.Onda( (current.x*SETTINGS.globalScaleX)+random_range(-2000,2000) , (current.y*SETTINGS.globalScaleY)+random_range(-2000,2000));
+                    for(var i=0; i<100; i++)
+                    {
                     GAME.Onda(Math.random()*room.width*SETTINGS.globalScaleX, Math.random()*room.height*SETTINGS.globalScaleY);
+                    } 
                     camera.update(current.x*SETTINGS.globalScaleX, current.y*SETTINGS.globalScaleY);
+   
                 }
             }
 
