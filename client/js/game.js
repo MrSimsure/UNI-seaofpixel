@@ -422,3 +422,25 @@ GAME.Scia.list = [];
 
 
 
+GAME.Chest = function(id,x,y)
+{
+   var self = 
+   {
+       id:id,
+       x:x,
+       y:y,  
+   }
+
+
+   self.draw = function()
+   {  
+        var X = self.x*SETTINGS.globalScaleX-camera.xView;
+        var Y = self.y*SETTINGS.globalScaleY-camera.yView;
+
+        GAME.drawSprite(sprChest, X, Y, 0, 0.4); 
+   }
+
+   GAME.Chest.list[self.id] = self;
+   return self;
+}
+GAME.Chest.list = [];
