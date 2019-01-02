@@ -3,5 +3,17 @@
     "name": "Seas of Pixel",
     "start_url": "/client/index.html",
     "display": "fullscreen",
-    "orientation": "landscape"
+    "orientation": "landscape", 
+    "icons": [
+      {
+        "src": "client/img/icon_64.png",
+        "type": "image/png",
+        "sizes": "64x64"
+      },
+      {
+        "src": "client/img/icon_254.png",
+        "type": "image/png",
+        "sizes": "254x254"
+      }
+    ]
   }
