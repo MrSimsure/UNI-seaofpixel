@@ -6,12 +6,12 @@
     "orientation": "landscape", 
     "icons": [
       {
-        "src": "client/img/icon_192.png",
+        "src": "img/icon_192.png",
         "type": "image/png",
         "sizes": "192x192"
       },
       {
-        "src": "client/img/icon_512.png",
+        "src": "img/icon_512.png",
         "type": "image/png",
         "sizes": "512x512"
       }
