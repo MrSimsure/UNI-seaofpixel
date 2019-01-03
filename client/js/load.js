@@ -8,10 +8,6 @@ sprBall =  GAME.loadSprite("spr_ball");
 
 stripBoat =  GAME.loadStrip("spr_nave",23,40,40);
 
-
-
-
-
 var canvas = document.getElementById("canvas");
 canvas.width = SETTINGS.WINDOW_WIDTH;
 canvas.height = SETTINGS.WINDOW_HEIGHT;
@@ -39,9 +35,9 @@ var joystick  = null;
 // setup an object that represents the room
 room = 
 {
-    width: 3000,
-    height: 3000,
-    map: GAME.Map(3000, 3000)
+    width: 6000,
+    height: 6000,
+    map: GAME.Map(6000, 6000)
 };
 
 
