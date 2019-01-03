@@ -1,19 +1,24 @@
 Player = function(name, id)
 {
-    var self = Entity();
-    self.id = id,
-    self.name = name,
+    var self =
+    {
+        id : id,    
+        x : 500,
+        y : 500,
+        
+        name : name,
 
-    self.pLeft = false,
-    self.pRight = false,
-    self.pUp = false,
-    self.pDown = false,
+        pLeft : false,
+        pRight : false,
+        pUp : false,
+        pDown : false,
 
-    self.speed = 4,
-    self.shoot = false,
-    self.angle = 0
+        speed : 4,
+        shoot : false,
+        angle : 0
+    }
 
-    self.updatePosition = function()
+    self.update = function()
     {  
         if(self.pRight) 
         {
@@ -33,7 +38,7 @@ Player = function(name, id)
             self.x+= lengthdir_x(self.speed,self.angle);   
             self.y+= lengthdir_y(self.speed,self.angle);
         }
-        //if(self.pDown) {self.y += self.speed;}
+   
     }
 
 
@@ -78,7 +83,7 @@ Player.update = function()
     for(var i in Player.list)
     {
         var current = Player.list[i];
-        current.updatePosition();
+        current.update();
          pack.push
         ({
             id : current.id,

@@ -1,22 +1,26 @@
 
 
-Balls = function(x,y,direction)
+Balls = function(x,y,direction,speed)
 {
-    var self = Entity();
+    var self = 
+    {
+        id : Math.random(),
+        x : x,
+        y : y,   
+        spdX : Math.cos(direction/180*Math.PI)*speed,
+        spdY : Math.sin(direction/180*Math.PI)*speed,
 
-    self.x = x;
-    self.y = y;
-    self.id = Math.random();
-    self.speed = 8;
-    self.spdX = Math.cos(direction/180*Math.PI)*self.speed;
-    self.spdY = Math.sin(direction/180*Math.PI)*self.speed;
-
-    self.timer = 0;
+        timer : 0,
+    }
 
 
-    var superUpdate = self.update;
     self.update = function(socketList)
     {
+
+        self.x += self.spdX;
+        self.y += self.spdY;
+
+        
         self.timer += 1 ;
 
         if(self.timer > 100)
@@ -28,8 +32,7 @@ Balls = function(x,y,direction)
             } 
             delete Balls.list[self.id];      
         }
-              
-        superUpdate();
+
     }
 
     Balls.list[self.id] = self;

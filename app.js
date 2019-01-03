@@ -1,5 +1,4 @@
 require("./server/engine.js");
-require("./server/entity.js");
 require("./server/player.js");
 require("./server/ball.js");
 
@@ -48,8 +47,8 @@ io.sockets.on("connection", function(socket)
             {
                 if(current.shoot == false)
                 {
-                    Balls(current.x,current.y,current.angle+90)
-                    Balls(current.x,current.y,current.angle+270)
+                    Balls(current.x,current.y,current.angle+90,8)
+                    Balls(current.x,current.y,current.angle+270,8)
                 }
                 current.shoot = true;
             }
