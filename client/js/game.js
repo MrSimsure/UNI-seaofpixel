@@ -10,7 +10,8 @@ window.SETTINGS =
     WINDOW_HEIGHT : 270,
     onMobile : false,
     globalScaleX:1,
-    globalScaleY:1
+    globalScaleY:1,
+    quality:2,
 }
 
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) 
@@ -39,8 +40,8 @@ SETTINGS.openFullscreen = function()
 
 SETTINGS.setScaleFactor = function()
 {
-  SETTINGS.globalScaleX = (window.innerWidth-20)/480;      
-  SETTINGS.globalScaleY = (window.innerHeight-20)/270;
+  SETTINGS.globalScaleX = (window.innerWidth)/480;      
+  SETTINGS.globalScaleY = (window.innerHeight)/270;
   
   SETTINGS.WINDOW_WIDTH = 480*SETTINGS.globalScaleX;
   SETTINGS.WINDOW_HEIGHT = 270*SETTINGS.globalScaleY;
