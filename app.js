@@ -1,6 +1,132 @@
+
+
 require("./server/engine.js");
-require("./server/player.js");
-require("./server/ball.js");
+
+var GAME = {}
+GAME.playerList = {};
+GAME.ballList = {};
+
+
+Rectangle = function(x, y, w, h)
+{
+    var self =
+    {
+        x : x,
+        y : y,
+        w : x + w,
+        h : y + h,
+    }
+
+    self.set = function(x, y, w, h)
+    {
+        self.x = x;
+        self.y = y;
+        self.w = x + w;
+        self.h = y + h;
+    }
+
+    self.within = function(r) 
+    {
+        return (r.x <= self.x && r.w >= self.w && r.y <= self.y && r.h >= self.h);
+    }       
+
+    self.overlaps = function(r) 
+    {
+        return (self.x < r.w &&  r.x < self.w && self.y < r.h && r.y < self.h);
+    }
+
+    return self;
+}
+
+
+Player = function(name, id)
+{
+    var self =
+    {
+        id : id,    
+        x : 500,
+        y : 500,
+        
+        name : name,
+
+        pLeft : false,
+        pRight : false,
+        pUp : false,
+        pDown : false,
+
+        speed : 4,
+        shoot : false,
+        angle : 0
+    }
+
+    self.update = function()
+    {  
+        if(self.pRight) 
+        {
+            self.angle -= 3; 
+            if(self.angle < 0) 
+            {self.angle = 360;}
+        }
+
+        if(self.pLeft)
+        {
+            self.angle += 3; 
+            if(self.angle > 360) 
+            {self.angle = 0;}
+        }
+        if(self.pUp) 
+        {
+            self.x+= lengthdir_x(self.speed,self.angle);   
+            self.y+= lengthdir_y(self.speed,self.angle);
+        }
+   
+    }
+
+
+    GAME.playerList[id] = self;
+    return self;
+}
+
+
+Balls = function(x,y,direction,speed)
+{
+    var self = 
+    {
+        id : Math.random(),
+        x : x,
+        y : y,   
+        spdX : Math.cos(direction/180*Math.PI)*speed,
+        spdY : Math.sin(direction/180*Math.PI)*speed,
+
+        timer : 0,
+    }
+
+
+    self.update = function()
+    {
+
+        self.x += self.spdX;
+        self.y += self.spdY;
+
+        
+        self.timer += 1 ;
+
+        if(self.timer > 100)
+        {
+            for(var i in socketList)
+            {
+                var current = socketList[i];
+                current.emit("ballEnd", self.id);             
+            } 
+            delete GAME.ballList[self.id];  
+        }
+
+    }
+
+    GAME.ballList[self.id] = self;
+    return self;
+}
+
 
 
 
@@ -15,7 +141,6 @@ server.listen(process.env.PORT || 8080);
 console.log("server started");
 
 var io = require("socket.io")(server,{});
-
 var socketList = {};
 
 
@@ -24,39 +149,57 @@ io.sockets.on("connection", function(socket)
 {
 
         socketList[socket.id] = socket;
+
         socket.emit("connection", socket.id);
-
         console.log("connesso  "+socketList[socket.id].id);
-  
-
-       
 
         //quando ricevi un messaggio dal client
         socket.on("login", function(data)
         {
-            Player.onConnect(socket,data.name);
-        });
+                //AGGIUNGI IL GIOCATORE ALLA LISTA
+                var player = Player(data.name, socket.id);
 
 
-        //quando ricevi un messaggio dal client
-        socket.on("shoot", function(data)
-        {
-            var current =  Player.list[socket.id];
-
-            if(data.state == true)
-            {
-                if(current.shoot == false)
+                //RICEVUTO MESAGGIO DI MOVIMENTO
+                socket.on("keyPress", function(data)
                 {
-                    Balls(current.x,current.y,current.angle+90,8)
-                    Balls(current.x,current.y,current.angle+270,8)
-                }
-                current.shoot = true;
-            }
-            else
-            {
-                current.shoot = false;
-            }
+                    if(data.id == "left")
+                    {player.pLeft = data.state;}
+                
+                    else if(data.id == "right")
+                    {player.pRight = data.state;}
+                
+                    else if(data.id == "up")
+                    {player.pUp = data.state;}
+                
+                    else if(data.id == "down")
+                    {player.pDown = data.state;}
+                });
+
+
+                
+                //RICEVUTO MESSAGGIO DI ATTACCO
+                socket.on("shoot", function(data)
+                {
+                    var current =  GAME.playerList[socket.id];
+
+                    if(data.state == true)
+                    {
+                        if(current.shoot == false)
+                        {
+                            Balls(current.x,current.y,current.angle+90,8)
+                            Balls(current.x,current.y,current.angle+270,8)
+                        }
+                        current.shoot = true;
+                    }
+                    else
+                    {
+                        current.shoot = false;
+                    }
+                });
         });
+
+
 
         //quando un giocatore si disconnette eliminalo dalla lista giocatori
         socket.on("disconnect", function()
@@ -69,7 +212,8 @@ io.sockets.on("connection", function(socket)
             } 
 
             delete socketList[socket.id];
-            Player.onDisconnect(socket);
+            delete GAME.playerList[socket.id];
+
         });
     
 
@@ -77,13 +221,55 @@ io.sockets.on("connection", function(socket)
 
 
 
+updatePlayer = function()
+{
+    var pack = [];
+    for(var i in GAME.playerList)
+    {
+        var current = GAME.playerList[i];
+        current.update();
+            pack.push
+        ({
+            id : current.id,
+            name : current.name,
+            x : current.x,
+            y : current.y,
+            angle: current.angle
+        });
+    }
+    
+    return pack;
+}
+
+updateBall = function()
+{
+    var pack = [];
+    for(var i in GAME.ballList)
+    {
+        var current = GAME.ballList[i];
+        current.update();
+        var current = GAME.ballList[i];
+        if(current != undefined)
+        {
+            pack.push
+            ({
+                id : current.id,
+                x : current.x,
+                y : current.y
+            });
+        }
+    }        
+    return pack;
+}
+
+
 //game loop
 var serverUpdate = function()
 {
         var pack = 
         {
-            players:Player.update(),
-            balls:Balls.update(socketList)
+            players: updatePlayer(),
+            balls: updateBall(),
         }
 
         //invia i dati ad ogni client

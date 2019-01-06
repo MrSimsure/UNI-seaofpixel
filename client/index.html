@@ -256,12 +256,12 @@
 
 
     socket.on('ballEnd',function(data)
-    {
-        delete GAME.Balls.list[data];
+    {   
+        delete GAME.Balls.list[data]    
     });
 
     socket.on('disconnection',function(data)
-    {
+    {  
         delete GAME.Players.list[data];
     });
 
@@ -287,7 +287,7 @@
             }
 
 
-            //aggiorna posizione palle (haha che simpatia vero?)
+            //aggiorna posizione palle 
             for(var i = 0 ; i < data.balls.length; i++)
             {
                 var current = data.balls[i];
