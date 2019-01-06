@@ -30,6 +30,7 @@ Rectangle = function(x, y, w, h)
         return (r.x <= self.x && r.w >= self.w && r.y <= self.y && r.h >= self.h);
     }       
 
+
     self.overlaps = function(r) 
     {
         return (self.x < r.w &&  r.x < self.w && self.y < r.h && r.y < self.h);
@@ -56,7 +57,9 @@ Player = function(name, id)
 
         speed : 4,
         shoot : false,
-        angle : 0
+        angle : 0,
+
+        collider : Rectangle(500-20,500-20,20,20),
     }
 
     self.update = function()
@@ -79,6 +82,9 @@ Player = function(name, id)
             self.x+= lengthdir_x(self.speed,self.angle);   
             self.y+= lengthdir_y(self.speed,self.angle);
         }
+
+
+        self.collider.set(self.x-20, self.y-20, 20, 20)
    
     }
 
@@ -88,7 +94,7 @@ Player = function(name, id)
 }
 
 
-Balls = function(x,y,direction,speed)
+Balls = function(x,y,direction,speed,player)
 {
     var self = 
     {
@@ -99,6 +105,9 @@ Balls = function(x,y,direction,speed)
         spdY : Math.sin(direction/180*Math.PI)*speed,
 
         timer : 0,
+
+        collider : Rectangle(x-8,y-8,8,8),
+        owner : player,
     }
 
 
@@ -108,7 +117,8 @@ Balls = function(x,y,direction,speed)
         self.x += self.spdX;
         self.y += self.spdY;
 
-        
+        self.collider.set(self.x-8, self.y-8, 8, 8)
+
         self.timer += 1 ;
 
         if(self.timer > 100)
@@ -119,6 +129,22 @@ Balls = function(x,y,direction,speed)
                 current.emit("ballEnd", self.id);             
             } 
             delete GAME.ballList[self.id];  
+        }
+
+
+        for(var i in GAME.playerList)
+        {
+            var current = GAME.playerList[i];
+            if(self.owner != i && self.collider.overlaps(current.collider))
+            {
+                for(var i in socketList)
+                {
+                    var current = socketList[i];
+                    current.emit("ballEnd", self.id);             
+                } 
+                delete GAME.ballList[self.id];  
+                break;
+            }
         }
 
     }
@@ -187,8 +213,8 @@ io.sockets.on("connection", function(socket)
                     {
                         if(current.shoot == false)
                         {
-                            Balls(current.x,current.y,current.angle+90,8)
-                            Balls(current.x,current.y,current.angle+270,8)
+                            Balls(current.x,current.y,current.angle+90,8, socket.id)
+                            Balls(current.x,current.y,current.angle+270,8, socket.id)
                         }
                         current.shoot = true;
                     }
@@ -262,14 +288,22 @@ updateBall = function()
     return pack;
 }
 
-
+var fps;
+var lastLoop;
 //game loop
 var serverUpdate = function()
 {
+
+    var thisLoop = new Date();
+    if(Math.random() > 0.8)
+    {fps = Math.floor(1000 / (thisLoop - lastLoop));}
+    lastLoop = thisLoop;
+
         var pack = 
         {
             players: updatePlayer(),
             balls: updateBall(),
+            fps:fps,
         }
 
         //invia i dati ad ogni client

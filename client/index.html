@@ -47,7 +47,8 @@
 <script>
 
     var moving = false;
-    var fps;
+    var fpsClient;
+    var fpsServer;
 
 
 
@@ -155,7 +156,7 @@
             //aggiorna fps
             var thisLoop = new Date();
             if(Math.random() > 0.8)
-            {fps = Math.floor(1000 / (thisLoop - lastLoop));}
+            {fpsClient = Math.floor(1000 / (thisLoop - lastLoop));}
             lastLoop = thisLoop;
 
 
@@ -237,8 +238,9 @@
             }
 
             //disegna fps
-            ctx.font = (10*SETTINGS.globalScaleX)+"px Georgia";
-            ctx.fillText("FPS:"+fps, 10,  35);
+            ctx.font = (8*SETTINGS.globalScaleX)+"px Georgia";
+            ctx.fillText("FPS C:"+fpsClient, 10,  35);
+            ctx.fillText("FPS S:"+fpsServer, 10,  75);
     }
 
 
@@ -268,7 +270,7 @@
 
     socket.on('newPositions',function(data)
     {
-           
+           fpsServer = data.fps;
             //aggiorna posizione giocatori
             for(var i = 0 ; i < data.players.length; i++)
             {
