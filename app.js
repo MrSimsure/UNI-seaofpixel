@@ -40,13 +40,13 @@ Rectangle = function(x, y, w, h)
 }
 
 
-Player = function(name, id)
+Player = function(name, id, x, y)
 {
     var self =
     {
         id : id,    
-        x : 500,
-        y : 500,
+        x : x,
+        y : y,
         
         name : name,
 
@@ -59,7 +59,7 @@ Player = function(name, id)
         shoot : false,
         angle : 0,
 
-        collider : Rectangle(500-20,500-20,20,20),
+        collider : Rectangle(x-20,y-20,20, 20),
     }
 
     self.update = function()
@@ -183,7 +183,7 @@ io.sockets.on("connection", function(socket)
         socket.on("login", function(data)
         {
                 //AGGIUNGI IL GIOCATORE ALLA LISTA
-                var player = Player(data.name, socket.id);
+                var player = Player(data.name, socket.id, 500,500);
 
 
                 //RICEVUTO MESAGGIO DI MOVIMENTO
@@ -254,7 +254,7 @@ updatePlayer = function()
     {
         var current = GAME.playerList[i];
         current.update();
-            pack.push
+        pack.push
         ({
             id : current.id,
             name : current.name,
