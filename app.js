@@ -140,7 +140,8 @@ Balls = function(x,y,direction,speed,player)
                 for(var i in socketList)
                 {
                     var current = socketList[i];
-                    current.emit("ballEnd", self.id);             
+                    current.emit("ballEnd", self.id);         
+                    current.emit("hit", pack={x:self.x, y:self.y});       
                 } 
                 delete GAME.ballList[self.id];  
                 break;

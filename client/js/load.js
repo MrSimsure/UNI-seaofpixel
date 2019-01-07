@@ -1,21 +1,21 @@
 
 
-sprPlayer= GAME.loadSprite("spr_player");
-sprWater = GAME.loadSprite("spr_water");
-sprScia =  GAME.loadSprite("spr_scia");
-sprOnda =  GAME.loadSprite("spr_onda");
-sprBall =  GAME.loadSprite("spr_ball");
-
-stripBoat =  GAME.loadStrip("spr_nave",23,40,40);
+sprPlayer= GAME.loadImage("spr_player");
+sprWater = GAME.loadImage("spr_water");
+sprScia =  GAME.loadImage("spr_scia");
+sprOnda =  GAME.loadImage("spr_onda");
+sprBall =  GAME.loadImage("spr_ball");
+sprBoat =  GAME.loadImage("spr_nave");
+sprExplosion = GAME.loadImage("spr_explosion")
 
 var canvas = document.getElementById("canvas");
+var canvasShader = document.getElementById("canvasShader");
 canvas.width = SETTINGS.WINDOW_WIDTH;
 canvas.height = SETTINGS.WINDOW_HEIGHT;
 
 
 var ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false;
-
 
 
 
@@ -52,12 +52,12 @@ room =
     //map: GAME.Map(4000, 4000)
 };
 
-
+/*
 sprWater.onload = function()  
 {
     room.map.generate();
 }
-
+*/
 camera = new  GAME.Camera(0, 0, canvas, room);   
 
 

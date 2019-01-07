@@ -1,44 +1,39 @@
 
 <link rel="manifest" href="/client/manifest.json">
 <meta name="viewport" content="minimal-ui, width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0">
-
-
 <style> section { position: absolute; top:0; bottom:0; left:0; right:0;overflow: hidden;} </style>
 
-<body  style = "margin:0; overflow-y:hidden;">
-<div id="page_login">
 
-    Username: <input id="login_username" type="text"></input>
-    <button id="login_button">Logga</button>
+<body  id="container" style ="margin:0; overflow-x:hidden; overflow-y:hidden;">
 
-    <div>
-        <input type="checkbox" id="Qlow" name="qualiy low" >
-        Low Quality
-    </div>
-    <div>
-        <input type="checkbox" id="Qmed" name="qualiy medium" >
-        Medium Quality
-    </div>
-    <div>
-        <input type="checkbox" id="Qhig" name="qualiy high" >
-        High Quality
-    </div>
-    <div>
-        <input type="checkbox" id="Qins" name="qualiy insane" >
-        Destroy my PC Quality
-    </div>
-      
+<div id="page_login"  >
+
+        Username: <input id="login_username" type="text"></input>
+        <button id="login_button">Logga</button>
+
+        <div><input type="checkbox" id="Qlow" name="qualiy low">    Low Quality             </div>
+        <div><input type="checkbox" id="Qmed" name="qualiy medium"> Medium Quality          </div>
+        <div><input type="checkbox" id="Qhig" name="qualiy high">   High Quality            </div>
+        <div><input type="checkbox" id="Qins" name="qualiy insane"> Destroy my PC Quality   </div>
 
 </div>
+
+
  <div id="page_game"  style="display:none; position:relative;  z-index:0">
-    <canvas id="canvas" width="480" height="270""></canvas>
+
+    <canvas id="canvas" style="  z-index: 1; position:absolute;" width="480" height="270""></canvas>
+    <!--<canvas id="canvasShader" style="z-index: 0; position:absolute;"  data-fragment-url="client/cells.frag" width="480" height="270"></canvas>-->
+
 </div>
+
 
 <script src="/client/js/engine.js"></script>
 
+<script type="text/javascript" src="https://rawgit.com/patriciogonzalezvivo/glslCanvas/master/dist/GlslCanvas.js"></script>
 <script src="/client/js/virtualjoystick.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 
+<script src="/client/js/setting.js"></script>
 <script src="/client/js/game.js"></script>
 <script src="/client/js/load.js"></script>
 
@@ -48,8 +43,7 @@
     var moving = false;
     var fpsClient;
     var fpsServer;
-
-
+    //var shad = new GlslCanvas(canvasShader);
 
     //CONNESSIONE
     socket.on('connection',function(data)
@@ -153,28 +147,31 @@
     update = function()
     {
             //aggiorna fps
-            var thisLoop = new Date();
+            let thisLoop = new Date();
             if(Math.random() > 0.8)
             {fpsClient = Math.floor(1000 / (thisLoop - lastLoop));}
             lastLoop = thisLoop;
 
 
             //trova il giocatore appartenente a questo client
-            for(var i in  GAME.Players.list)
+            for(let i in  GAME.Players.list)
             {
-                var current =  GAME.Players.list[i];
+                let current =  GAME.Players.list[i];
 
                 GAME.Scia(current.x*SETTINGS.globalScaleX,  current.y*SETTINGS.globalScaleY);
         
                 if(current.id == id)
                 {
                     //GAME.Onda( (current.x*SETTINGS.globalScaleX)+random_range(-2000,2000) , (current.y*SETTINGS.globalScaleY)+random_range(-2000,2000));
-                    for(var i=0; i<SETTINGS.quality; i++)
+                    for(let i=0; i<SETTINGS.quality; i++)
                     {
+                        //GAME.Explosion(Math.random()*room.width*SETTINGS.globalScaleX, Math.random()*room.height*SETTINGS.globalScaleY);
                         GAME.Onda(Math.random()*room.width*SETTINGS.globalScaleX, Math.random()*room.height*SETTINGS.globalScaleY);
                     } 
 
                     camera.update(current.x*SETTINGS.globalScaleX, current.y*SETTINGS.globalScaleY);
+                    //shad.setUniform("camera_x",camera.xView); 
+                    //shad.setUniform("camera_y",camera.yView); 
                 }
             }
 
@@ -206,33 +203,43 @@
             ctx.fillStyle = "#32479C";
             ctx.fillRect(0,0,canvas.width,canvas.height);
             ctx.fillStyle = "#000000";
+
+
             //aggiorna e disegna le scie
-            for(var i=  GAME.Onda.list.length-1 ; i >= 0; i--)
+            for(let i = GAME.Onda.list.length-1 ; i >= 0; i--)
             {       
-                var current =  GAME.Onda.list[i];
+                let current =  GAME.Onda.list[i];
                 current.update();
                 current.draw();
             }
 
             //aggiorna e disegna le onde
-            for(var i=  GAME.Scia.list.length-1 ; i >= 0; i--)
+            for(let i = GAME.Scia.list.length-1 ; i >= 0; i--)
             {       
-                var current =  GAME.Scia.list[i];
+                let current =  GAME.Scia.list[i];
                 current.update();
                 current.draw();
             }
 
             //disegna tutti i giocatori
-            for(var i in  GAME.Players.list)
+            for(let i in  GAME.Players.list)
             {
-                var current =  GAME.Players.list[i];
+                let current =  GAME.Players.list[i];
+                current.draw();
+            }
+            
+            //disegna palle di cannone
+            for(let i in  GAME.Balls.list)
+            {
+                let current =  GAME.Balls.list[i];
                 current.draw();
             }
 
             //disegna palle di cannone
-            for(var i in  GAME.Balls.list)
+            for(let i in  GAME.Explosion.list)
             {
-                var current =  GAME.Balls.list[i];
+                let current =  GAME.Explosion.list[i];
+                current.update();
                 current.draw();
             }
 
@@ -254,7 +261,12 @@
 
     setInterval(clientUpdate ,1000/30); 
     
-
+    socket.on('hit',function(data)
+    {   
+        let range = 20
+        for(let i=0; i<8; i++)
+        {GAME.Explosion(Math.random(),data.x+random_range(-range,range),data.y+random_range(-range,range))}
+    });
 
     socket.on('ballEnd',function(data)
     {   
@@ -271,9 +283,9 @@
     {
            fpsServer = data.fps;
             //aggiorna posizione giocatori
-            for(var i = 0 ; i < data.players.length; i++)
+            for(let i = 0 ; i < data.players.length; i++)
             {
-                var current = data.players[i];
+                let current = data.players[i];
 
                 if(GAME.Players.list[current.id] == undefined)
                 {          
@@ -289,9 +301,9 @@
 
 
             //aggiorna posizione palle 
-            for(var i = 0 ; i < data.balls.length; i++)
+            for(let i = 0 ; i < data.balls.length; i++)
             {
-                var current = data.balls[i];
+                let current = data.balls[i];
 
                 if(GAME.Balls.list[current.id] == undefined)
                 {          
