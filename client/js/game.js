@@ -373,7 +373,6 @@ GAME.Scia.list = [];
 
 
 
-
 GAME.Explosion = function(id,x,y)
 {
    var self = 
@@ -404,3 +403,35 @@ GAME.Explosion = function(id,x,y)
    return self;
 }
 GAME.Explosion.list = [];
+
+
+GAME.Splash = function(id,x,y)
+{
+   var self = 
+   {
+       id:id,
+       x:x,
+       y:y,  
+       sprite: GAME.sprite(sprSplash,10,34,34,1.4)
+   }
+
+   self.update = function()
+   {
+        if(self.sprite.frameIndex >= self.sprite.frameNum-1)
+        {
+            delete GAME.Splash.list[self.id]
+        }
+   }
+
+   self.draw = function()
+   {  
+        let X = self.x*SETTINGS.globalScaleX-camera.xView;
+        let Y = self.y*SETTINGS.globalScaleY-camera.yView;
+
+        GAME.drawSprite(self.sprite, self.sprite.frameIndex , X, Y, 0, 1); 
+   }
+
+   GAME.Splash.list[self.id] = self;
+   return self;
+}
+GAME.Splash.list = [];

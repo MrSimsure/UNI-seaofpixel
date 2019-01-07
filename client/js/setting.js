@@ -1,9 +1,9 @@
 const TO_RADIANS = Math.PI/180;
-333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
+
 window.SETTINGS =
 {
-    WINDOW_WIDTH : 480,
-    WINDOW_HEIGHT : 270,
+    WINDOW_WIDTH : 640,
+    WINDOW_HEIGHT : 480,
     onMobile : false,
     globalScaleX:1,
     globalScaleY:1,
@@ -40,11 +40,11 @@ SETTINGS.setScaleFactor = function()
   else
   {var W = window.innerWidth;   var H = window.innerHeight}
 
-  SETTINGS.globalScaleX = (W)/480;      
-  SETTINGS.globalScaleY = (H)/270;
+  SETTINGS.globalScaleX = (W)/SETTINGS.WINDOW_WIDTH;      
+  SETTINGS.globalScaleY = (H)/SETTINGS.WINDOW_HEIGHT;
   
-  SETTINGS.WINDOW_WIDTH = 480*SETTINGS.globalScaleX;
-  SETTINGS.WINDOW_HEIGHT = 270*SETTINGS.globalScaleY;
+  SETTINGS.WINDOW_WIDTH = SETTINGS.WINDOW_WIDTH*SETTINGS.globalScaleX;
+  SETTINGS.WINDOW_HEIGHT = SETTINGS.WINDOW_HEIGHT*SETTINGS.globalScaleY;
 }
 
 
@@ -52,6 +52,7 @@ SETTINGS.canvasResize = function()
 {
     canvas.width = SETTINGS.WINDOW_WIDTH;
     canvas.height = SETTINGS.WINDOW_HEIGHT; 
+    console.log(canvas.width+"  "+canvas.height)
     //canvasShader.width = SETTINGS.WINDOW_WIDTH;
     //canvasShader.height = SETTINGS.WINDOW_HEIGHT; 
 

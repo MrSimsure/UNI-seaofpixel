@@ -7,6 +7,8 @@ sprOnda =  GAME.loadImage("spr_onda");
 sprBall =  GAME.loadImage("spr_ball");
 sprBoat =  GAME.loadImage("spr_nave");
 sprExplosion = GAME.loadImage("spr_explosion")
+sprSplash = GAME.loadImage("spr_splash")
+
 
 var canvas = document.getElementById("canvas");
 var canvasShader = document.getElementById("canvasShader");

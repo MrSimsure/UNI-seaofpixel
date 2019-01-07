@@ -5,7 +5,7 @@ require("./server/engine.js");
 var GAME = {}
 GAME.playerList = {};
 GAME.ballList = {};
-
+GAME.playerCollision = true;
 
 Rectangle = function(x, y, w, h)
 {
@@ -79,8 +79,36 @@ Player = function(name, id, x, y)
         }
         if(self.pUp) 
         {
-            self.x+= lengthdir_x(self.speed,self.angle);   
-            self.y+= lengthdir_y(self.speed,self.angle);
+            if(GAME.playerCollision)
+            {
+                let original = self.collider;
+                let tempX = self.x+lengthdir_x(self.speed,self.angle)
+                let tempY = self.y+lengthdir_y(self.speed,self.angle)
+
+                self.collider.set(tempX-20,tempY-20,20, 20)
+
+                for(var i in GAME.playerList)
+                {
+                    var current = GAME.playerList[i];
+                    if(self.id != i && self.collider.overlaps(current.collider))
+                    {
+                        console.log("collision")
+                        self.x -= lengthdir_x(self.speed,self.angle)
+                        self.y -= lengthdir_y(self.speed,self.angle)
+                    }
+                    else
+                    {
+                        self.x = tempX;
+                        self.y = tempY;
+                        self.collider = original;
+                    }
+                }
+            }
+            else
+            {
+                self.x += lengthdir_x(self.speed,self.angle);   
+                self.y += lengthdir_y(self.speed,self.angle);
+            }
         }
 
 

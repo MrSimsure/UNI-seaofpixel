@@ -243,6 +243,14 @@
                 current.draw();
             }
 
+            //disegna palle di cannone
+            for(let i in  GAME.Splash.list)
+            {
+                let current =  GAME.Splash.list[i];
+                current.update();
+                current.draw();
+            }
+
             //disegna fps
             ctx.font = (8*SETTINGS.globalScaleX)+"px Georgia";
             ctx.fillText("FPS C:"+fpsClient, 10,  35);
@@ -255,7 +263,6 @@
     {
         update();
         draw();
-
     }
 
 
@@ -270,6 +277,7 @@
 
     socket.on('ballEnd',function(data)
     {   
+        GAME.Splash(Math.random(),GAME.Balls.list[data].x,GAME.Balls.list[data].y)
         delete GAME.Balls.list[data]    
     });
 
