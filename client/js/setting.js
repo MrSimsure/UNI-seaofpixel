@@ -20,7 +20,7 @@ else
 SETTINGS.openFullscreen = function() 
 {
     window.scrollTo(0,1);
-    var elem = document.documentElement;
+    let elem = document.documentElement;
 
   if (elem.requestFullscreen) 
   {elem.requestFullscreen();} 
@@ -36,9 +36,9 @@ SETTINGS.openFullscreen = function()
 SETTINGS.setScaleFactor = function()
 {
   if(window.innerHeight > window.innerWidth)
-  {var W = window.innerHeight;   var H = window.innerWidth}
+  {let W = window.innerHeight;   let H = window.innerWidth}
   else
-  {var W = window.innerWidth;   var H = window.innerHeight}
+  {let W = window.innerWidth;   let H = window.innerHeight}
 
   SETTINGS.globalScaleX = (W)/SETTINGS.WINDOW_WIDTH;      
   SETTINGS.globalScaleY = (H)/SETTINGS.WINDOW_HEIGHT;
@@ -52,7 +52,7 @@ SETTINGS.canvasResize = function()
 {
     canvas.width = SETTINGS.WINDOW_WIDTH;
     canvas.height = SETTINGS.WINDOW_HEIGHT; 
-    console.log(canvas.width+"  "+canvas.height)
+
     //canvasShader.width = SETTINGS.WINDOW_WIDTH;
     //canvasShader.height = SETTINGS.WINDOW_HEIGHT; 
 

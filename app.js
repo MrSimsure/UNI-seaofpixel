@@ -92,7 +92,6 @@ Player = function(name, id, x, y)
                     var current = GAME.playerList[i];
                     if(self.id != i && self.collider.overlaps(current.collider))
                     {
-                        console.log("collision")
                         self.x -= lengthdir_x(self.speed,self.angle)
                         self.y -= lengthdir_y(self.speed,self.angle)
                     }

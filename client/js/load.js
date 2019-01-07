@@ -1,20 +1,19 @@
 
+LOADER = {}
 
-sprPlayer= GAME.loadImage("spr_player");
-sprWater = GAME.loadImage("spr_water");
-sprScia =  GAME.loadImage("spr_scia");
-sprOnda =  GAME.loadImage("spr_onda");
-sprBall =  GAME.loadImage("spr_ball");
-sprBoat =  GAME.loadImage("spr_nave");
-sprExplosion = GAME.loadImage("spr_explosion")
-sprSplash = GAME.loadImage("spr_splash")
+LOADER.sprPlayer= GAME.loadImage("spr_player");
+LOADER.sprWater = GAME.loadImage("spr_water");
+LOADER.sprScia =  GAME.loadImage("spr_scia");
+LOADER.sprOnda =  GAME.loadImage("spr_onda");
+LOADER.sprBall =  GAME.loadImage("spr_ball");
+LOADER.sprBoat =  GAME.loadImage("spr_nave");
+LOADER.sprExplosion = GAME.loadImage("spr_explosion")
+LOADER.sprSplash = GAME.loadImage("spr_splash")
+
 
 
 var canvas = document.getElementById("canvas");
-var canvasShader = document.getElementById("canvasShader");
-canvas.width = SETTINGS.WINDOW_WIDTH;
-canvas.height = SETTINGS.WINDOW_HEIGHT;
-
+//var canvasShader = document.getElementById("canvasShader");
 
 var ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false;
@@ -41,7 +40,6 @@ else
 //connettiti al server
 var socket = io();
 var id = 0;
-var PlayersData = {};
 var joystick  = null;
 
 //window.onload = function()
@@ -54,12 +52,7 @@ room =
     //map: GAME.Map(4000, 4000)
 };
 
-/*
-sprWater.onload = function()  
-{
-    room.map.generate();
-}
-*/
+
 camera = new  GAME.Camera(0, 0, canvas, room);   
 
 

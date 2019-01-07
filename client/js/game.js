@@ -232,7 +232,7 @@ GAME.Players = function(id,x,y,name,angle)
        y:y,
        name:name,
        angle:angle,
-       sprite: GAME.sprite(sprBoat,23,40,40,0)
+       sprite: GAME.sprite(LOADER.sprBoat,23,40,40,0)
    }
 
 
@@ -266,7 +266,7 @@ GAME.Balls = function(id,x,y)
        id:id,
        x:x,
        y:y,  
-       sprite: GAME.sprite(sprBall,1,16,16,0)
+       sprite: GAME.sprite(LOADER.sprBall,1,16,16,0)
    }
 
 
@@ -293,7 +293,7 @@ GAME.Scia = function(x,y)
        x:x,
        y:y,
        size:1,
-       sprite:GAME.sprite(sprScia,1,16,16,0)
+       sprite:GAME.sprite(LOADER.sprScia,1,16,16,0)
    }
 
    
@@ -333,7 +333,7 @@ GAME.Scia.list = [];
         maxSize: 1,
         size:0,
         speed : Math.random()*2,
-        sprite:GAME.sprite(sprOnda,1,64,64,0)
+        sprite:GAME.sprite(LOADER.sprOnda,1,64,64,0)
     }
  
     
@@ -380,7 +380,7 @@ GAME.Explosion = function(id,x,y)
        id:id,
        x:x,
        y:y,  
-       sprite: GAME.sprite(sprExplosion,10,34,34,1.4+random_range(-1.5,1.5))
+       sprite: GAME.sprite(LOADER.sprExplosion,10,34,34,1.4+random_range(-1.5,1.5))
    }
 
    self.update = function()
@@ -412,7 +412,7 @@ GAME.Splash = function(id,x,y)
        id:id,
        x:x,
        y:y,  
-       sprite: GAME.sprite(sprSplash,10,34,34,1.4)
+       sprite: GAME.sprite(LOADER.sprSplash,10,34,34,1.4)
    }
 
    self.update = function()
