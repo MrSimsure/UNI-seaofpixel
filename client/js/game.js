@@ -302,10 +302,8 @@ GAME.Scia = function(x,y)
        self.size -= 0.07;
        if(self.size <= 0.1)
        {
-            let index = GAME.Scia.list.indexOf(self);
-            GAME.Scia.list.splice(index,1);
+            delete GAME.Scia.list[self.num] 
        }
-       return "";
        
    }
 
@@ -346,8 +344,7 @@ GAME.Scia.list = [];
             self.size -= 0.01;
             if(self.size <= 0)
             {
-                let index = GAME.Onda.list.indexOf(self);
-                GAME.Onda.list.splice(index,1);
+                delete  GAME.Onda.list[self.num];
             }
         }
         else
@@ -380,7 +377,7 @@ GAME.Explosion = function(id,x,y)
        id:id,
        x:x,
        y:y,  
-       sprite: GAME.sprite(LOADER.sprExplosion,10,34,34,1.4+random_range(-1.5,1.5))
+       sprite: GAME.sprite(LOADER.sprExplosion,10,34,34,1.4+ENGINE.random_range(-1.5,1.5))
    }
 
    self.update = function()
