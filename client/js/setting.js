@@ -35,16 +35,18 @@ SETTINGS.openFullscreen = function()
 
 SETTINGS.setScaleFactor = function()
 {
-  if(window.innerHeight > window.innerWidth)
-  {let W = window.innerHeight;   let H = window.innerWidth}
-  else
-  {let W = window.innerWidth;   let H = window.innerHeight}
+    let W,H;
 
-  SETTINGS.globalScaleX = (W)/SETTINGS.WINDOW_WIDTH;      
-  SETTINGS.globalScaleY = (H)/SETTINGS.WINDOW_HEIGHT;
-  
-  SETTINGS.WINDOW_WIDTH = SETTINGS.WINDOW_WIDTH*SETTINGS.globalScaleX;
-  SETTINGS.WINDOW_HEIGHT = SETTINGS.WINDOW_HEIGHT*SETTINGS.globalScaleY;
+    if(window.innerHeight > window.innerWidth)
+    { W = window.innerHeight;    H = window.innerWidth}
+    else
+    { W = window.innerWidth;    H = window.innerHeight}
+
+    SETTINGS.globalScaleX = (W)/SETTINGS.WINDOW_WIDTH;      
+    SETTINGS.globalScaleY = (H)/SETTINGS.WINDOW_HEIGHT;
+    
+    SETTINGS.WINDOW_WIDTH = SETTINGS.WINDOW_WIDTH*SETTINGS.globalScaleX;
+    SETTINGS.WINDOW_HEIGHT = SETTINGS.WINDOW_HEIGHT*SETTINGS.globalScaleY;
 }
 
 

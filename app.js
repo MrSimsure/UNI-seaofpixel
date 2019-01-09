@@ -1,6 +1,7 @@
 
 
 require("./server/engine.js");
+require("./server/database.js")
 
 var GAME = {}
 GAME.playerList = {};
@@ -182,8 +183,7 @@ Balls = function(x,y,direction,speed,player)
 }
 
 
-
-
+//EXPRESS////////////////////////////////////////////////////
 var express = require("express");
 var app = express();
 var server = require("http").Server(app);
@@ -194,8 +194,13 @@ server.listen(process.env.PORT || 8080);
 
 console.log("server started");
 
+//SOCKET////////////////////////////////////////////////////
 var io = require("socket.io")(server,{});
 var socketList = {};
+
+
+
+DB.updatePoints("filippo",200)
 
 
 //quando viene eseguita una connessione al socket

@@ -302,7 +302,9 @@ GAME.Scia = function(x,y)
        self.size -= 0.07;
        if(self.size <= 0.1)
        {
-            delete GAME.Scia.list[self.num] 
+        let index = GAME.Scia.list.indexOf(self);
+        GAME.Scia.list.splice(index,1);
+
        }
        
    }
@@ -344,7 +346,9 @@ GAME.Scia.list = [];
             self.size -= 0.01;
             if(self.size <= 0)
             {
-                delete  GAME.Onda.list[self.num];
+                let index = GAME.Onda.list.indexOf(self);
+                GAME.Onda.list.splice(index,1);
+  
             }
         }
         else
