@@ -13,7 +13,6 @@ LOADER.sprSplash = GAME.loadImage("spr_splash")
 
 
 var canvas = document.getElementById("canvas");
-//var canvasShader = document.getElementById("canvasShader");
 
 var ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false;
