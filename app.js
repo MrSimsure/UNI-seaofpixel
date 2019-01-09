@@ -188,6 +188,8 @@ var express = require("express");
 var app = express();
 var server = require("http").Server(app);
 
+//app.use(express.static("client"));
+
 app.get("/", function(req, res)  { res.sendFile(__dirname + "/client/index.html");});   
 app.use("/client", express.static(__dirname + "/client"));
 server.listen(process.env.PORT || 8080);
@@ -198,9 +200,6 @@ console.log("server started");
 var io = require("socket.io")(server,{});
 var socketList = {};
 
-
-
-DB.updatePoints("filippo",200)
 
 
 //quando viene eseguita una connessione al socket

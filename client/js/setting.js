@@ -53,10 +53,7 @@ SETTINGS.setScaleFactor = function()
 SETTINGS.canvasResize = function()
 {
     canvas.width = SETTINGS.WINDOW_WIDTH;
-    canvas.height = SETTINGS.WINDOW_HEIGHT; 
-
-    //canvasShader.width = SETTINGS.WINDOW_WIDTH;
-    //canvasShader.height = SETTINGS.WINDOW_HEIGHT; 
+    canvas.height = SETTINGS.WINDOW_HEIGHT;  
 
     ctx.imageSmoothingEnabled = false;
 
