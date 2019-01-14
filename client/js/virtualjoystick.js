@@ -264,7 +264,7 @@ VirtualJoystick.prototype._onTouchStart	= function(event)
 	var y		= touch.pageY;
 
 
-	if(point_distance(this._baseX,this._baseY, touch.pageX,touch.pageY) < 100)
+	if(ENGINE.point_distance(this._baseX,this._baseY, touch.pageX,touch.pageY) < 100)
 	{return this._onDown(x, y)}
 	else
 	{return null}

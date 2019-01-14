@@ -232,7 +232,8 @@ GAME.Players = function(id,x,y,name,angle)
        y:y,
        name:name,
        angle:angle,
-       sprite: GAME.sprite(LOADER.sprBoat,23,40,40,0)
+       sprite: GAME.sprite(LOADER.sprBoat,23,40,40,0),
+       life:0,
    }
 
 
@@ -247,8 +248,17 @@ GAME.Players = function(id,x,y,name,angle)
             GAME.drawSprite(self.sprite, n, X,  Y-SETTINGS.globalScaleY*n, self.angle, 1);
         }
 
-        ctx.font = (20*SETTINGS.globalScaleX)+"px Georgia";
-        ctx.fillText(self.name, X-(self.name.length*8),  Y-64);
+        ctx.fillStyle = "black";
+        ctx.fillRect(X-50,Y-64,100,5);
+          
+        ctx.fillStyle = "green";
+        ctx.fillRect(X-50,Y-64,self.life,5);
+        
+        ctx.fillStyle = "black";
+        ctx.textAlign = "center";
+        ctx.font = (10*SETTINGS.globalScaleX)+"px Georgia";
+        ctx.fillText(self.name, X,  Y-75);
+        ctx.textAlign = "left";
    }
 
    GAME.Players.list[self.id] = self;
@@ -436,3 +446,29 @@ GAME.Splash = function(id,x,y)
    return self;
 }
 GAME.Splash.list = [];
+
+
+
+///BALL///////
+GAME.Chest = function(id,x,y)
+{
+   var self = 
+   {
+       id:id,
+       x:x,
+       y:y,  
+       sprite: GAME.sprite(LOADER.sprBall,1,16,16,0)
+   }
+
+   self.draw = function()
+   {  
+        let X = self.x*SETTINGS.globalScaleX-camera.xView;
+        let Y = self.y*SETTINGS.globalScaleY-camera.yView;
+
+        GAME.drawSprite(self.sprite, 0, X,  Y, 0, 0.4); 
+   }
+
+   GAME.Chest.list[self.id] = self;
+   return self;
+}
+GAME.Chest.list = [];

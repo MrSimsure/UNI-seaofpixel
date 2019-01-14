@@ -178,13 +178,10 @@ if ('serviceWorker' in navigator)
                     //GAME.Onda( (current.x*SETTINGS.globalScaleX)+ENGINE.random_range(-2000,2000) , (current.y*SETTINGS.globalScaleY)+ENGINE.random_range(-2000,2000));
                     for(let i=0; i<SETTINGS.quality; i++)
                     {
-                        //GAME.Explosion(Math.random()*room.width*SETTINGS.globalScaleX, Math.random()*room.height*SETTINGS.globalScaleY);
                         GAME.Onda(Math.random()*room.width*SETTINGS.globalScaleX, Math.random()*room.height*SETTINGS.globalScaleY);
                     } 
 
                     camera.update(current.x*SETTINGS.globalScaleX, current.y*SETTINGS.globalScaleY);
-                    //shad.setUniform("camera_x",camera.xView); 
-                    //shad.setUniform("camera_y",camera.yView); 
                 }
             }
 
@@ -265,6 +262,7 @@ if ('serviceWorker' in navigator)
             }
 
             //disegna fps
+            ctx.fillStyle = "black";
             ctx.font = (8*SETTINGS.globalScaleX)+"px Georgia";
             ctx.fillText("FPS C:"+fpsClient, 10,  35);
             ctx.fillText("FPS S:"+fpsServer, 10,  75);
@@ -317,6 +315,7 @@ if ('serviceWorker' in navigator)
                     GAME.Players.list[current.id].x = current.x;
                     GAME.Players.list[current.id].y = current.y;
                     GAME.Players.list[current.id].angle = current.angle;
+                    GAME.Players.list[current.id].life = current.life;
                 }
             }
 

@@ -6,6 +6,7 @@ require("./server/database.js")
 var GAME = {}
 GAME.playerList = {};
 GAME.ballList = {};
+GAME.chestList = {};
 GAME.playerCollision = true;
 
 Rectangle = function(x, y, w, h)
@@ -60,11 +61,19 @@ Player = function(name, id, x, y)
         shoot : false,
         angle : 0,
 
+        life : 100,
         collider : Rectangle(x-20,y-20,20, 20),
     }
 
     self.update = function()
     {  
+        if(self.life == 0)
+        {
+            self.x = 500;
+            self.y = 500;
+            self.life = 100;
+        }
+
         if(self.pRight) 
         {
             self.angle -= 3; 
@@ -78,6 +87,7 @@ Player = function(name, id, x, y)
             if(self.angle > 360) 
             {self.angle = 0;}
         }
+
         if(self.pUp) 
         {
             if(GAME.playerCollision)
@@ -165,6 +175,8 @@ Balls = function(x,y,direction,speed,player)
             var current = GAME.playerList[i];
             if(self.owner != i && self.collider.overlaps(current.collider))
             {
+                current.life -= 10;
+
                 for(var i in socketList)
                 {
                     var current = socketList[i];
@@ -179,6 +191,21 @@ Balls = function(x,y,direction,speed,player)
     }
 
     GAME.ballList[self.id] = self;
+    return self;
+}
+
+
+Chest = function(x,y)
+{
+    var self = 
+    {
+        id : Math.random(),
+        x : x,
+        y : y,   
+        collider : Rectangle(x-8,y-8,8,8),
+    }
+
+    GAME.chestList[self.id] = self;
     return self;
 }
 
@@ -292,7 +319,8 @@ updatePlayer = function()
             name : current.name,
             x : current.x,
             y : current.y,
-            angle: current.angle
+            angle: current.angle,
+            life: current.life,
         });
     }
     
