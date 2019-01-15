@@ -9,7 +9,7 @@ LOADER.sprBall =  GAME.loadImage("spr_ball");
 LOADER.sprBoat =  GAME.loadImage("spr_nave");
 LOADER.sprExplosion = GAME.loadImage("spr_explosion")
 LOADER.sprSplash = GAME.loadImage("spr_splash")
-
+LOADER.sprChest = GAME.loadImage("spr_chest")
 
 
 var canvas = document.getElementById("canvas");

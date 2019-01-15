@@ -110,11 +110,11 @@ if ('serviceWorker' in navigator)
     document.onkeydown = function(event)
     {
         if(event.keyCode == 68) //d
-        { socket.emit("keyPress", {id:"right", state:true}); }
+        { socket.emit("keyPress", {id:"left", state:true}); }
          if(event.keyCode == 83) //s
         { socket.emit("keyPress", {id:"down", state:true}); }
          if(event.keyCode == 65) //a
-        { socket.emit("keyPress", {id:"left", state:true}); }
+        { socket.emit("keyPress", {id:"right", state:true}); }
          if(event.keyCode == 87) //w
         { socket.emit("keyPress", {id:"up", state:true}); moving = true;}
         if(event.keyCode == 32) //space
@@ -124,11 +124,11 @@ if ('serviceWorker' in navigator)
     document.onkeyup = function(event)
     {
         if(event.keyCode == 68) //d
-        { socket.emit("keyPress", {id:"right", state:false}); }
+        { socket.emit("keyPress", {id:"left", state:false}); }
          if(event.keyCode == 83) //s
         { socket.emit("keyPress", {id:"down", state:false}); }
          if(event.keyCode == 65) //a
-        { socket.emit("keyPress", {id:"left", state:false}); }
+        { socket.emit("keyPress", {id:"right", state:false}); }
          if(event.keyCode == 87) //w
         { socket.emit("keyPress", {id:"up", state:false}); moving = false;}
         if(event.keyCode == 32) //space
@@ -231,6 +231,13 @@ if ('serviceWorker' in navigator)
                 current.draw();
             }
 
+            //disegna le casse
+            for(let i in  GAME.Chest.list)
+            {
+                let current =  GAME.Chest.list[i];
+                current.draw();
+            }
+
             //disegna tutti i giocatori
             for(let i in  GAME.Players.list)
             {
@@ -245,7 +252,7 @@ if ('serviceWorker' in navigator)
                 current.draw();
             }
 
-            //disegna palle di cannone
+            //disegna esplosioni
             for(let i in  GAME.Explosion.list)
             {
                 let current =  GAME.Explosion.list[i];
@@ -253,7 +260,7 @@ if ('serviceWorker' in navigator)
                 current.draw();
             }
 
-            //disegna palle di cannone
+            //disegna splash
             for(let i in  GAME.Splash.list)
             {
                 let current =  GAME.Splash.list[i];
@@ -261,11 +268,15 @@ if ('serviceWorker' in navigator)
                 current.draw();
             }
 
+
+
             //disegna fps
             ctx.fillStyle = "black";
             ctx.font = (8*SETTINGS.globalScaleX)+"px Georgia";
             ctx.fillText("FPS C:"+fpsClient, 10,  35);
             ctx.fillText("FPS S:"+fpsServer, 10,  75);
+
+            ctx.fillText("POINTS:"+GAME.Players.list[socket.id].points, 10, 500);
     }
 
 
@@ -282,9 +293,18 @@ if ('serviceWorker' in navigator)
     socket.on('hit',function(data)
     {   
         let range = 20
-        for(let i=0; i<8; i++)
+        for(let i=0; i<3; i++)
         {GAME.Explosion(Math.random(),data.x+ENGINE.random_range(-range,range),data.y+ENGINE.random_range(-range,range))}
     });
+
+
+    socket.on('playerDie',function(data)
+    {   
+        let range = 30
+        for(let i=0; i<20; i++)
+        {GAME.Explosion(Math.random(),data.x+ENGINE.random_range(-range,range),data.y+ENGINE.random_range(-range,range))}
+    });
+
 
     socket.on('ballEnd',function(data)
     {   
@@ -316,6 +336,7 @@ if ('serviceWorker' in navigator)
                     GAME.Players.list[current.id].y = current.y;
                     GAME.Players.list[current.id].angle = current.angle;
                     GAME.Players.list[current.id].life = current.life;
+                    GAME.Players.list[current.id].points = current.points;
                 }
             }
 
@@ -333,6 +354,23 @@ if ('serviceWorker' in navigator)
                 {            
                     GAME.Balls.list[current.id].x = current.x;
                     GAME.Balls.list[current.id].y = current.y;
+                }
+            }
+
+
+            //aggiorna posizione casse 
+            for(let i = 0 ; i < data.chests.length; i++)
+            {
+                let current = data.chests[i];
+
+                if(GAME.Chest.list[current.id] == undefined)
+                {          
+                    GAME.Chest(current.id,current.x, current.y);
+                }
+                else
+                {            
+                    GAME.Chest.list[current.id].x = current.x;
+                    GAME.Chest.list[current.id].y = current.y;
                 }
             }
     });

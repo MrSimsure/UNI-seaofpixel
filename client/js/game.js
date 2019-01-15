@@ -234,6 +234,7 @@ GAME.Players = function(id,x,y,name,angle)
        angle:angle,
        sprite: GAME.sprite(LOADER.sprBoat,23,40,40,0),
        life:0,
+       ponts:0,
    }
 
 
@@ -249,16 +250,18 @@ GAME.Players = function(id,x,y,name,angle)
         }
 
         ctx.fillStyle = "black";
-        ctx.fillRect(X-50,Y-64,100,5);
+        ctx.fillRect(X-25*SETTINGS.globalScaleY,Y-38*SETTINGS.globalScaleY,50*SETTINGS.globalScaleY,5);
           
         ctx.fillStyle = "green";
-        ctx.fillRect(X-50,Y-64,self.life,5);
+        ctx.fillRect(X-25*SETTINGS.globalScaleY,Y-38*SETTINGS.globalScaleY,self.life/2*SETTINGS.globalScaleY,5);
         
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
         ctx.font = (10*SETTINGS.globalScaleX)+"px Georgia";
-        ctx.fillText(self.name, X,  Y-75);
+        ctx.fillText(self.name, X,  Y-48*SETTINGS.globalScaleY);
         ctx.textAlign = "left";
+
+        
    }
 
    GAME.Players.list[self.id] = self;
@@ -457,7 +460,7 @@ GAME.Chest = function(id,x,y)
        id:id,
        x:x,
        y:y,  
-       sprite: GAME.sprite(LOADER.sprBall,1,16,16,0)
+       sprite: GAME.sprite(LOADER.sprChest,3,21,21,2.8)
    }
 
    self.draw = function()
@@ -465,7 +468,7 @@ GAME.Chest = function(id,x,y)
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
 
-        GAME.drawSprite(self.sprite, 0, X,  Y, 0, 0.4); 
+        GAME.drawSprite(self.sprite, self.sprite.frameIndex, X,  Y, 0, 1); 
    }
 
    GAME.Chest.list[self.id] = self;

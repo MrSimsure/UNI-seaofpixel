@@ -9,6 +9,7 @@ GAME.ballList = {};
 GAME.chestList = {};
 GAME.playerCollision = true;
 
+
 Rectangle = function(x, y, w, h)
 {
     var self =
@@ -62,13 +63,25 @@ Player = function(name, id, x, y)
         angle : 0,
 
         life : 100,
+        points : 0,
+        savedPoints : 0,
+
         collider : Rectangle(x-20,y-20,20, 20),
     }
 
     self.update = function()
     {  
+        //controlla che il giocatore sia ancora vivo
         if(self.life == 0)
         {
+            //manda a tutti la notifica di morte
+            for(let i in socketList)
+            {
+                let current = socketList[i];
+                current.emit("playerDie", pack={x:self.x, y:self.y});             
+            } 
+
+            //resetta la posizione
             self.x = 500;
             self.y = 500;
             self.life = 100;
@@ -90,6 +103,17 @@ Player = function(name, id, x, y)
 
         if(self.pUp) 
         {
+            for(var i in GAME.chestList)
+            {
+                var current = GAME.chestList[i];
+                if( self.collider.overlaps(current.collider))
+                {
+                    self.points += 100;
+                    current.changePosition();
+                }
+            }
+
+            //COLLISIONI CON GIOCATORI
             if(GAME.playerCollision)
             {
                 let original = self.collider;
@@ -98,9 +122,9 @@ Player = function(name, id, x, y)
 
                 self.collider.set(tempX-20,tempY-20,20, 20)
 
-                for(var i in GAME.playerList)
+                for(let i in GAME.playerList)
                 {
-                    var current = GAME.playerList[i];
+                    let current = GAME.playerList[i];
                     if(self.id != i && self.collider.overlaps(current.collider))
                     {
                         self.x -= lengthdir_x(self.speed,self.angle)
@@ -205,6 +229,14 @@ Chest = function(x,y)
         collider : Rectangle(x-8,y-8,8,8),
     }
 
+    self.changePosition = function()
+    {
+        self.x = random_range(0,1000);
+        self.y = random_range(0,1000);
+
+        self.collider.set(self.x-8,self.y-8,8,8);
+    }
+
     GAME.chestList[self.id] = self;
     return self;
 }
@@ -226,7 +258,13 @@ console.log("server started");
 //SOCKET////////////////////////////////////////////////////
 var io = require("socket.io")(server,{});
 var socketList = {};
+var maxChest = 20;
 
+
+for(let i=0; i<maxChest; i++)
+{
+    Chest( random_range(0,1000), random_range(0,1000) );
+}
 
 
 //quando viene eseguita una connessione al socket
@@ -242,8 +280,7 @@ io.sockets.on("connection", function(socket)
         socket.on("login", function(data)
         {
                 //AGGIUNGI IL GIOCATORE ALLA LISTA
-                var player = Player(data.name, socket.id, 500,500);
-
+                let player = Player(data.name, socket.id, 500,500);
 
                 //RICEVUTO MESAGGIO DI MOVIMENTO
                 socket.on("keyPress", function(data)
@@ -266,7 +303,7 @@ io.sockets.on("connection", function(socket)
                 //RICEVUTO MESSAGGIO DI ATTACCO
                 socket.on("shoot", function(data)
                 {
-                    var current =  GAME.playerList[socket.id];
+                    let current =  GAME.playerList[socket.id];
 
                     if(data.state == true)
                     {
@@ -290,9 +327,9 @@ io.sockets.on("connection", function(socket)
         socket.on("disconnect", function()
         {
             //invia i dati ad ogni client
-            for(var i in socketList)
+            for(let i in socketList)
             {
-                var current = socketList[i];
+                let current = socketList[i];
                 current.emit("disconnection", socket.id);
             } 
 
@@ -308,11 +345,12 @@ io.sockets.on("connection", function(socket)
 
 updatePlayer = function()
 {
-    var pack = [];
-    for(var i in GAME.playerList)
+    let pack = [];
+    for(let i in GAME.playerList)
     {
-        var current = GAME.playerList[i];
+        let current = GAME.playerList[i];
         current.update();
+
         pack.push
         ({
             id : current.id,
@@ -321,6 +359,8 @@ updatePlayer = function()
             y : current.y,
             angle: current.angle,
             life: current.life,
+            points: current.points,
+            savedPoints: current.savedPoints,
         });
     }
     
@@ -329,12 +369,34 @@ updatePlayer = function()
 
 updateBall = function()
 {
-    var pack = [];
-    for(var i in GAME.ballList)
+    let pack = [];
+    for(let i in GAME.ballList)
     {
-        var current = GAME.ballList[i];
+        let current = GAME.ballList[i];
         current.update();
-        var current = GAME.ballList[i];
+        current = GAME.ballList[i];
+
+        if(current != undefined)
+        {
+            pack.push
+            ({
+                id : current.id,
+                x : current.x,
+                y : current.y
+            });
+        }
+    }        
+    return pack;
+}
+
+
+updateChest = function()
+{
+    let pack = [];
+    for(let i in GAME.chestList)
+    {
+        let current = GAME.chestList[i];
+
         if(current != undefined)
         {
             pack.push
@@ -354,24 +416,26 @@ var lastLoop;
 var serverUpdate = function()
 {
 
-    var thisLoop = new Date();
+    let thisLoop = new Date();
     if(Math.random() > 0.8)
     {fps = Math.floor(1000 / (thisLoop - lastLoop));}
     lastLoop = thisLoop;
 
-        var pack = 
-        {
-            players: updatePlayer(),
-            balls: updateBall(),
-            fps:fps,
-        }
 
-        //invia i dati ad ogni client
-        for(var i in socketList)
-        {
-            var current = socketList[i];
-            current.emit("newPositions", pack);
-        }        
+    let pack = 
+    {
+        players: updatePlayer(),
+        balls: updateBall(),
+        chests: updateChest(),
+        fps:fps,
+    }
+
+    //invia i dati ad ogni client
+    for(var i in socketList)
+    {
+        let current = socketList[i];
+        current.emit("newPositions", pack);
+    }        
 }
 
 
