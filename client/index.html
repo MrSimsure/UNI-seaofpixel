@@ -68,12 +68,12 @@ if ('serviceWorker' in navigator)
 
 
     //LOGIN
-    login_button.onclick = function()
+    DOM.login_button.onclick = function()
     {
-        if(Qlow.checked){SETTINGS.quality = 0;}
-        if(Qmed.checked){SETTINGS.quality = 2;}
-        if(Qhig.checked){SETTINGS.quality = 6;}
-        if(Qins.checked){SETTINGS.quality = 50;}
+        if(DOM.Qlow.checked){SETTINGS.quality = 0;}
+        if(DOM.Qmed.checked){SETTINGS.quality = 2;}
+        if(DOM.Qhig.checked){SETTINGS.quality = 6;}
+        if(DOM.Qins.checked){SETTINGS.quality = 50;}
 
 
         //SE MOBILE FULLSCREEN E JOYSTICK
@@ -102,8 +102,8 @@ if ('serviceWorker' in navigator)
         //INVIA I DATI DI LOGIN E PASSA AL GIOCO
         socket.emit("login", {name:login_username.value});
 
-        page_login.style.display = "none";
-        page_game.style.display = "inline-block";
+        DOM.page_login.style.display = "none";
+        DOM.page_game.style.display = "inline-block";
     }
 
     
@@ -149,12 +149,22 @@ if ('serviceWorker' in navigator)
     };
 
 
-    canvas.addEventListener('touchstart', touchStart, false);
-    canvas.addEventListener('touchend', touchEnd, false);
+    DOM.canvas.addEventListener('touchstart', touchStart, false);
+    DOM.canvas.addEventListener('touchend', touchEnd, false);
 
 
 
+    for(let i=0; i<room.width/200; i++)
+    {
+        GAME.Fog(i*200,0)
+        GAME.Fog(i*200,room.height)
+    }
 
+    for(let i=0; i<room.height/200; i++)
+    {
+        GAME.Fog(0,i*200)
+        GAME.Fog(room.width,i*200)
+    }
 
     var lastLoop;
     update = function()
@@ -206,13 +216,13 @@ if ('serviceWorker' in navigator)
     draw = function()
     {
             //pulisci il canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            DOM.ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             //disegna la mappa
             //room.map.draw(ctx, camera.xView, camera.yView);
-            ctx.fillStyle = "#32479C";
-            ctx.fillRect(0,0,canvas.width,canvas.height);
-            ctx.fillStyle = "#000000";
+            DOM.ctx.fillStyle = "#32479C";
+            DOM.ctx.fillRect(0,0,canvas.width,canvas.height);
+            DOM.ctx.fillStyle = "#000000";
 
 
             //aggiorna e disegna le scie
@@ -269,14 +279,20 @@ if ('serviceWorker' in navigator)
             }
 
 
+            //disegna splash
+            for(let i in  GAME.Fog.list)
+            {
+                let current =  GAME.Fog.list[i];
+                current.draw();
+            }
 
             //disegna fps
-            ctx.fillStyle = "black";
-            ctx.font = (8*SETTINGS.globalScaleX)+"px Georgia";
-            ctx.fillText("FPS C:"+fpsClient, 10,  35);
-            ctx.fillText("FPS S:"+fpsServer, 10,  75);
+            DOM.ctx.fillStyle = "black";
+            DOM.ctx.font = (8*SETTINGS.globalScaleX)+"px Georgia";
+            DOM.ctx.fillText("FPS C:"+fpsClient, 10,  35);
+            DOM.ctx.fillText("FPS S:"+fpsServer, 10,  75);
 
-            ctx.fillText("POINTS:"+GAME.Players.list[socket.id].points, 10, 500);
+            DOM.ctx.fillText("POINTS:"+GAME.Players.list[socket.id].points, 10, 500);
     }
 
 

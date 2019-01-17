@@ -44,11 +44,11 @@ GAME.sprite = function(name, frameNum, width, height, speed)
 GAME.drawSprite = function(sprite,image,x,y,angle,size)
 {
 
-    ctx.save(); 
-    ctx.translate(x, y);  
-    ctx.rotate(angle * TO_RADIANS);
-    ctx.scale(size*SETTINGS.globalScaleX, size*SETTINGS.globalScaleY);
-    ctx.drawImage(
+    DOM.ctx.save(); 
+    DOM.ctx.translate(x, y);  
+    DOM.ctx.rotate(angle * TO_RADIANS);
+    DOM.ctx.scale(size*SETTINGS.globalScaleX, size*SETTINGS.globalScaleY);
+    DOM.ctx.drawImage(
                 sprite.image, 
                 image * sprite.width , 
                 0, 
@@ -59,7 +59,7 @@ GAME.drawSprite = function(sprite,image,x,y,angle,size)
                 sprite.width , 
                 sprite.height);
 
-   ctx.restore(); 
+                DOM.ctx.restore(); 
 
 
    sprite.update();
@@ -168,60 +168,6 @@ GAME.Camera = function(xView, yView, canvas, world)
 }
 
 
-///MAP////////
-GAME.Map = function(width, height)
-{
-
-        var self = 
-        {
-        // map dimensions
-        width : width,
-        height : height,
-
-        // map texture
-        image : null,
-        }
-    
-
-    // generate an example of a large map
-    self.generate = function()
-    {
-        var temp = document.createElement("canvas").getContext("2d");        
-        temp.canvas.width = self.width;
-        temp.canvas.height = self.height;        
-
-
-        var rows = ~~(self.width/128) + 1;
-        var columns = ~~(self.height/128) + 1;
-
-
-        for (var x = 0, i = 0; i < rows; x+=128, i++) 
-        {    
-            for (var y = 0, j=0; j < columns; y+=128, j++) 
-            {          
-                temp.drawImage(sprWater, x, y,128,128); 
-            }
-        }   
-
-
-        // store the generate map as this image texture
-        self.image = new Image();
-        self.image.src = temp.canvas.toDataURL("image/png", 1.0);                 
-
-        temp = null;
-    }
-
-    // draw the map adjusted to camera
-    self.draw = function(context, xView, yView)
-    {   
-        context.drawImage(self.image, 0, 0, self.image.width*4, self.image.height*4, -xView, -yView, self.image.width*4, self.image.height*4);       
-    }
-
-    return self;
-}
-
-
-
 ///PLAYERS////////
 GAME.Players = function(id,x,y,name,angle)
 {
@@ -249,17 +195,17 @@ GAME.Players = function(id,x,y,name,angle)
             GAME.drawSprite(self.sprite, n, X,  Y-SETTINGS.globalScaleY*n, self.angle, 1);
         }
 
-        ctx.fillStyle = "black";
-        ctx.fillRect(X-25*SETTINGS.globalScaleY,Y-38*SETTINGS.globalScaleY,50*SETTINGS.globalScaleY,5);
+        DOM.ctx.fillStyle = "black";
+        DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY,Y-38*SETTINGS.globalScaleY,50*SETTINGS.globalScaleY,5);
           
-        ctx.fillStyle = "green";
-        ctx.fillRect(X-25*SETTINGS.globalScaleY,Y-38*SETTINGS.globalScaleY,self.life/2*SETTINGS.globalScaleY,5);
+        DOM.ctx.fillStyle = "green";
+        DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY,Y-38*SETTINGS.globalScaleY,self.life/2*SETTINGS.globalScaleY,5);
         
-        ctx.fillStyle = "black";
-        ctx.textAlign = "center";
-        ctx.font = (10*SETTINGS.globalScaleX)+"px Georgia";
-        ctx.fillText(self.name, X,  Y-48*SETTINGS.globalScaleY);
-        ctx.textAlign = "left";
+        DOM.ctx.fillStyle = "black";
+        DOM.ctx.textAlign = "center";
+        DOM.ctx.font = (10*SETTINGS.globalScaleX)+"px Georgia";
+        DOM.ctx.fillText(self.name, X,  Y-48*SETTINGS.globalScaleY);
+        DOM.ctx.textAlign = "left";
 
         
    }
@@ -452,7 +398,7 @@ GAME.Splash.list = [];
 
 
 
-///BALL///////
+///CHEST///////
 GAME.Chest = function(id,x,y)
 {
    var self = 
@@ -475,3 +421,31 @@ GAME.Chest = function(id,x,y)
    return self;
 }
 GAME.Chest.list = [];
+
+
+///FOG///////
+GAME.Fog = function(x,y)
+{
+   var self = 
+   {
+       id:GAME.Fog.list.length,
+       x:x,
+       y:y,  
+       angle:0,
+       rot:(Math.random()+0.1)*0.5,
+       sprite: GAME.sprite(LOADER.sprFog,1,512,512,1)
+   }
+
+   self.draw = function()
+   {  
+        self.angle += self.rot;
+        let X = self.x*SETTINGS.globalScaleX-camera.xView;
+        let Y = self.y*SETTINGS.globalScaleY-camera.yView;
+
+        GAME.drawSprite(self.sprite, 0, X,  Y, self.angle, 1); 
+   }
+
+   GAME.Fog.list[self.id] = self;
+   return self;
+}
+GAME.Fog.list = [];

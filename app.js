@@ -121,21 +121,29 @@ Player = function(name, id, x, y)
                 let tempY = self.y+lengthdir_y(self.speed,self.angle)
 
                 self.collider.set(tempX-20,tempY-20,20, 20)
-
-                for(let i in GAME.playerList)
+                
+                if(tempX > 256 && tempX < 4000-256 && tempY > 256 && tempY < 4000-256)
                 {
-                    let current = GAME.playerList[i];
-                    if(self.id != i && self.collider.overlaps(current.collider))
+                    for(let i in GAME.playerList)
                     {
-                        self.x -= lengthdir_x(self.speed,self.angle)
-                        self.y -= lengthdir_y(self.speed,self.angle)
+                        let current = GAME.playerList[i];
+                        if(self.id != i && self.collider.overlaps(current.collider))
+                        {
+                            self.x -= lengthdir_x(self.speed,self.angle)
+                            self.y -= lengthdir_y(self.speed,self.angle)
+                        }
+                        else
+                        {
+                            self.x = tempX;
+                            self.y = tempY;
+                            self.collider = original;
+                        }
                     }
-                    else
-                    {
-                        self.x = tempX;
-                        self.y = tempY;
-                        self.collider = original;
-                    }
+                }
+                else
+                {
+                    self.x -= lengthdir_x(self.speed,self.angle)
+                    self.y -= lengthdir_y(self.speed,self.angle)
                 }
             }
             else

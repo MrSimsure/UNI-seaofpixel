@@ -10,30 +10,31 @@ LOADER.sprBoat =  GAME.loadImage("spr_nave");
 LOADER.sprExplosion = GAME.loadImage("spr_explosion")
 LOADER.sprSplash = GAME.loadImage("spr_splash")
 LOADER.sprChest = GAME.loadImage("spr_chest")
+LOADER.sprFog = GAME.loadImage("spr_fog")
 
 
-var canvas = document.getElementById("canvas");
+DOM = {}
+DOM.canvas = document.getElementById("canvas");
+DOM.ctx = canvas.getContext("2d");
+DOM.ctx.imageSmoothingEnabled = false;
 
-var ctx = canvas.getContext("2d");
-ctx.imageSmoothingEnabled = false;
 
 
+DOM.page_login = document.getElementById("page_login");
+DOM.page_game = document.getElementById("page_game");
 
-var page_login = document.getElementById("page_login");
-var page_game = document.getElementById("page_game");
+DOM.login_username = document.getElementById("login_username");
+DOM.login_button = document.getElementById("login_button");
 
-var login_username = document.getElementById("login_username");
-var login_button = document.getElementById("login_button");
-
-var Qlow = document.getElementById("Qlow");
-var Qmed = document.getElementById("Qmed");
-var Qhig = document.getElementById("Qhig");
-var Qins = document.getElementById("Qins");
+DOM.Qlow = document.getElementById("Qlow");
+DOM.Qmed = document.getElementById("Qmed");
+DOM.Qhig = document.getElementById("Qhig");
+DOM.Qins = document.getElementById("Qins");
 
 if(SETTINGS.onMobile)
-{Qlow.checked = true;}
+{DOM.Qlow.checked = true;}
 else
-{Qhig.checked = true;}
+{DOM.Qhig.checked = true;}
 
 
 //connettiti al server
@@ -48,38 +49,37 @@ room =
 {
     width: 4000,
     height: 4000,
-    //map: GAME.Map(4000, 4000)
 };
 
 
-camera = new  GAME.Camera(0, 0, canvas, room);   
+camera = new  GAME.Camera(0, 0, DOM.canvas, room);   
 
 
 
-Qlow.onchange = function() 
+DOM.Qlow.onchange = function() 
 {
-    Qmed.checked = false;
-    Qhig.checked = false;
-    Qins.checked = false;
+    DOM.Qmed.checked = false;
+    DOM.Qhig.checked = false;
+    DOM.Qins.checked = false;
 }
 
-Qmed.onchange = function() 
+DOM.Qmed.onchange = function() 
 {
-    Qlow.checked = false;
-    Qhig.checked = false;
-    Qins.checked = false;
+    DOM.Qlow.checked = false;
+    DOM.Qhig.checked = false;
+    DOM.Qins.checked = false;
 }
 
-Qhig.onchange = function() 
+DOM.Qhig.onchange = function() 
 {
-    Qmed.checked = false;
-    Qlow.checked = false;
-    Qins.checked = false;
+    DOM.Qmed.checked = false;
+    DOM.Qlow.checked = false;
+    DOM.Qins.checked = false;
 }
 
-Qins.onchange = function() 
+DOM.Qins.onchange = function() 
 {
-    Qmed.checked = false;
-    Qlow.checked = false;
-    Qhig.checked = false;
+    DOM.Qmed.checked = false;
+    DOM.Qlow.checked = false;
+    DOM.Qhig.checked = false;
 }

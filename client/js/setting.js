@@ -52,11 +52,11 @@ SETTINGS.setScaleFactor = function()
 
 SETTINGS.canvasResize = function()
 {
-    canvas.width = SETTINGS.WINDOW_WIDTH;
-    canvas.height = SETTINGS.WINDOW_HEIGHT;  
+    DOM.canvas.width = SETTINGS.WINDOW_WIDTH;
+    DOM.canvas.height = SETTINGS.WINDOW_HEIGHT;  
 
-    ctx.imageSmoothingEnabled = false;
+    DOM.ctx.imageSmoothingEnabled = false;
 
-    camera = new GAME.Camera(0, 0, canvas, room);   
+    camera = new GAME.Camera(0, 0, DOM.canvas, room);   
 
 }
