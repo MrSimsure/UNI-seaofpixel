@@ -72,7 +72,7 @@ Player = function(name, id, x, y)
     self.update = function()
     {  
         //controlla che il giocatore sia ancora vivo
-        if(self.life == 0)
+        if(self.life <= 0)
         {
             //manda a tutti la notifica di morte
             for(let i in socketList)
@@ -103,9 +103,9 @@ Player = function(name, id, x, y)
 
         if(self.pUp) 
         {
-            for(var i in GAME.chestList)
+            for(let i in GAME.chestList)
             {
-                var current = GAME.chestList[i];
+                let current = GAME.chestList[i];
                 if( self.collider.overlaps(current.collider))
                 {
                     self.points += 100;
@@ -122,15 +122,26 @@ Player = function(name, id, x, y)
 
                 self.collider.set(tempX-20,tempY-20,20, 20)
                 
-                if(tempX > 256 && tempX < 4000-256 && tempY > 256 && tempY < 4000-256)
+                if(tempX > 0 && tempX < 2000 && tempY > 0 && tempY < 2000)
                 {
                     for(let i in GAME.playerList)
                     {
                         let current = GAME.playerList[i];
-                        if(self.id != i && self.collider.overlaps(current.collider))
+                        if(self.id != current.id && self.collider.overlaps(current.collider))
                         {
-                            self.x -= lengthdir_x(self.speed,self.angle)
-                            self.y -= lengthdir_y(self.speed,self.angle)
+                            self.x -= lengthdir_x(10.1,self.angle);
+                            self.y -= lengthdir_y(10.1,self.angle);
+
+                            self.collider = original;
+
+                            current.life -= 1;
+
+                            for(let j in socketList)
+                            {
+                                let c = socketList[j];       
+                                c.emit("hit", pack={x:current.x, y:current.y, num:1});       
+                            } 
+ 
                         }
                         else
                         {
@@ -142,8 +153,8 @@ Player = function(name, id, x, y)
                 }
                 else
                 {
-                    self.x -= lengthdir_x(self.speed,self.angle)
-                    self.y -= lengthdir_y(self.speed,self.angle)
+                    self.x -= lengthdir_x(0.1,self.angle)
+                    self.y -= lengthdir_y(0.1,self.angle)
                 }
             }
             else
@@ -213,7 +224,7 @@ Balls = function(x,y,direction,speed,player)
                 {
                     var current = socketList[i];
                     current.emit("ballEnd", self.id);         
-                    current.emit("hit", pack={x:self.x, y:self.y});       
+                    current.emit("hit", pack={x:self.x, y:self.y, num:3});       
                 } 
                 delete GAME.ballList[self.id];  
                 break;
@@ -271,7 +282,7 @@ var maxChest = 20;
 
 for(let i=0; i<maxChest; i++)
 {
-    Chest( random_range(0,1000), random_range(0,1000) );
+    Chest( random_range(0,2000), random_range(0,2000) );
 }
 
 
@@ -288,7 +299,7 @@ io.sockets.on("connection", function(socket)
         socket.on("login", function(data)
         {
                 //AGGIUNGI IL GIOCATORE ALLA LISTA
-                let player = Player(data.name, socket.id, 500,500);
+                let player = Player(data.name, socket.id, Math.random()*2000,Math.random()*2000);
 
                 //RICEVUTO MESAGGIO DI MOVIMENTO
                 socket.on("keyPress", function(data)

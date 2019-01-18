@@ -11,7 +11,8 @@ LOADER.sprExplosion = GAME.loadImage("spr_explosion")
 LOADER.sprSplash = GAME.loadImage("spr_splash")
 LOADER.sprChest = GAME.loadImage("spr_chest")
 LOADER.sprFog = GAME.loadImage("spr_fog")
-
+LOADER.sprBussola = GAME.loadImage("spr_bussola")
+LOADER.sprFreccia = GAME.loadImage("spr_freccia")
 
 DOM = {}
 DOM.canvas = document.getElementById("canvas");
@@ -47,8 +48,8 @@ var joystick  = null;
 // setup an object that represents the room
 room = 
 {
-    width: 4000,
-    height: 4000,
+    width: 2000,
+    height: 2000,
 };
 
 

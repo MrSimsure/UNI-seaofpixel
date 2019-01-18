@@ -431,9 +431,9 @@ GAME.Fog = function(x,y)
        id:GAME.Fog.list.length,
        x:x,
        y:y,  
-       angle:0,
-       rot:(Math.random()+0.1)*0.5,
-       sprite: GAME.sprite(LOADER.sprFog,1,512,512,1)
+       angle:Math.random()*360,
+       rot:(Math.random()+0.1)*0.2,
+       sprite: GAME.sprite(LOADER.sprFog,1,256,256,1)
    }
 
    self.draw = function()
@@ -442,7 +442,9 @@ GAME.Fog = function(x,y)
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
 
-        GAME.drawSprite(self.sprite, 0, X,  Y, self.angle, 1); 
+        DOM.ctx.globalAlpha = 0.8
+        GAME.drawSprite(self.sprite, 0, X,  Y, self.angle, 2); 
+        DOM.ctx.globalAlpha = 1
    }
 
    GAME.Fog.list[self.id] = self;

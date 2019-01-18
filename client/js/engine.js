@@ -1,5 +1,10 @@
 ENGINE = {};
 
+ENGINE.mod = function(x,y)
+{
+    return x - y * Math.floor(x / y)
+}
+
 ENGINE.radians = function(degrees) 
 {
     return degrees * Math.PI / 180;
@@ -24,7 +29,7 @@ ENGINE.lengthdir_y = function(len,dir)
 
 ENGINE.point_direction = function(x1,y1,x2,y2)
 {
-    return -Math.degrees(Math.atan2(y1 - y2, x1 - x2))+180;
+    return ENGINE.degrees(Math.atan2(y1 - y2, x1 - x2))+180;
 }
 
 
