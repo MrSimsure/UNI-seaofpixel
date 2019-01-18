@@ -21,7 +21,7 @@
 
  <div id="page_game"  style="display:none; position:relative;  z-index:0">
 
-    <canvas id="canvas" style="  z-index: 1; position:absolute;" width="480" height="270""></canvas>
+    <canvas id="canvas" style="  z-index: 1; position:absolute;" width="640" height="480""></canvas>
     <!--<canvas id="canvasShader" style="z-index: 0; position:absolute;"  data-fragment-url="client/cells.frag" width="480" height="270"></canvas>-->
 
 </div>
@@ -58,7 +58,10 @@ if ('serviceWorker' in navigator)
     var fpsServer;
     var nearPlayer = 0;
     var nearChest = 0;
-
+    var charge = 0;
+    var keys = [];
+    keys[32] = false;
+    var touch = false;
     //var shad = new GlslCanvas(canvasShader);
 
     //CONNESSIONE
@@ -74,8 +77,8 @@ if ('serviceWorker' in navigator)
     DOM.login_button.onclick = function()
     {
         if(DOM.Qlow.checked){SETTINGS.quality = 0;}
-        if(DOM.Qmed.checked){SETTINGS.quality = 2;}
-        if(DOM.Qhig.checked){SETTINGS.quality = 6;}
+        if(DOM.Qmed.checked){SETTINGS.quality = 1;}
+        if(DOM.Qhig.checked){SETTINGS.quality = 3;}
         if(DOM.Qins.checked){SETTINGS.quality = 50;}
 
 
@@ -109,49 +112,70 @@ if ('serviceWorker' in navigator)
         DOM.page_game.style.display = "inline-block";
     }
 
-    ang = 0
 
+
+
+
+
+    
     document.onkeydown = function(event)
     {
-        if(event.keyCode == 38)
-        {ang+= 10}
-        if(event.keyCode == 68) //d
+        keys = (keys || []);
+        keys[event.keyCode]=true;
+        
+        if(event.keyCode == 68 || event.keyCode == 39) //d 
         { socket.emit("keyPress", {id:"left", state:true}); }
-         if(event.keyCode == 83) //s
-        { socket.emit("keyPress", {id:"down", state:true}); }
-         if(event.keyCode == 65) //a
+         if(event.keyCode == 65 || event.keyCode == 37) //a
         { socket.emit("keyPress", {id:"right", state:true}); }
-         if(event.keyCode == 87) //w
+         if(event.keyCode == 87 || event.keyCode == 38) //w
         { socket.emit("keyPress", {id:"up", state:true}); moving = true;}
-        if(event.keyCode == 32) //space
-        { socket.emit("shoot", {id:"space", state:true});}
     }
     
     document.onkeyup = function(event)
     {
-        if(event.keyCode == 68) //d
+        keys = (keys || []);
+        keys[event.keyCode]=false;
+
+        if(event.keyCode == 68 || event.keyCode == 39) //d
         { socket.emit("keyPress", {id:"left", state:false}); }
-         if(event.keyCode == 83) //s
-        { socket.emit("keyPress", {id:"down", state:false}); }
-         if(event.keyCode == 65) //a
+         if(event.keyCode == 65 || event.keyCode == 37) //a
         { socket.emit("keyPress", {id:"right", state:false}); }
-         if(event.keyCode == 87) //w
+         if(event.keyCode == 87 || event.keyCode == 38) //w
         { socket.emit("keyPress", {id:"up", state:false}); moving = false;}
         if(event.keyCode == 32) //space
-        { socket.emit("shoot", {id:"space", state:false});}
+        { 
+            if(charge < 10) 
+            {
+                charge = 0
+            }
+            else
+            {
+                socket.emit("shoot");
+                charge = 0
+            }
+        }
     }    
     
 
 
     function touchStart(ev) 
     {
-        { socket.emit("shoot", {id:"space", state:true});}
+        touch = true
     };
 
     
     function touchEnd(ev) 
     {
-        { socket.emit("shoot", {id:"space", state:false});}
+            touch = false
+            if(charge < 10) 
+            {
+                charge = 0
+            }
+            else
+            {
+                socket.emit("shoot");
+                charge = 0
+            }
     };
 
 
@@ -175,6 +199,11 @@ if ('serviceWorker' in navigator)
     var lastLoop;
     update = function()
     {
+
+        if(keys[32] || touch == true) //space
+        { if(charge < 10) {charge += 0.5}}
+
+
             //aggiorna fps
             let thisLoop = new Date();
             if(Math.random() > 0.8)
@@ -252,7 +281,7 @@ if ('serviceWorker' in navigator)
     var sFreccia = GAME.sprite(LOADER.sprFreccia,1,64,64,1)
 
     draw = function()
-    {
+    {   
             //pulisci il canvas
             DOM.ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -293,6 +322,7 @@ if ('serviceWorker' in navigator)
                 current.draw();
             }
             
+            
             //disegna palle di cannone
             for(let i in  GAME.Balls.list)
             {
@@ -324,19 +354,34 @@ if ('serviceWorker' in navigator)
                 current.draw();
             }
 
+
+            //disegna barra caricamento
+            if(charge > 0)
+            {
+                let X = GAME.Players.list[id].x*SETTINGS.globalScaleX-camera.xView;
+                let Y = GAME.Players.list[id].y*SETTINGS.globalScaleY-camera.yView;
+
+                DOM.ctx.fillStyle = "black";
+                DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY, Y+30*SETTINGS.globalScaleY, 50*SETTINGS.globalScaleY, 5);    
+                DOM.ctx.fillStyle = "red";
+                DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY, Y+30*SETTINGS.globalScaleY, charge*5*SETTINGS.globalScaleY, 5);
+            }
+
             //disegna fps
             DOM.ctx.fillStyle = "black";
             DOM.ctx.font = (8*SETTINGS.globalScaleX)+"px Georgia";
-            DOM.ctx.fillText("FPS C:"+fpsClient, 10,  35);
-            DOM.ctx.fillText("FPS S:"+fpsServer, 10,  75);
+            DOM.ctx.fillText("FPS C:"+fpsClient, 10,  (480-64)*SETTINGS.globalScaleY);
+            DOM.ctx.fillText("FPS S:"+fpsServer, 10,  (480-32)*SETTINGS.globalScaleY);
 
-            DOM.ctx.fillText("POINTS:"+GAME.Players.list[socket.id].points, 10, 500);
+            //disegna punti
+            DOM.ctx.fillText("POINTS:"+GAME.Players.list[socket.id].points, 10, 16*SETTINGS.globalScaleY);
 
-            GAME.drawSprite(sBussola, 0, 1920-128,  64, 0, 1);
-            GAME.drawSprite(sFreccia, 0, 1920-128,  64, nearChest, 0.8);
+            //disegna bussola 
+            GAME.drawSprite(sBussola, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, 0, 1);
+            GAME.drawSprite(sFreccia, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearChest, 0.8);
 
             if(Object.keys(GAME.Players.list).length > 1)
-            {GAME.drawSprite(sFreccia, 1, 1920-128,  64, nearPlayer, 0.8);}
+            {GAME.drawSprite(sFreccia, 1, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearPlayer, 0.8);}
 
     }
 
@@ -353,7 +398,7 @@ if ('serviceWorker' in navigator)
     
     socket.on('hit',function(data)
     {   
-        let range = 20
+        let range = 5*data.num
         for(let i=0; i<data.num; i++)
         {GAME.Explosion(Math.random(),data.x+ENGINE.random_range(-range,range),data.y+ENGINE.random_range(-range,range))}
     });
@@ -434,6 +479,8 @@ if ('serviceWorker' in navigator)
                     GAME.Chest.list[current.id].y = current.y;
                 }
             }
+
+
     });
 
 </script>

@@ -14,6 +14,8 @@ LOADER.sprFog = GAME.loadImage("spr_fog")
 LOADER.sprBussola = GAME.loadImage("spr_bussola")
 LOADER.sprFreccia = GAME.loadImage("spr_freccia")
 
+
+
 DOM = {}
 DOM.canvas = document.getElementById("canvas");
 DOM.ctx = canvas.getContext("2d");

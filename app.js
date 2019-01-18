@@ -58,6 +58,7 @@ Player = function(name, id, x, y)
         pUp : false,
         pDown : false,
 
+        accelleration : 0,
         speed : 4,
         shoot : false,
         angle : 0,
@@ -68,6 +69,7 @@ Player = function(name, id, x, y)
 
         collider : Rectangle(x-20,y-20,20, 20),
     }
+
 
     self.update = function()
     {  
@@ -82,8 +84,8 @@ Player = function(name, id, x, y)
             } 
 
             //resetta la posizione
-            self.x = 500;
-            self.y = 500;
+            self.x = Math.random()*2000;
+            self.y = Math.random()*2000;
             self.life = 100;
         }
 
@@ -101,8 +103,22 @@ Player = function(name, id, x, y)
             {self.angle = 0;}
         }
 
+
         if(self.pUp) 
         {
+            if(self.accelleration < self.speed)
+            {self.accelleration += 0.1}
+        }
+        else
+        {
+            if(self.accelleration > 0)
+            {self.accelleration -= 0.1}
+        }
+
+
+        if(self.accelleration > 0) 
+        {
+            //controlla collisioni con i forzieri
             for(let i in GAME.chestList)
             {
                 let current = GAME.chestList[i];
@@ -113,60 +129,65 @@ Player = function(name, id, x, y)
                 }
             }
 
-            //COLLISIONI CON GIOCATORI
+            //controlla movimento 
             if(GAME.playerCollision)
             {
-                let original = self.collider;
-                let tempX = self.x+lengthdir_x(self.speed,self.angle)
-                let tempY = self.y+lengthdir_y(self.speed,self.angle)
+                let tempX = self.x+lengthdir_x(self.accelleration,self.angle)
+                let tempY = self.y+lengthdir_y(self.accelleration,self.angle)
 
-                self.collider.set(tempX-20,tempY-20,20, 20)
+                let moveX = true
+                let moveY = true;
                 
-                if(tempX > 0 && tempX < 2000 && tempY > 0 && tempY < 2000)
-                {
-                    for(let i in GAME.playerList)
+                //controlla se sei ai limiti del mondo
+                if(tempX < 0 || tempX > 2000)
+                {moveX = false;}
+
+                if(tempY < 0 || tempY > 2000)
+                {moveY = false;}
+
+                //controlla collisioni con le altre navi
+                for(let i in GAME.playerList)
+                {     
+                    let current = GAME.playerList[i];
+                    let shipHit = false;
+
+                    if(self.id != current.id)
                     {
-                        let current = GAME.playerList[i];
-                        if(self.id != current.id && self.collider.overlaps(current.collider))
+                        if(tempX > current.x-20 && tempX < current.x+20 && self.y > current.y-20 && self.y < current.y+20)
                         {
-                            self.x -= lengthdir_x(10.1,self.angle);
-                            self.y -= lengthdir_y(10.1,self.angle);
+                            moveX = false
+                            shipHit = true
+                        }
 
-                            self.collider = original;
+                        if(tempY > current.y-20 && tempY < current.y+20 && self.x > current.x-20 && self.x < current.x+20)
+                        {
+                            moveY = false
+                            shipHit = true
+                        }
 
+                        //speronaggio nemico ed esplosioni
+                        if(shipHit)
+                        {
                             current.life -= 1;
-
                             for(let j in socketList)
                             {
                                 let c = socketList[j];       
                                 c.emit("hit", pack={x:current.x, y:current.y, num:1});       
                             } 
- 
-                        }
-                        else
-                        {
-                            self.x = tempX;
-                            self.y = tempY;
-                            self.collider = original;
                         }
                     }
+                
                 }
-                else
-                {
-                    self.x -= lengthdir_x(0.1,self.angle)
-                    self.y -= lengthdir_y(0.1,self.angle)
-                }
+
+                //se se lo spazio X o Y davanti a te sono liberi muovitici
+                if(moveX) {self.x = tempX;}
+                if(moveY) {self.y = tempY;}
             }
-            else
-            {
-                self.x += lengthdir_x(self.speed,self.angle);   
-                self.y += lengthdir_y(self.speed,self.angle);
-            }
+
+            //aggiorna collisioni
+            self.collider.set(self.x-20, self.y-20, 20, 20)
         }
 
-
-        self.collider.set(self.x-20, self.y-20, 20, 20)
-   
     }
 
 
@@ -202,7 +223,7 @@ Balls = function(x,y,direction,speed,player)
 
         self.timer += 1 ;
 
-        if(self.timer > 100)
+        if(self.timer > 40)
         {
             for(var i in socketList)
             {
@@ -289,7 +310,6 @@ for(let i=0; i<maxChest; i++)
 //quando viene eseguita una connessione al socket
 io.sockets.on("connection", function(socket)
 {
-
         socketList[socket.id] = socket;
 
         socket.emit("connection", socket.id);
@@ -324,19 +344,10 @@ io.sockets.on("connection", function(socket)
                 {
                     let current =  GAME.playerList[socket.id];
 
-                    if(data.state == true)
-                    {
-                        if(current.shoot == false)
-                        {
+
                             Balls(current.x,current.y,current.angle+90,8, socket.id)
                             Balls(current.x,current.y,current.angle+270,8, socket.id)
-                        }
-                        current.shoot = true;
-                    }
-                    else
-                    {
-                        current.shoot = false;
-                    }
+
                 });
         });
 
