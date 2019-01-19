@@ -4,7 +4,7 @@
     "start_url": "/client/index.html",
     "display": "fullscreen",
     "orientation": "landscape", 
-    "theme_color": "#317EFB",
+    "theme_color": "#4586ef",
     "background_color" :"#4586ef",
     "icons": [
       {
