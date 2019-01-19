@@ -113,7 +113,7 @@
         socket.emit("login", {name:login_username.value});
 
         DOM.page_login.style.display = "none";
-        DOM.page_game.style.display = "inline-block";
+        DOM.page_game.style.display = "contents";
 
         setInterval(clientUpdate ,1000/30); 
     }
