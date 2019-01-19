@@ -9,7 +9,7 @@
 <style> section { position: absolute; top:0; bottom:0; left:0; right:0;overflow: hidden;} </style>
 
 
-<body  id="container" style ="padding: 0px; margin:0; overflow-x:hidden; overflow-y:hidden;">
+<body  id="container" style ="margin:0; overflow-x:hidden; overflow-y:hidden;">
     
 <title>Seas of Pixel</title>
 
@@ -29,7 +29,7 @@
 
 
  <div id="page_game"  style="display:none; position:relative;  z-index:0">
-    <canvas id="canvas" style="  z-index: 1; position:absolute;" width="640" height="480"></canvas>
+    <canvas id="canvas" style="  z-index: 1; position:absolute;" width="640" height="480""></canvas>
 </div>
 
 
@@ -55,7 +55,7 @@
     {
         window.addEventListener('load', function() 
         {
-            navigator.serviceWorker.register('client/serviceWorker.js').then(function(registration) 
+            navigator.serviceWorker.register('../serviceWorker.js').then(function(registration) 
             {
                 console.log('ServiceWorker registration successful with scope: ', registration.scope);
             }, function(err) 
@@ -113,7 +113,7 @@
         socket.emit("login", {name:login_username.value});
 
         DOM.page_login.style.display = "none";
-        DOM.page_game.style.display = "contents";
+        DOM.page_game.style.display = "inline-block";
 
         setInterval(clientUpdate ,1000/30); 
     }
