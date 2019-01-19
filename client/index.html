@@ -1,4 +1,6 @@
 
+<!DOCTYPE html>
+<html lang="en">
 <link rel="manifest" href="/client/manifest.json">
 <meta name="viewport" content="minimal-ui, width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0">
 <style> section { position: absolute; top:0; bottom:0; left:0; right:0;overflow: hidden;} </style>
@@ -6,15 +8,19 @@
 
 <body  id="container" style ="margin:0; overflow-x:hidden; overflow-y:hidden;">
 
+<title>Seas of Pixel</title>
+
 <div id="page_login"  >
 
-        Username: <input id="login_username" type="text"></input>
+        <label for="login_username">Username :</label>
+        <input id="login_username" type="text"></input>
+
         <button id="login_button">Logga</button>
 
-        <div><input type="checkbox" id="Qlow" name="qualiy low">    Low Quality             </div>
-        <div><input type="checkbox" id="Qmed" name="qualiy medium"> Medium Quality          </div>
-        <div><input type="checkbox" id="Qhig" name="qualiy high">   High Quality            </div>
-        <div><input type="checkbox" id="Qins" name="qualiy insane"> Destroy my PC Quality   </div>
+        <div><input type="checkbox" id="Qlow" name="qualiy low">      <label for="Qlow">Low Quality</label>           </div>
+        <div><input type="checkbox" id="Qmed" name="qualiy medium">     <label for="Qmed">Medium Quality</label>      </div>
+        <div><input type="checkbox" id="Qhig" name="qualiy high">         <label for="Qhig">High Quality</label>      </div>
+        <div><input type="checkbox" id="Qins" name="qualiy insane">  <label for="Qins">Destroy my PC Quality</label>  </div>
 
 </div>
 
@@ -492,3 +498,6 @@ if ('serviceWorker' in navigator)
 
 
 </body>
+
+
+</html>
