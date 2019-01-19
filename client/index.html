@@ -185,8 +185,8 @@
     };
 
 
-    DOM.canvas.addEventListener('touchstart', touchStart, false);
-    DOM.canvas.addEventListener('touchend', touchEnd, false);
+    DOM.canvas.addEventListener('touchstart', touchStart, {passive: true}, false);
+    DOM.canvas.addEventListener('touchend', touchEnd, {passive: true}, false);
 
 
     
