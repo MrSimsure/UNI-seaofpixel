@@ -281,20 +281,6 @@ Chest = function(x,y)
     return self;
 }
 
-require('greenlock-express').create({
-    email: 'benigni_simone@libero.it'     // The email address of the ACME user / hosting provider
-  , agreeTos: true                    // You must accept the ToS as the host which handles the certs
-  , configDir: '~/.config/acme/'      // Writable directory where certs will be saved
-  , communityMember: true             // Join the community to get notified of important updates
-  , telemetry: true                   // Contribute telemetry data to the project
-  
-    // Using your express app:
-    // simply export it as-is, then include it here
-  , app: require('./app.js')
-  
-  //, debug: true
-  }).listen(80, 443);
-
 
 //EXPRESS////////////////////////////////////////////////////
 var express = require("express");
@@ -306,6 +292,10 @@ var server = require("http").Server(app);
 app.get("/", function(req, res)  { res.sendFile(__dirname + "/client/index.html");});   
 app.use("/client", express.static(__dirname + "/client"));
 server.listen(process.env.PORT || 8080);
+
+app.get('/.well-known/acme-challenge/Ua5w6_ZPsYKlBYN5phayyZ-pigLK1VjPDZSgRy23f8w', function(req, res) {
+    res.send('Ua5w6_ZPsYKlBYN5phayyZ-pigLK1VjPDZSgRy23f8w.jxU_xaUQLg7GQW2upCTa8SRGeb8L8i5k43eKfzp0l6s')
+  })
 
 console.log("server started");
 
