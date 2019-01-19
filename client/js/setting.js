@@ -2,6 +2,8 @@ const TO_RADIANS = Math.PI/180;
 
 window.SETTINGS =
 {
+    W : 640,
+    H : 480,
     WINDOW_WIDTH : 640,
     WINDOW_HEIGHT : 480,
     onMobile : false,
@@ -42,11 +44,11 @@ SETTINGS.setScaleFactor = function()
     else
     { W = window.innerWidth;    H = window.innerHeight}
 
-    SETTINGS.globalScaleX = (W)/SETTINGS.WINDOW_WIDTH;      
-    SETTINGS.globalScaleY = (H)/SETTINGS.WINDOW_HEIGHT;
+    SETTINGS.globalScaleX = (W)/SETTINGS.W;      
+    SETTINGS.globalScaleY = (H)/SETTINGS.H;
     
-    SETTINGS.WINDOW_WIDTH = SETTINGS.WINDOW_WIDTH*SETTINGS.globalScaleX;
-    SETTINGS.WINDOW_HEIGHT = SETTINGS.WINDOW_HEIGHT*SETTINGS.globalScaleY;
+    SETTINGS.WINDOW_WIDTH = SETTINGS.W*SETTINGS.globalScaleX;
+    SETTINGS.WINDOW_HEIGHT = SETTINGS.H*SETTINGS.globalScaleY;
 }
 
 

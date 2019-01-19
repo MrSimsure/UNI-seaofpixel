@@ -9,8 +9,8 @@
 <style> section { position: absolute; top:0; bottom:0; left:0; right:0;overflow: hidden;} </style>
 
 
-<body  id="container" style ="margin:0; overflow-x:hidden; overflow-y:hidden;">
-
+<body  id="container" style ="padding: 0px; margin:0; overflow-x:hidden; overflow-y:hidden;">
+    
 <title>Seas of Pixel</title>
 
 <div id="page_login"  >
@@ -29,10 +29,7 @@
 
 
  <div id="page_game"  style="display:none; position:relative;  z-index:0">
-
-    <canvas id="canvas" style="  z-index: 1; position:absolute;" width="640" height="480""></canvas>
-    <!--<canvas id="canvasShader" style="z-index: 0; position:absolute;"  data-fragment-url="client/cells.frag" width="480" height="270"></canvas>-->
-
+    <canvas id="canvas" style="  z-index: 1; position:absolute;" width="640" height="480"></canvas>
 </div>
 
 
@@ -47,25 +44,26 @@
 
 
 <script>
-console.log(window.location.href)
-if(window.location.href == "http://simone-pwa.herokuapp.com/")
-{
-    window.location.replace("https://simone-pwa.herokuapp.com/");
-}
-console.log(window.location.href)
-if ('serviceWorker' in navigator) 
-{
-    window.addEventListener('load', function() 
+
+    //reindirizza a https
+    if(window.location.href == "http://simone-pwa.herokuapp.com/")
+    {window.location.replace("https://simone-pwa.herokuapp.com/");}
+
+
+    //installa service worker
+    if ('serviceWorker' in navigator) 
     {
-        navigator.serviceWorker.register('client/pwabuilder-sw.js').then(function(registration) 
+        window.addEventListener('load', function() 
         {
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        }, function(err) 
-        {
-            console.log('ServiceWorker registration failed: ', err);
+            navigator.serviceWorker.register('client/serviceWorker.js').then(function(registration) 
+            {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            }, function(err) 
+            {
+                console.log('ServiceWorker registration failed: ', err);
+            });
         });
-    });
-}
+    }
 
     var moving = false;
     var fpsClient;
@@ -76,14 +74,6 @@ if ('serviceWorker' in navigator)
     var keys = [];
     keys[32] = false;
     var touch = false;
-    //var shad = new GlslCanvas(canvasShader);
-
-    //CONNESSIONE
-    socket.on('connection',function(data)
-    {    
-        id = data
-        console.log("my socket id = "+id);
-    });
 
 
 
@@ -123,7 +113,9 @@ if ('serviceWorker' in navigator)
         socket.emit("login", {name:login_username.value});
 
         DOM.page_login.style.display = "none";
-        DOM.page_game.style.display = "inline-block";
+        DOM.page_game.style.display = "contents";
+
+        setInterval(clientUpdate ,1000/30); 
     }
 
 
@@ -211,8 +203,19 @@ if ('serviceWorker' in navigator)
     }
 
     var lastLoop;
+    var lastScaleX;
+    var lastScaleY;
     update = function()
     {
+        if(lastScaleX !=window.innerWidth || lastScaleY != window.innerHeight)
+        {
+            lastScaleX = window.innerWidth
+            lastScaleY = window.innerHeight
+
+            SETTINGS.setScaleFactor()
+            SETTINGS.canvasResize()
+        }
+
 
         if(keys[32] || touch == true) //space
         { if(charge < 10) {charge += 0.5}}
@@ -228,7 +231,7 @@ if ('serviceWorker' in navigator)
             let minDist = 99999999;
             let final = null;
 
-            //trova il giocatore appartenente a questo client
+           
             for(let i in  GAME.Players.list)
             {
                 let current =  GAME.Players.list[i];
@@ -252,6 +255,8 @@ if ('serviceWorker' in navigator)
                     }
                 }
             }
+
+            //trova il giocatore piu vicino
             if(final != null)
             {nearPlayer = ENGINE.point_direction(me.x,me.y,final.x,final.y) ;}
             else
@@ -260,6 +265,8 @@ if ('serviceWorker' in navigator)
             final = null;
             minDist = 999999999;
 
+
+            //trova la cassa piu vicina
             for(let i in  GAME.Chest.list)
             {
                 let current =  GAME.Chest.list[i];
@@ -270,13 +277,14 @@ if ('serviceWorker' in navigator)
                     minDist = dist
                 }
             }
+            
             if(final != null)
             {nearChest = ENGINE.point_direction(me.x,me.y,final.x,final.y) ;}
             else
             {nearChest = 0}
 
 
-
+            //joystick
             if(SETTINGS.onMobile == true && joystick != null)
             {
                 if( joystick.right() )
@@ -408,7 +416,14 @@ if ('serviceWorker' in navigator)
     }
 
 
-    setInterval(clientUpdate ,1000/30); 
+
+    //CONNESSIONE
+    socket.on('connection',function(data)
+    {    
+        id = data
+        console.log("my socket id = "+id);
+    });
+
     
     socket.on('hit',function(data)
     {   
