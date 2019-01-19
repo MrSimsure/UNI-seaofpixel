@@ -39,6 +39,11 @@
 
 <script>
 console.log(window.location.href)
+if(window.location.href == "http://simone-pwa.herokuapp.com/")
+{
+    window.location.replace("https://simone-pwa.herokuapp.com/");
+}
+console.log(window.location.href)
 if ('serviceWorker' in navigator) 
 {
     window.addEventListener('load', function() 
