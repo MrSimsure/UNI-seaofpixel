@@ -299,6 +299,7 @@ app.get('/.well-known/acme-challenge/G7iGusaoM5lAApFOmNRnS9dVh71JwGXayQUg7vgGzcA
 
 app.get("/serviceWorker.js", function(req, res)  { res.sendFile(__dirname + "/serviceWorker.js");});   
 
+app.get("/favicon.ico", function(req, res)  { res.sendFile(__dirname + "/favicon.ico");});   
 console.log("server started");
 
 //SOCKET////////////////////////////////////////////////////
