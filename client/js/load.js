@@ -1,7 +1,8 @@
 
 LOADER = {}
 
-LOADER.sprPlayer= GAME.loadImage("spr_player");
+LOADER.sprP
+layer= GAME.loadImage("spr_player");
 LOADER.sprWater = GAME.loadImage("spr_water");
 LOADER.sprScia =  GAME.loadImage("spr_scia");
 LOADER.sprOnda =  GAME.loadImage("spr_onda");
