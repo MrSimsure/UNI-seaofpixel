@@ -293,8 +293,8 @@ app.get("/", function(req, res)  {  res.sendFile(__dirname + "/client/index.html
 app.use("/client", express.static(__dirname + "/client"));
 server.listen(process.env.PORT || 8080);
 
-app.get('/.well-known/acme-challenge/G7iGusaoM5lAApFOmNRnS9dVh71JwGXayQUg7vgGzcA', function(req, res) {
-    res.send('G7iGusaoM5lAApFOmNRnS9dVh71JwGXayQUg7vgGzcA.jxU_xaUQLg7GQW2upCTa8SRGeb8L8i5k43eKfzp0l6s')
+app.get('/.well-known/acme-challenge/COwU0aY8ES-KhL5dEYvVAVDFf6am1qAmwt6n7ZN602Q', function(req, res) {
+    res.send('COwU0aY8ES-KhL5dEYvVAVDFf6am1qAmwt6n7ZN602Q.jxU_xaUQLg7GQW2upCTa8SRGeb8L8i5k43eKfzp0l6s')
   })
 
 app.get("/serviceWorker.js", function(req, res)  { res.sendFile(__dirname + "/serviceWorker.js");});   
