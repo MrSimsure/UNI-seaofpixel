@@ -6,12 +6,16 @@
 <meta name="theme-color" content="#4586ef"/>
 <meta name="Description" content="A small JS and HTML5 game about pirates!">
 
+
+
 <style> section { position: absolute; top:0; bottom:0; left:0; right:0;overflow: hidden;} </style>
 
+<iframe src="/client/mp3/silence.mp3" allow="autoplay" id="audio" style="display:none"></iframe>
+<audio id="menuTheme" src="/client/mp3/mus_menu.mp3" autoplay loop></audio>
 
 <body  id="container" style ="margin:0; overflow-x:hidden; overflow-y:hidden;">
     
-<title>Seas of Pixel</title>
+<title>Sea of Pixel</title>
 
 <div id="page_login"  >
 
@@ -44,7 +48,8 @@
 
 
 <script>
-
+    var AUDIO = true;
+    //document.getElementById("menuTheme").pause()
     //reindirizza a https
     if(window.location.href == "http://simone-pwa.herokuapp.com/")
     {window.location.replace("https://simone-pwa.herokuapp.com/");}
@@ -79,7 +84,7 @@
 
     //LOGIN
     DOM.login_button.onclick = function()
-    {
+    {   
         if(DOM.Qlow.checked){SETTINGS.quality = 0;}
         if(DOM.Qmed.checked){SETTINGS.quality = 1;}
         if(DOM.Qhig.checked){SETTINGS.quality = 3;}
@@ -129,6 +134,9 @@
         keys = (keys || []);
         keys[event.keyCode]=true;
         
+        if(event.keyCode == 16)
+        {AUDIO = !AUDIO}
+
         if(event.keyCode == 68 || event.keyCode == 39) //d 
         { socket.emit("keyPress", {id:"left", state:true}); }
          if(event.keyCode == 65 || event.keyCode == 37) //a
@@ -156,12 +164,15 @@
             }
             else
             {
+                
                 socket.emit("shoot");
                 charge = 0
             }
         }
     }    
     
+
+
 
 
     function touchStart(ev) 
@@ -456,6 +467,36 @@
     socket.on('newPositions',function(data)
     {
            fpsServer = data.fps;
+            
+           //aggiorna posizione palle 
+            for(let i = 0 ; i < data.balls.length; i++)
+            {
+                let lastOwner = -1;
+                let current = data.balls[i];
+
+                if(GAME.Balls.list[current.id] == undefined)
+                {          
+                    GAME.Balls(current.id,current.x, current.y);
+                    
+                    if(AUDIO && lastOwner != current.owner)
+                    {
+                        let me = GAME.Players.list[id]; 
+                        let au = new Audio("client/mp3/sou_cannon.mp3")
+                        au.volume = ENGINE.clamp(Math.abs( 1-( ENGINE.clamp(ENGINE.point_distance(me.x,me.y,current.x,current.y),0,1000))/1000 ),0,1)                  
+                        au.play();
+                    }
+                    
+                    lastOwner = current.owner
+
+                }
+                else
+                {            
+                    GAME.Balls.list[current.id].x = current.x;
+                    GAME.Balls.list[current.id].y = current.y;
+                }
+            }
+
+
             //aggiorna posizione giocatori
             for(let i = 0 ; i < data.players.length; i++)
             {
@@ -476,21 +517,7 @@
             }
 
 
-            //aggiorna posizione palle 
-            for(let i = 0 ; i < data.balls.length; i++)
-            {
-                let current = data.balls[i];
 
-                if(GAME.Balls.list[current.id] == undefined)
-                {          
-                    GAME.Balls(current.id,current.x, current.y);
-                }
-                else
-                {            
-                    GAME.Balls.list[current.id].x = current.x;
-                    GAME.Balls.list[current.id].y = current.y;
-                }
-            }
 
 
             //aggiorna posizione casse 

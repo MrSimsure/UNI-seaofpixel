@@ -15,6 +15,7 @@ LOADER.sprBussola = GAME.loadImage("spr_bussola")
 LOADER.sprFreccia = GAME.loadImage("spr_freccia")
 
 
+LOADER.souCannon = GAME.loadAudio("sou_cannon")
 
 DOM = {}
 DOM.canvas = document.getElementById("canvas");

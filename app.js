@@ -298,7 +298,6 @@ app.get('/.well-known/acme-challenge/G7iGusaoM5lAApFOmNRnS9dVh71JwGXayQUg7vgGzcA
   })
 
 app.get("/serviceWorker.js", function(req, res)  { res.sendFile(__dirname + "/serviceWorker.js");});   
-
 app.get("/favicon.ico", function(req, res)  { res.sendFile(__dirname + "/favicon.ico");});   
 console.log("server started");
 
@@ -351,9 +350,9 @@ io.sockets.on("connection", function(socket)
                 {
                     let current =  GAME.playerList[socket.id];
 
-
-                            Balls(current.x,current.y,current.angle+90,8, socket.id)
-                            Balls(current.x,current.y,current.angle+270,8, socket.id)
+                    Balls(current.x,current.y,current.angle+90,8, socket.id)
+                    Balls(current.x,current.y,current.angle+270,8, socket.id)
+                    
 
                 });
         });
@@ -440,7 +439,8 @@ updateChest = function()
             ({
                 id : current.id,
                 x : current.x,
-                y : current.y
+                y : current.y,
+                owner : current.owner,
             });
         }
     }        

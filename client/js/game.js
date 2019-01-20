@@ -9,6 +9,15 @@ GAME.loadImage = function(name)
     return temp;
 }
 
+
+GAME.loadAudio = function(name)
+{
+    let temp = new Audio();
+    temp.src = "/client/mp3/"+name+".mp3";
+    return temp;
+}
+
+
 GAME.sprite = function(name, frameNum, width, height, speed)
 {
     var self = {};

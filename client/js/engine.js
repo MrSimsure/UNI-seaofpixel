@@ -48,3 +48,9 @@ ENGINE.random_range = function(min, max)
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+
+ENGINE.clamp = function(a,b,c)
+{
+    return Math.max(b,Math.min(c,a));
+}
