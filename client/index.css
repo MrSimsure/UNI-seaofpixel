@@ -15,3 +15,23 @@
     text-align: center;
     margin:0 auto; 
 }
+
+
+
+.inLabel
+{
+    position:relative; 
+    display: block; 
+    font-size:25px; 
+    font-weight:600; 
+}
+
+
+.inInput
+{
+    position:relative; 
+    display: block;
+    top:50%; 
+    font-size:25px; 
+    font-weight:600;
+}
