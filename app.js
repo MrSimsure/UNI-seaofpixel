@@ -1,6 +1,6 @@
 
 
-require("./server/engine.js");
+require("./client/js/engine.js");
 require("./server/database.js")
 
 var GAME = {}
@@ -132,8 +132,8 @@ Player = function(name, id, x, y)
             //controlla movimento 
             if(GAME.playerCollision)
             {
-                let tempX = self.x+lengthdir_x(self.accelleration,self.angle)
-                let tempY = self.y+lengthdir_y(self.accelleration,self.angle)
+                let tempX = self.x+ENGINE.lengthdir_x(self.accelleration,self.angle)
+                let tempY = self.y+ENGINE.lengthdir_y(self.accelleration,self.angle)
 
                 let moveX = true
                 let moveY = true;
@@ -271,8 +271,8 @@ Chest = function(x,y)
 
     self.changePosition = function()
     {
-        self.x = random_range(0,1000);
-        self.y = random_range(0,1000);
+        self.x = ENGINE.random_range(0,2000);
+        self.y = ENGINE.random_range(0,2000);
 
         self.collider.set(self.x-8,self.y-8,8,8);
     }
@@ -306,7 +306,7 @@ var maxChest = 20;
 
 for(let i=0; i<maxChest; i++)
 {
-    Chest( random_range(0,2000), random_range(0,2000) );
+    Chest( ENGINE.random_range(0,2000), ENGINE.random_range(0,2000) );
 }
 
 
@@ -420,7 +420,8 @@ updateBall = function()
             ({
                 id : current.id,
                 x : current.x,
-                y : current.y
+                y : current.y,
+                owner :current.owner
             });
         }
     }        
@@ -442,7 +443,6 @@ updateChest = function()
                 id : current.id,
                 x : current.x,
                 y : current.y,
-                owner : current.owner,
             });
         }
     }        

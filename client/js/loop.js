@@ -255,6 +255,8 @@ for(let i=0; i<waveNum; i++)
 var nu = 0
 menuDraw = function()
 {
+    
+
     DOM.ctx.clearRect(0,0,DOM.canvas.width,DOM.canvas.height)
 
     DOM.ctx.fillStyle = "#99E6F9";
@@ -267,10 +269,16 @@ menuDraw = function()
     for(let i=0; i<waveNum; i++)
     {
         let tempo = Date.now()-time.getTime();
-        DOM.ctx.lineTo( seaPoint[i].x , waveHeight+(Math.sin((Math.sin(tempo/4000)*60)+seaPoint[ENGINE.mod(i-Math.round(nu),waveNum)].x)*10)+Math.sin(tempo/5000)*50 )
+        let movimentoOnda = (Math.sin(tempo/5000));
+        let movimentoMare = Math.sin(tempo/5000);
+        let ondaVicina = ENGINE.mod(i-Math.round(nu),waveNum)
+
+        DOM.ctx.lineTo( seaPoint[i].x , waveHeight+(Math.sin( movimentoOnda+seaPoint[ondaVicina].x)*10 )+movimentoMare )
     }
     
-    nu+=0.1;
+    nu+=0.2;
+    if(nu > waveNum)
+    {nu=0}
 
     DOM.ctx.lineTo( DOM.canvas.width+16 , waveHeight )
     DOM.ctx.lineTo(DOM.canvas.width, DOM.canvas.height)

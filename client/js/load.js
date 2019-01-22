@@ -51,10 +51,6 @@ DOM.Qhig = document.getElementById("Qhig");
 DOM.Qins = document.getElementById("Qins");
 
 
-if(SETTINGS.onMobile)
-{DOM.Qlow.checked = true;}
-else
-{DOM.Qhig.checked = true;}
 
 
 //connettiti al server

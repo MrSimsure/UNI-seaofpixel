@@ -2,6 +2,7 @@ if(window.location.href == "http://seaofpixel.herokuapp.com/")
 {window.location.replace("https://seaofpixel.herokuapp.com/");}
 
 
+
 //installa service worker
 if ('serviceWorker' in navigator) 
 {

@@ -287,17 +287,17 @@
     socket.on('newPositions',function(data)
     {
            fpsServer = data.fps;
-            
+           let lastOwner = -1;
            //aggiorna posizione palle 
             for(let i = 0 ; i < data.balls.length; i++)
             {
-                let lastOwner = -1;
+                
                 let current = data.balls[i];
 
                 if(GAME.Balls.list[current.id] == undefined)
                 {          
                     GAME.Balls(current.id,current.x, current.y);
-                    
+                    console.log(lastOwner+"   "+current.owner)
                     if(SETTINGS.audio == true && lastOwner != current.owner)
                     {
                         let me = GAME.Players.list[id]; 
