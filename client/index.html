@@ -10,14 +10,59 @@
 
 <style> section { position: absolute; top:0; bottom:0; left:0; right:0;overflow: hidden;} </style>
 
-<iframe src="/client/mp3/silence.mp3" allow="autoplay" id="audio" style="display:none"></iframe>
-<audio id="menuTheme" src="/client/mp3/mus_menu.mp3" autoplay loop></audio>
+<head>
+    <link rel="stylesheet" type="text/css" href="client/index.css">
+</head>
+
 
 <body  id="container" style ="margin:0; overflow-x:hidden; overflow-y:hidden;">
     
 <title>Sea of Pixel</title>
 
-<div id="page_login"  >
+<div id="page_init"  style="display:inline; position: absolute;   width: 100%; height: 100%;  z-index:2">
+    <label style="display:inline; position: fixed; width: 100%; top:10%; text-align: center; font-size:44px;font-weight:700;">Vuoi abilitare la musica?</label>
+    
+    <div style="display: inline-block;  width: 49%; height: 100%;   margin:0 auto;">
+        <button class="colButton" id="music_button_on" style="top:50%;  width:30%;  height:30%;  margin:0 auto;  font-size:65px;  font-weight:600;">SI</button>
+    </div>
+
+    <div style="display: inline-block;  width: 50%; height: 100%;   margin:0 auto;">
+        <button class="colButton" id="music_button_off" style="top:50%;  width:30%;  height:30%;   font-size:65px;   font-weight:600;">NO</button>
+    </div>
+</div>
+
+
+<div id="page_menu"  style="display:none; position: absolute;   width: 100%; height: 100%;  z-index:2;    align-items: center;justify-content: center;">
+    <label style="display:inline; position: fixed; width: 100%; top:5%; text-align: center; font-size:44px;font-weight:700;">SEAS OF PIXEL</label>
+    
+    <div style="width: 49%; height: 100%;  margin:0 auto;  align-items: center; justify-content: center;">
+        
+                
+        <label class="colLabel" for="login_username"    style="top:50%">Username :</label>
+        <input class="colButton" id="login_username"    style="top:50%;  width:50%;" type="text"></input>
+
+        <label class="colLabel" for="login_password"    style="top:55%">Password :</label>
+        <input class="colButton" id="login_password"    style="top:55%;  width:50%;" type="text"></input>
+
+    </div>
+
+
+    <div style="width: 49%; height: 100%;  margin:0 auto;  align-items: center; justify-content: center;">
+        
+        <button class="colButton" id="register_button" style="display: block;    top:40%;  width:50%;  height:20%;   font-size:25px;   font-weight:600;">REGISTRATI</button>
+        <button class="colButton" id="login_button" style="display: block;    top:40%;  width:50%;  height:20%;   font-size:25px;   font-weight:600;">ENTRA</button>
+    </div>
+
+
+    <div style="width: 50%; height: 100%;   margin:0 auto;  align-items: center; justify-content: center;">
+        
+        <button class="colButton" id="music_button_off" style="top:50%;  width:30%;  height:30%;   font-size:15px;   font-weight:600;">test</button>
+    </div>
+</div>
+
+
+
+<div id="page_login"   style="display:none; position:absolute;  z-index:2">
 
         <label for="login_username">Username :</label>
         <input id="login_username" type="text"></input>
@@ -32,11 +77,11 @@
 </div>
 
 
- <div id="page_game"  style="display:none; position:relative;  z-index:0">
-    <canvas id="canvas" style="  z-index: 1; position:absolute;" width="640" height="480""></canvas>
+ <div id="page_game"  style="display:inline; position:relative;  z-index:0">
+    <canvas id="canvas" style="  z-index: 1; position:absolute;" width="640" height="480"></canvas>
 </div>
 
-
+<script src="/client/js/init.js"></script>
 <script src="/client/js/engine.js"></script>
 
 <script src="/client/js/virtualjoystick.js"></script>
@@ -45,30 +90,11 @@
 <script src="/client/js/setting.js"></script>
 <script src="/client/js/game.js"></script>
 <script src="/client/js/load.js"></script>
-
+<script src="/client/js/loop.js"></script>
 
 <script>
-    var AUDIO = true;
-    //document.getElementById("menuTheme").pause()
-    //reindirizza a https
-    if(window.location.href == "http://seaofpixel.herokuapp.com/")
-    {window.location.replace("https://seaofpixel.herokuapp.com/");}
 
-
-    //installa service worker
-    if ('serviceWorker' in navigator) 
-    {
-        window.addEventListener('load', function() 
-        {
-            navigator.serviceWorker.register('../serviceWorker.js').then(function(registration) 
-            {
-                console.log('ServiceWorker registration successful with scope: ', registration.scope);
-            }, function(err) 
-            {
-                console.log('ServiceWorker registration failed: ', err);
-            });
-        });
-    }
+   
 
     var moving = false;
     var fpsClient;
@@ -79,12 +105,20 @@
     var keys = [];
     keys[32] = false;
     var touch = false;
+    var inGame = false;
 
 
+
+
+    var menu_update = setInterval(menuDraw ,1000/90); 
 
     //LOGIN
     DOM.login_button.onclick = function()
     {   
+
+
+        clearInterval(menu_update)
+        
         if(DOM.Qlow.checked){SETTINGS.quality = 0;}
         if(DOM.Qmed.checked){SETTINGS.quality = 1;}
         if(DOM.Qhig.checked){SETTINGS.quality = 3;}
@@ -107,23 +141,21 @@
                         });
         }
 
-        //RISCALA IL CANVAS
-        setTimeout(function () 
-        {
-            SETTINGS.setScaleFactor()
-            SETTINGS.canvasResize()
-        }, 1000);
+
 
         //INVIA I DATI DI LOGIN E PASSA AL GIOCO
         socket.emit("login", {name:login_username.value});
 
+        DOM.page_menu.style.display = "none";
         DOM.page_login.style.display = "none";
-        DOM.page_game.style.display = "contents";
+        DOM.page_game.style.display = "inline";
 
-        setInterval(clientUpdate ,1000/30); 
+
+        initGame();
+
+        inGame = true;
+        
     }
-
-
 
 
 
@@ -145,6 +177,7 @@
         { socket.emit("keyPress", {id:"up", state:true}); moving = true;}
     }
     
+
     document.onkeyup = function(event)
     {
         keys = (keys || []);
@@ -213,220 +246,7 @@
         GAME.Fog(room.width+200,i*200)
     }
 
-    var lastLoop;
-    var lastScaleX;
-    var lastScaleY;
-    update = function()
-    {
-        if(lastScaleX !=window.innerWidth || lastScaleY != window.innerHeight)
-        {
-            lastScaleX = window.innerWidth
-            lastScaleY = window.innerHeight
-
-            SETTINGS.setScaleFactor()
-            SETTINGS.canvasResize()
-        }
-
-
-        if(keys[32] || touch == true) //space
-        { if(charge < 10) {charge += 0.5}}
-
-
-            //aggiorna fps
-            let thisLoop = new Date();
-            if(Math.random() > 0.8)
-            {fpsClient = Math.floor(1000 / (thisLoop - lastLoop));}
-            lastLoop = thisLoop;
-
-            let me = GAME.Players.list[id];
-            let minDist = 99999999;
-            let final = null;
-
-           
-            for(let i in  GAME.Players.list)
-            {
-                let current =  GAME.Players.list[i];
-
-                GAME.Scia(current.x*SETTINGS.globalScaleX,  current.y*SETTINGS.globalScaleY);
-        
-                if(current.id == id)
-                {
-                    for(let i=0; i<SETTINGS.quality; i++)
-                    {GAME.Onda(Math.random()*room.width*SETTINGS.globalScaleX, Math.random()*room.height*SETTINGS.globalScaleY);} 
-
-                    camera.update(current.x*SETTINGS.globalScaleX, current.y*SETTINGS.globalScaleY);
-                }
-                else
-                {    
-                    let dist = ENGINE.point_distance(me.x,me.y,current.x,current.y)
-                    if(dist < minDist)
-                    {
-                        final = current
-                        minDist = dist
-                    }
-                }
-            }
-
-            //trova il giocatore piu vicino
-            if(final != null)
-            {nearPlayer = ENGINE.point_direction(me.x,me.y,final.x,final.y) ;}
-            else
-            {nearPlayer = 0}
- 
-            final = null;
-            minDist = 999999999;
-
-
-            //trova la cassa piu vicina
-            for(let i in  GAME.Chest.list)
-            {
-                let current =  GAME.Chest.list[i];
-                let dist = ENGINE.point_distance(me.x,me.y,current.x,current.y)
-                if(dist < minDist)
-                {
-                    final = current
-                    minDist = dist
-                }
-            }
-            
-            if(final != null)
-            {nearChest = ENGINE.point_direction(me.x,me.y,final.x,final.y) ;}
-            else
-            {nearChest = 0}
-
-
-            //joystick
-            if(SETTINGS.onMobile == true && joystick != null)
-            {
-                if( joystick.right() )
-                { socket.emit("keyPress", {id:"right", state:true}); } else { socket.emit("keyPress", {id:"right", state:false}); }
-                if( joystick.left() )
-                {  socket.emit("keyPress", {id:"left", state:true});} else {  socket.emit("keyPress", {id:"left", state:false});}
-                if( joystick.up() )
-                {  socket.emit("keyPress", {id:"up", state:true}); } else {  socket.emit("keyPress", {id:"up", state:false}); }
-                if( joystick.down() )
-                {  socket.emit("keyPress", {id:"down", state:true}); } else {  socket.emit("keyPress", {id:"down", state:false}); }
-            }
-
-    }
-
-    var sBussola = GAME.sprite(LOADER.sprBussola,1,64,64,1)
-    var sFreccia = GAME.sprite(LOADER.sprFreccia,1,64,64,1)
-
-    draw = function()
-    {   
-            //pulisci il canvas
-            DOM.ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            //disegna la mappa
-            //room.map.draw(ctx, camera.xView, camera.yView);
-            DOM.ctx.fillStyle = "#32479C";
-            DOM.ctx.fillRect(0,0,canvas.width,canvas.height);
-            DOM.ctx.fillStyle = "#000000";
-
-
-            //aggiorna e disegna le scie
-            for(let i = GAME.Onda.list.length-1 ; i >= 0; i--)
-            {       
-                let current =  GAME.Onda.list[i];
-                current.update();
-                current.draw();
-            }
-
-            //aggiorna e disegna le onde
-            for(let i = GAME.Scia.list.length-1 ; i >= 0; i--)
-            {       
-                let current =  GAME.Scia.list[i];
-                current.update();
-                current.draw();
-            }
-
-            //disegna le casse
-            for(let i in  GAME.Chest.list)
-            {
-                let current =  GAME.Chest.list[i];
-                current.draw();
-            }
-
-            //disegna tutti i giocatori
-            for(let i in  GAME.Players.list)
-            {
-                let current =  GAME.Players.list[i];
-                current.draw();
-            }
-            
-            
-            //disegna palle di cannone
-            for(let i in  GAME.Balls.list)
-            {
-                let current =  GAME.Balls.list[i];
-                current.draw();
-            }
-
-            //disegna esplosioni
-            for(let i in  GAME.Explosion.list)
-            {
-                let current =  GAME.Explosion.list[i];
-                current.update();
-                current.draw();
-            }
-
-            //disegna splash
-            for(let i in  GAME.Splash.list)
-            {
-                let current =  GAME.Splash.list[i];
-                current.update();
-                current.draw();
-            }
-
-
-            //disegna splash
-            for(let i in  GAME.Fog.list)
-            {
-                let current =  GAME.Fog.list[i];
-                current.draw();
-            }
-
-
-            //disegna barra caricamento
-            if(charge > 0)
-            {
-                let X = GAME.Players.list[id].x*SETTINGS.globalScaleX-camera.xView;
-                let Y = GAME.Players.list[id].y*SETTINGS.globalScaleY-camera.yView;
-
-                DOM.ctx.fillStyle = "black";
-                DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY, Y+30*SETTINGS.globalScaleY, 50*SETTINGS.globalScaleY, 5);    
-                DOM.ctx.fillStyle = "red";
-                DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY, Y+30*SETTINGS.globalScaleY, charge*5*SETTINGS.globalScaleY, 5);
-            }
-
-            //disegna fps
-            DOM.ctx.fillStyle = "black";
-            DOM.ctx.font = (8*SETTINGS.globalScaleX)+"px Georgia";
-            DOM.ctx.fillText("FPS C:"+fpsClient, 10,  (480-64)*SETTINGS.globalScaleY);
-            DOM.ctx.fillText("FPS S:"+fpsServer, 10,  (480-32)*SETTINGS.globalScaleY);
-
-            //disegna punti
-            DOM.ctx.fillText("POINTS:"+GAME.Players.list[socket.id].points, 10, 16*SETTINGS.globalScaleY);
-
-            //disegna bussola 
-            GAME.drawSprite(sBussola, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, 0, 1);
-            GAME.drawSprite(sFreccia, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearChest, 0.8);
-
-            if(Object.keys(GAME.Players.list).length > 1)
-            {GAME.drawSprite(sFreccia, 1, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearPlayer, 0.8);}
-
-    }
-
-
-
-    clientUpdate = function()
-    {
-        update();
-        draw();
-    }
-
-
+   
 
     //CONNESSIONE
     socket.on('connection',function(data)
@@ -478,7 +298,7 @@
                 {          
                     GAME.Balls(current.id,current.x, current.y);
                     
-                    if(AUDIO && lastOwner != current.owner)
+                    if(SETTINGS.audio == true && lastOwner != current.owner)
                     {
                         let me = GAME.Players.list[id]; 
                         let au = new Audio("client/mp3/sou_cannon.mp3")
@@ -539,6 +359,8 @@
 
     });
 
+
+   
 </script>
 
 

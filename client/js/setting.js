@@ -10,6 +10,7 @@ window.SETTINGS =
     globalScaleX:1,
     globalScaleY:1,
     quality:2,
+    audio:false,
 }
 
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) 
@@ -62,3 +63,5 @@ SETTINGS.canvasResize = function()
     camera = new GAME.Camera(0, 0, DOM.canvas, room);   
 
 }
+
+

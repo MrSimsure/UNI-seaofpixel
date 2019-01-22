@@ -293,12 +293,9 @@ app.get("/", function(req, res)  {  res.sendFile(__dirname + "/client/index.html
 app.use("/client", express.static(__dirname + "/client"));
 server.listen(process.env.PORT || 8080);
 
-app.get('/.well-known/acme-challenge/COwU0aY8ES-KhL5dEYvVAVDFf6am1qAmwt6n7ZN602Q', function(req, res) {
-    res.send('COwU0aY8ES-KhL5dEYvVAVDFf6am1qAmwt6n7ZN602Q.jxU_xaUQLg7GQW2upCTa8SRGeb8L8i5k43eKfzp0l6s')
-  })
 
 app.get("/serviceWorker.js", function(req, res)  { res.sendFile(__dirname + "/serviceWorker.js");});   
-app.get("/favicon.ico", function(req, res)  { res.sendFile(__dirname + "/favicon.ico");});   
+app.get("/favicon.ico", function(req, res)  { res.sendFile(__dirname + "/favic on.ico");});   
 console.log("server started");
 
 //SOCKET////////////////////////////////////////////////////
@@ -324,8 +321,13 @@ io.sockets.on("connection", function(socket)
         //quando ricevi un messaggio dal client
         socket.on("login", function(data)
         {
+                let nome;
                 //AGGIUNGI IL GIOCATORE ALLA LISTA
-                let player = Player(data.name, socket.id, Math.random()*2000,Math.random()*2000);
+                if(data.name != undefined)
+                {nome = data.name}
+                else
+                {nome = ""}
+                let player = Player(nome, socket.id, Math.random()*2000,Math.random()*2000);
 
                 //RICEVUTO MESAGGIO DI MOVIMENTO
                 socket.on("keyPress", function(data)
