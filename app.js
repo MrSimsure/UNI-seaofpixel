@@ -126,6 +126,7 @@ Player = function(name, id, x, y)
                 {
                     self.points += 100;
                     current.changePosition();
+                    DB.updatePoints(self.name, self.points)
                 }
             }
 
@@ -318,16 +319,50 @@ io.sockets.on("connection", function(socket)
         socket.emit("connection", socket.id);
         console.log("connesso  "+socketList[socket.id].id);
 
-        //quando ricevi un messaggio dal client
+
+
+        
+        //RICEVUTO MESSAGGIO DI ATTACCO
         socket.on("login", function(data)
+        {
+                DB.loginUser(data.name, data.password , 
+                    function(check,points)
+                    {
+                        socket.emit("acces", check);
+
+                    }
+                    );
+        });  
+
+        
+        //RICEVUTO MESSAGGIO DI ATTACCO
+        socket.on("register", function(data)
+        {
+                DB.checkUser(data.name, 
+                    function(check)
+                    {
+                        if(check == false)
+                        {DB.registerUser(data.name,  data.password); socket.emit("acces", true);}
+                        else
+                        {socket.emit("acces", false);}
+                    });
+        });  
+
+
+
+        //quando ricevi un messaggio dal client
+        socket.on("gameStart", function(data)
         {
                 let nome;
                 //AGGIUNGI IL GIOCATORE ALLA LISTA
-                if(data.name != undefined)
-                {nome = data.name}
+                if(data != undefined)
+                {nome = data}
                 else
                 {nome = ""}
+
                 let player = Player(nome, socket.id, Math.random()*2000,Math.random()*2000);
+                DB.getPoints(nome, function(point){player.points = point})
+                
 
                 //RICEVUTO MESAGGIO DI MOVIMENTO
                 socket.on("keyPress", function(data)
@@ -357,6 +392,8 @@ io.sockets.on("connection", function(socket)
                     
 
                 });
+
+              
         });
 
 

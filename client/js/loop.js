@@ -2,6 +2,15 @@
 
 initGame = function()
 {
+
+    inGame = true;
+    lastLoop = 0;
+    lastScaleX = 0;
+    lastScaleY = 0;
+
+
+    clearInterval(menu_update)
+
     for(let i=-2; i<(room.width/200)+2; i++)
     {
         GAME.Fog(i*200,-180)
@@ -14,15 +23,43 @@ initGame = function()
         GAME.Fog(room.width+200,i*200)
     }
 
+        
+    if(DOM.Qlow.checked){SETTINGS.quality = 0;}
+    if(DOM.Qmed.checked){SETTINGS.quality = 1;}
+    if(DOM.Qhig.checked){SETTINGS.quality = 3;}
+    if(DOM.Qins.checked){SETTINGS.quality = 50;}
+
+
+    //SE MOBILE FULLSCREEN E JOYSTICK
+    if(SETTINGS.onMobile)
+    {
+        SETTINGS.openFullscreen();     
+        
+        joystick = new VirtualJoystick(
+                    {
+                    mouseSupport: true,
+                    stationaryBase: true,
+                    baseX: 90,
+                    baseY: 260,
+                    limitStickTravel: true,
+                    stickRadius: 50
+                    });
+    }
+
     setInterval(clientUpdate ,1000/30); 
+
+
+    DOM.page_menu.style.display = "none";
+    DOM.page_login.style.display = "none";
+    DOM.page_game.style.display = "inline";
+
+
 }
 
 
 
 
-var lastLoop;
-var lastScaleX;
-var lastScaleY;
+
 update = function()
 {
     if(lastScaleX !=window.innerWidth || lastScaleY != window.innerHeight)
@@ -233,26 +270,35 @@ clientUpdate = function()
     draw();
 }
 
-SETTINGS.setScaleFactor()
-SETTINGS.canvasResize()
 
-var time = new Date();
-var seaPoint = [];
-var waveNum = Math.round(DOM.canvas.width/13);
-var waveHeight = DOM.canvas.height/3;
 
-for(let i=0; i<waveNum; i++)
-{ 
-    seaPoint[i] = 
-    {
-        x : i/waveNum * DOM.canvas.width,
-        y : 0,
-        spd : 0
+initMenu = function()
+{
+
+    SETTINGS.setScaleFactor()
+    SETTINGS.canvasResize()
+
+    time = new Date();
+    seaPoint = [];
+    waveNum = Math.round(DOM.canvas.width/13);
+    waveHeight = DOM.canvas.height/3;
+    nu = 0
+
+    for(let i=0; i<waveNum; i++)
+    { 
+        seaPoint[i] = 
+        {
+            x : i/waveNum * DOM.canvas.width,
+            y : 0,
+            spd : 0
+        }
+
     }
 
+    menu_update = setInterval(menuDraw ,1000/90); 
 }
 
-var nu = 0
+
 menuDraw = function()
 {
     
