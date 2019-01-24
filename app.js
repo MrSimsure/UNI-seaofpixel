@@ -296,7 +296,7 @@ server.listen(process.env.PORT || 8080);
 
 
 app.get("/serviceWorker.js", function(req, res)  { res.sendFile(__dirname + "/serviceWorker.js");});   
-app.get("/favicon.ico", function(req, res)  { res.sendFile(__dirname + "/favic on.ico");});   
+app.get("/favicon.ico", function(req, res)  { res.sendFile(__dirname + "/favicon.ico");});   
 console.log("server started");
 
 //SOCKET////////////////////////////////////////////////////

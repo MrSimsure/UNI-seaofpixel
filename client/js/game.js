@@ -1,5 +1,5 @@
 
-window.GAME = {};
+GAME = {};
 
 
 GAME.loadImage = function(name)
@@ -68,7 +68,7 @@ GAME.drawSprite = function(sprite,image,x,y,angle,size)
                 sprite.width , 
                 sprite.height);
 
-                DOM.ctx.restore(); 
+    DOM.ctx.restore(); 
 
 
    sprite.update();
@@ -423,7 +423,7 @@ GAME.Chest = function(id,x,y)
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
 
-        GAME.drawSprite(self.sprite, self.sprite.frameIndex, X,  Y, 0, 1); 
+        GAME.drawSprite(self.sprite, self.sprite.frameIndex, X,  Y, 0, 1.4); 
    }
 
    GAME.Chest.list[self.id] = self;

@@ -12,6 +12,7 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="client/index.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 
 
@@ -19,49 +20,51 @@
     
 <title>Sea of Pixel</title>
 
+<!--PAGINA INIZIALE-->
 <div id="page_init"  style="display:inline; position: absolute;   width: 100%; height: 100%;  z-index:2">
     <label style="display:inline; position: fixed; width: 100%; top:10%; text-align: center; font-size:44px;font-weight:700;">Vuoi abilitare la musica?</label>
     
     <div style="display: inline-block;  width: 49%; height: 100%;   margin:0 auto;">
-        <button class="colButton" id="music_button_on" style="position:relative; display: block;  top:50%;  width:30%;  height:30%;  margin:0 auto;  font-size:65px;  font-weight:600;">SI</button>
+        <button class="colButton" id="music_button_on" style=" top:50%;  width:30%;  height:30%;  margin:0 auto;  font-size:65px;  font-weight:600;">SI</button>
     </div>
 
     <div style="display: inline-block;  width: 50%; height: 100%;   margin:0 auto;">
-        <button class="colButton" id="music_button_off" style="position:relative; display: block;  top:50%;  width:30%;  height:30%;   font-size:65px;   font-weight:600;">NO</button>
+        <button class="colButton" id="music_button_off" style="top:50%;  width:30%;  height:30%;   font-size:65px;   font-weight:600;">NO</button>
     </div>
 </div>
 
-
+<!--PAGINA MENU PRINCIPALE-->
 <div id="page_menu"  style="display:none; position: absolute;   width: 100%; height: 100%;  z-index:2;    align-items: center;justify-content: center;">
+    
     <label style="display:inline; position: fixed; width: 100%; top:5%; text-align: center; font-size:44px;font-weight:700;">SEAS OF PIXEL</label>
     
     <div style="width: 49%; height: 100%;  margin:0 auto;  align-items: center; justify-content: center;">
         
                 
-        <label class="inLabel" for="login_username"   style="left:15%; top:50%">Username :</label>
-        <input class="inInput" id="login_username"    style="left:15%; top:50%; width:50%;" type="text"></input>
+        <label class="inLabel" for="login_username"   style="top:50%; width:50%;">Username</label>
+        <input class="inInput" id="login_username"    style="top:50%; width:50%;" type="text"></input>
 
-        <label class="inLabel" for="login_password"   style="left:15%; top:55%">Password :</label>
-        <input class="inInput" id="login_password"    style="left:15%; top:55%;  width:50%;" type="text"></input>
+        <label class="inLabel" for="login_password"   style="top:55%; width:50%;">Password</label>
+        <input class="inInput" id="login_password"    style="top:55%;  width:50%;" type="text"></input>
 
     </div>
 
 
     <div style="width: 49%; height: 100%;  margin:0 auto;  align-items: center; justify-content: center;">
         
-        <button class="colButton" id="register_button" style="position:relative; display: block;  top:40%;  width:80%;  height:20%;   font-size:25px;   font-weight:600;">REGISTRATI</button>
-        <button class="colButton" id="login_button" style="position:relative; display: block; top:40%;  width:80%;  height:20%;   font-size:25px;   font-weight:600;">ENTRA</button>
+        <button class="colButton" id="register_button" style=" top:40%;  width:80%;  height:20%;   font-size:25px;   font-weight:600;">REGISTRATI</button>
+        <button class="colButton" id="login_button" style=" top:40%;  width:80%;  height:20%;   font-size:25px;   font-weight:600;">ENTRA</button>
     </div>
 
 
     <div style="width: 50%; height: 100%;   margin:0 auto;  align-items: center; justify-content: center;">
         
-        <button class="colButton" id="music_button_off" style="position:relative; display: block; top:50%;  width:30%;  height:30%;   font-size:15px;   font-weight:600;">test</button>
+        <button class="colButton" id="music_button_off" style="visibility:hidden; display:relative; display: block; top:50%;  width:30%;  height:30%;   font-size:15px;   font-weight:600;">test</button>
     </div>
 </div>
 
 
-
+<!--PAGINA OPZIONI-->
 <div id="page_login"   style="display:none; position:absolute;  z-index:2">
         <div><input type="checkbox" id="Qlow" name="qualiy low">      <label for="Qlow">Low Quality</label>           </div>
         <div><input type="checkbox" id="Qmed" name="qualiy medium">     <label for="Qmed">Medium Quality</label>      </div>
@@ -71,6 +74,7 @@
 </div>
 
 
+<!--PAGINA DI GIOCO-->
  <div id="page_game"  style="display:inline; position:relative;  z-index:0">
     <canvas id="canvas" style="  z-index: 1; position:absolute;" width="640" height="480"></canvas>
 </div>
@@ -89,7 +93,7 @@
 <script>
 
    
-
+    var mainDir = window.location.href
     var moving = false;
     var fpsClient;
     var fpsServer;
@@ -192,8 +196,8 @@
     DOM.canvas.addEventListener('touchstart', touchStart, {passive: true}, false);
     DOM.canvas.addEventListener('touchend', touchEnd, {passive: true}, false);
 
-    DOM.login_username.onclick = function(){DOM.login_username.style = "left:15%; top:50%; width:50%;";}
-    DOM.login_password.onclick = function(){DOM.login_password.style = "left:15%; top:55%; width:50%;";}
+    DOM.login_username.onclick = function(){DOM.login_username.style = "top:50%; width:50%;";}
+    DOM.login_password.onclick = function(){DOM.login_password.style = "top:55%; width:50%;";}
     
     
     //CONNESSIONE
@@ -206,8 +210,8 @@
         }
         else
         {
-            DOM.login_username.style = "left:15%; top:50%; width:50%; border:solid; border-width:2px;  border-color:red;";
-            DOM.login_password.style = "left:15%; top:55%; width:50%; border:solid; border-width:2px;  border-color:red;";
+            DOM.login_username.style = " position:relative; display:block;top:50%; width:50%; border:solid; border-width:2px;  border-color:red;";
+            DOM.login_password.style = " position:relative; display:block;top:55%; width:50%; border:solid; border-width:2px;  border-color:red;";
         }
     });
 
@@ -266,7 +270,7 @@
                     if(SETTINGS.audio == true && lastOwner != current.owner)
                     {
                         let me = GAME.Players.list[id]; 
-                        let au = new Audio("client/mp3/sou_cannon.mp3")
+                        let au = LOADER.souCannon.cloneNode();
                         au.volume = ENGINE.clamp(Math.abs( 1-( ENGINE.clamp(ENGINE.point_distance(me.x,me.y,current.x,current.y),0,1000))/1000 ),0,1)                  
                         au.play();
                     }

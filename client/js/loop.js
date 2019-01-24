@@ -5,8 +5,7 @@ initGame = function()
 
     inGame = true;
     lastLoop = 0;
-    lastScaleX = 0;
-    lastScaleY = 0;
+
 
 
     clearInterval(menu_update)
@@ -62,6 +61,7 @@ initGame = function()
 
 update = function()
 {
+    
     if(lastScaleX !=window.innerWidth || lastScaleY != window.innerHeight)
     {
         lastScaleX = window.innerWidth
@@ -275,8 +275,9 @@ clientUpdate = function()
 initMenu = function()
 {
 
-    SETTINGS.setScaleFactor()
-    SETTINGS.canvasResize()
+
+    lastScaleX = 0;
+    lastScaleY = 0;
 
     time = new Date();
     seaPoint = [];
@@ -301,7 +302,31 @@ initMenu = function()
 
 menuDraw = function()
 {
+
+    if(lastScaleX !=window.innerWidth || lastScaleY != window.innerHeight)
+    {
+        lastScaleX = window.innerWidth
+        lastScaleY = window.innerHeight
+
+        SETTINGS.setScaleFactor()
+        SETTINGS.canvasResize()
+
+        waveNum = Math.round(DOM.canvas.width/13);
+        waveHeight = DOM.canvas.height/3;
     
+        for(let i=0; i<waveNum; i++)
+        { 
+            seaPoint[i] = 
+            {
+                x : i/waveNum * DOM.canvas.width,
+                y : 0,
+                spd : 0
+            }
+    
+        }
+    }
+
+
 
     DOM.ctx.clearRect(0,0,DOM.canvas.width,DOM.canvas.height)
 

@@ -1,8 +1,7 @@
 
 LOADER = {}
 
-LOADER.sprP
-layer= GAME.loadImage("spr_player");
+LOADER.sprPlayer= GAME.loadImage("spr_player");
 LOADER.sprWater = GAME.loadImage("spr_water");
 LOADER.sprScia =  GAME.loadImage("spr_scia");
 LOADER.sprOnda =  GAME.loadImage("spr_onda");
@@ -120,3 +119,14 @@ DOM.music_off.onclick = function()
     DOM.page_init.style.display = "none";
     DOM.page_menu.style.display = "flex";
 }
+
+
+function iterationCopy(src) {
+    let target = {};
+    for (let prop in src) {
+      if (src.hasOwnProperty(prop)) {
+        target[prop] = src[prop];
+      }
+    }
+    return target;
+  }
