@@ -59,7 +59,7 @@ Player = function(name, id, x, y)
         pDown : false,
 
         accelleration : 0,
-        speed : 4,
+        speed : 2,
         shoot : false,
         angle : 0,
 
@@ -91,14 +91,14 @@ Player = function(name, id, x, y)
 
         if(self.pRight) 
         {
-            self.angle -= 3; 
+            self.angle -= 1.5; 
             if(self.angle < 0) 
             {self.angle = 360;}
         }
 
         if(self.pLeft)
         {
-            self.angle += 3; 
+            self.angle += 1.5; 
             if(self.angle > 360) 
             {self.angle = 0;}
         }
@@ -387,8 +387,8 @@ io.sockets.on("connection", function(socket)
                 {
                     let current =  GAME.playerList[socket.id];
 
-                    Balls(current.x,current.y,current.angle+90,8, socket.id)
-                    Balls(current.x,current.y,current.angle+270,8, socket.id)
+                    Balls(current.x,current.y,current.angle+90,4, socket.id)
+                    Balls(current.x,current.y,current.angle+270,4, socket.id)
                     
 
                 });
@@ -516,4 +516,4 @@ var serverUpdate = function()
 
 
     
-setInterval(serverUpdate ,1000/30);
+setInterval(serverUpdate ,1000/60);
