@@ -156,6 +156,7 @@ update = function()
 
 var sBussola = GAME.sprite(LOADER.sprBussola,1,64,64,1)
 var sFreccia = GAME.sprite(LOADER.sprFreccia,1,64,64,1)
+var sIsola = GAME.sprite(LOADER.sprIsland,1,200,200,1)
 
 draw = function()
 {   
@@ -223,6 +224,7 @@ draw = function()
             current.draw();
         }
 
+        GAME.drawSprite(sIsola, 0, (150-camera.xView),  (150-camera.yView), 0, 1);
 
         //disegna splash
         for(let i in  GAME.Fog.list)
@@ -259,6 +261,8 @@ draw = function()
 
         if(Object.keys(GAME.Players.list).length > 1)
         {GAME.drawSprite(sFreccia, 1, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearPlayer, 0.8);}
+
+        
 
 }
 

@@ -217,6 +217,7 @@
 
 
 
+
     //CONNESSIONE
     socket.on('connection',function(data)
     {    
@@ -266,7 +267,7 @@
                 if(GAME.Balls.list[current.id] == undefined)
                 {          
                     GAME.Balls(current.id,current.x, current.y);
-                    console.log(lastOwner+"   "+current.owner)
+
                     if(SETTINGS.audio == true && lastOwner != current.owner)
                     {
                         let me = GAME.Players.list[id]; 
@@ -329,6 +330,21 @@
     });
 
 
+    iAmBot = function()
+    {
+        mov = function() 
+        {
+        arr = ["left", "right"];
+        i = Math.round(Math.random());
+        socket.emit("keyPress", {id: arr[(i+1)%2], state: false});
+        socket.emit("keyPress", {id: arr[i], state: true});
+        }
+        setInterval(mov, 200)
+        avanti = () => socket.emit("keyPress", {id:"up", state:(Math.random() >= 0.5)});
+        setInterval(avanti, 300)
+        spara = () => socket.emit("shoot");
+        setInterval(spara,100);
+    }
    
 </script>
 

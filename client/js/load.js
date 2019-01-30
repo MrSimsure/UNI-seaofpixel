@@ -13,6 +13,7 @@ LOADER.sprChest = GAME.loadImage("spr_chest")
 LOADER.sprFog = GAME.loadImage("spr_fog")
 LOADER.sprBussola = GAME.loadImage("spr_bussola")
 LOADER.sprFreccia = GAME.loadImage("spr_freccia")
+LOADER.sprIsland = GAME.loadImage("spr_island")
 
 
 LOADER.souCannon = GAME.loadAudio("sou_cannon")
@@ -119,14 +120,3 @@ DOM.music_off.onclick = function()
     DOM.page_init.style.display = "none";
     DOM.page_menu.style.display = "flex";
 }
-
-
-function iterationCopy(src) {
-    let target = {};
-    for (let prop in src) {
-      if (src.hasOwnProperty(prop)) {
-        target[prop] = src[prop];
-      }
-    }
-    return target;
-  }

@@ -7,6 +7,7 @@ var GAME = {}
 GAME.playerList = {};
 GAME.ballList = {};
 GAME.chestList = {};
+GAME.islandList = {};
 GAME.playerCollision = true;
 
 
@@ -59,7 +60,7 @@ Player = function(name, id, x, y)
         pDown : false,
 
         accelleration : 0,
-        speed : 2,
+        speed : 4,
         shoot : false,
         angle : 0,
 
@@ -91,14 +92,14 @@ Player = function(name, id, x, y)
 
         if(self.pRight) 
         {
-            self.angle -= 1.5; 
+            self.angle -= 3; 
             if(self.angle < 0) 
             {self.angle = 360;}
         }
 
         if(self.pLeft)
         {
-            self.angle += 1.5; 
+            self.angle += 3; 
             if(self.angle > 360) 
             {self.angle = 0;}
         }
@@ -180,6 +181,24 @@ Player = function(name, id, x, y)
                 
                 }
 
+                //controlla collisioni con isole
+                for(let i in GAME.islandList)
+                {     
+                        let current = GAME.islandList[i];
+
+
+                        if(tempX > current.x-100 && tempX < current.x+100 && self.y > current.y-100 && self.y < current.y+100)
+                        {
+                            moveX = false
+                        }
+
+                        if(tempY > current.y-100 && tempY < current.y+100 && self.x > current.x-100 && self.x < current.x+100)
+                        {
+                            moveY = false
+                        }
+                    
+                
+                }                
                 //se se lo spazio X o Y davanti a te sono liberi muovitici
                 if(moveX) {self.x = tempX;}
                 if(moveY) {self.y = tempY;}
@@ -283,6 +302,22 @@ Chest = function(x,y)
 }
 
 
+Island = function(x,y)
+{
+    var self = 
+    {
+        id : Math.random(),
+        x : x,
+        y : y,   
+        collider : Rectangle(x-100,y-100,100,100),
+    }
+
+
+    GAME.islandList[self.id] = self;
+    return self;
+}
+
+
 //EXPRESS////////////////////////////////////////////////////
 var express = require("express");
 var app = express();
@@ -309,6 +344,8 @@ for(let i=0; i<maxChest; i++)
 {
     Chest( ENGINE.random_range(0,2000), ENGINE.random_range(0,2000) );
 }
+
+    Island( 70, 100 );
 
 
 //quando viene eseguita una connessione al socket
@@ -387,8 +424,8 @@ io.sockets.on("connection", function(socket)
                 {
                     let current =  GAME.playerList[socket.id];
 
-                    Balls(current.x,current.y,current.angle+90,4, socket.id)
-                    Balls(current.x,current.y,current.angle+270,4, socket.id)
+                    Balls(current.x,current.y,current.angle+90,8, socket.id)
+                    Balls(current.x,current.y,current.angle+270,8, socket.id)
                     
 
                 });
@@ -516,4 +553,4 @@ var serverUpdate = function()
 
 
     
-setInterval(serverUpdate ,1000/60);
+setInterval(serverUpdate ,1000/30);
