@@ -1,7 +1,7 @@
 @font-face 
 {
     font-family: pixelFont;
-    src: font-url("/client/css/pixelFont.ttf");
+    src: url(pixelFont.ttf);
 }
 
 

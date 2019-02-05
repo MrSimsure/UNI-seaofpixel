@@ -333,6 +333,7 @@ server.listen(process.env.PORT || 8080);
 
 app.get("/serviceWorker.js", function(req, res)  { res.sendFile(__dirname + "/serviceWorker.js");});   
 app.get("/favicon.ico", function(req, res)  { res.sendFile(__dirname + "/favicon.ico");});   
+app.get("/.fonts", function(req, res)  { res.sendFile(__dirname + "/.fonts");});   
 console.log("server started");
 
 //SOCKET////////////////////////////////////////////////////
