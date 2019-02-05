@@ -1,9 +1,33 @@
+@font-face 
+{
+    font-family: pixelFont;
+    src: url(pixelFont4.ttf);
+}
+
+
+.title
+{
+    display:inline; 
+    position: fixed; 
+    width: 100%; 
+    text-align: center;
+    font-size: 3.0vw;
+    font-family: pixelFont; 
+    font-smooth: never;
+    n-webkit-font-smoothing : none;
+}
+
+
 .colLabel
 {
     display:block; 
     position: relative; 
     width: 100%; 
     text-align: center;
+    font-size: 3.0vw;
+    font-family: pixelFont; 
+    font-smooth: never;
+    n-webkit-font-smoothing : none;
 }
 
 
@@ -13,7 +37,11 @@
     position: relative; 
     width: 100%; 
     text-align: center;
+    font-size: 2.0vw;
     margin:0 auto; 
+    font-family: pixelFont; 
+    font-smooth: never;
+    n-webkit-font-smoothing : none;
 }
 
 
@@ -26,7 +54,11 @@
     font-size:25px; 
     font-weight:600; 
     text-align:center;
+    font-size: 2.0vw;
     left:15%;
+    font-family: pixelFont; 
+    font-smooth: never;
+    n-webkit-font-smoothing : none;
 }
 
 
@@ -37,5 +69,9 @@
     top:50%; 
     font-size:25px; 
     font-weight:600;
+    font-size: 1.5vw;
     left:15%;
+    font-family: pixelFont; 
+    font-smooth: never;
+    n-webkit-font-smoothing : none;
 }
