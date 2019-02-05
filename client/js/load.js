@@ -153,3 +153,4 @@ let frasi = function()
 }
 
 DOM.splash.innerHTML = frasi();
+

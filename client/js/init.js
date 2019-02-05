@@ -16,3 +16,11 @@ if ('serviceWorker' in navigator)
     });
 }
 
+
+
+let scripts = document.getElementsByTagName("script");
+let src = scripts[scripts.length-1].src;
+let pos = src.search("js");
+src = src.slice(0,pos)
+
+document.getElementById("css").href=src+"css/index.css"
