@@ -307,6 +307,8 @@ initMenu = function()
 menuDraw = function()
 {
 
+    DOM.splash.style.top = String( 15+Math.sin( (Date.now()-time.getTime())/200)  )+"%";
+
     if(lastScaleX !=window.innerWidth || lastScaleY != window.innerHeight)
     {
         lastScaleX = window.innerWidth

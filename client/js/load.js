@@ -51,7 +51,7 @@ DOM.Qhig = document.getElementById("Qhig");
 DOM.Qins = document.getElementById("Qins");
 
 
-
+DOM.splash = document.getElementById("splash")
 
 //connettiti al server
 var socket = io();
@@ -120,3 +120,36 @@ DOM.music_off.onclick = function()
     DOM.page_init.style.display = "none";
     DOM.page_menu.style.display = "flex";
 }
+
+
+
+let frasi = function()
+{
+    let frasiArr = [];
+    let n = 0
+    //frasiArr[n] = '';  n++;
+    frasiArr[n] = 'Tu non sei giocabile!';  n++;
+    frasiArr[n] = 'Corpo di mille balene';  n++;
+    frasiArr[n] = 'Mi hai rotto il javascript';  n++;
+    frasiArr[n] = 'Non è un bug, è un feature';  n++;
+    frasiArr[n] = 'Mettere le parentesi a capo è piu elegante e pulito, change my mind';  n++;
+    frasiArr[n] = 'Nessun materiale è stato rubato da Sea Of Thieves....probabilmente';  n++;
+    frasiArr[n] = 'Totalmente efficente e performante';  n++;
+    frasiArr[n] = 'Soon on your game boy color';  n++;
+    frasiArr[n] = 'Skin personalizate a partire da 200 euri';  n++;
+    frasiArr[n] = 'Javascript è amore, javascript è vita';  n++;
+    frasiArr[n] = 'Only pure,fresh and beautiful JS';  n++;
+    frasiArr[n] = 'Mark Anthony Exeption';  n++;
+    frasiArr[n] = 'Progressive Web App <3';  n++;
+    frasiArr[n] = 'Release the Kraken!!!';  n++;
+    frasiArr[n] = 'I have a Java....i have a Script...ahhh....JavaScript';  n++;
+    frasiArr[n] = '42';  n++;
+    frasiArr[n] = "ST0856 - BUSINESS E MANAGEMENT NELL'INFORMATION TECHNOLOGY";  n++;
+    frasiArr[n] = 'Like a true pirate, AYE!!!';  n++;
+    frasiArr[n] = 'Game Design tip : more explosions = better game';  n++;
+
+
+    return frasiArr[ENGINE.random_range(0,frasiArr.length-1)];
+}
+
+DOM.splash.innerHTML = frasi();

@@ -36,8 +36,9 @@
 <!--PAGINA MENU PRINCIPALE-->
 <div id="page_menu"  style="display:none; position: absolute;   width: 100%; height: 100%;  z-index:2;    align-items: center;justify-content: center;">
     
-    <label style="display:inline; position: fixed; width: 100%; top:5%; text-align: center; font-size:44px;font-weight:700;">SEAS OF PIXEL</label>
-    
+    <label style="display:inline; position: fixed; width: 100%; top:5%; text-align: center; font-size:50px;font-weight:700;">SEA OF PIXEL</label>
+    <label id ="splash" style="display:inline; position: fixed; width: 100%; top:13%; text-align: center; font-size:30px;font-weight:500;">frase</label>
+
     <div style="width: 49%; height: 100%;  margin:0 auto;  align-items: center; justify-content: center;">
         
                 
@@ -52,8 +53,8 @@
 
     <div style="width: 49%; height: 100%;  margin:0 auto;  align-items: center; justify-content: center;">
         
-        <button class="colButton" id="register_button" style=" top:40%;  width:80%;  height:20%;   font-size:25px;   font-weight:600;">REGISTRATI</button>
-        <button class="colButton" id="login_button" style=" top:40%;  width:80%;  height:20%;   font-size:25px;   font-weight:600;">ENTRA</button>
+        <button class="colButton" id="register_button" style=" top:51%;  width:80%;  height:10%;   font-size:25px;   font-weight:600;">REGISTRATI</button>
+        <button class="colButton" id="login_button" style=" top:51%;  width:80%;  height:10%;   font-size:25px;   font-weight:600;">ENTRA</button>
     </div>
 
 
@@ -329,15 +330,15 @@
 
     });
 
-
+    //fai diventare irreversibilmente il giocatore un bot cheater in grado di muoversi casualente e spararre cannonate infinite
     iAmBot = function()
     {
         mov = function() 
         {
-        arr = ["left", "right"];
-        i = Math.round(Math.random());
-        socket.emit("keyPress", {id: arr[(i+1)%2], state: false});
-        socket.emit("keyPress", {id: arr[i], state: true});
+            arr = ["left", "right"];
+            i = Math.round(Math.random());
+            socket.emit("keyPress", {id: arr[(i+1)%2], state: false});
+            socket.emit("keyPress", {id: arr[i], state: true});
         }
         setInterval(mov, 200)
         avanti = () => socket.emit("keyPress", {id:"up", state:(Math.random() >= 0.5)});

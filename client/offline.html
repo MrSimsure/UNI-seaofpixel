@@ -1,1 +1,120 @@
-SEI OFFLINE
+<div id="page_init"  style="display:inline; position: absolute;   width: 100%; height: 100%;  z-index:2">
+    <label style="display:inline; position: fixed; width: 100%; top:10%; text-align: center; font-size:44px;font-weight:700;">SEI OFFLINE</label>
+    <canvas id="canvas" style="  z-index: 1; position:absolute;" width="640" height="480"></canvas>
+</div>
+
+
+
+
+<script>
+    var canvas = document.getElementById("canvas")
+    var ctx = canvas.getContext("2d");
+
+
+    resizeCanvas = function()
+    {
+        let W,H;
+
+        if(window.innerHeight > window.innerWidth)
+        { W = window.innerHeight;    H = window.innerWidth}
+        else
+        { W = window.innerWidth;    H = window.innerHeight}
+
+        var globalScaleX = (W)/canvas.width;      
+        var globalScaleY = (H)/canvas.height;
+
+        canvas.width =  canvas.width*globalScaleX;
+        canvas.height =  canvas.height*globalScaleY;
+
+        ctx.imageSmoothingEnabled = false;
+    }
+
+
+
+
+    initOffline = function()
+    {
+        resizeCanvas()
+        
+        lastScaleX = 0;
+        lastScaleY = 0;
+
+        time = new Date();
+        seaPoint = [];
+        waveNum = Math.round(canvas.width/13);
+        waveHeight = canvas.height/3;
+        nu = 0
+
+        for(let i=0; i<waveNum; i++)
+        { 
+            seaPoint[i] = 
+            {
+                x : i/waveNum * canvas.width,
+                y : 0,
+                spd : 0
+            }
+
+        }
+
+        menu_update = setInterval(menuOffline ,1000/90); 
+    }
+
+
+    menuOffline = function()
+    {
+
+        if(lastScaleX !=window.innerWidth || lastScaleY != window.innerHeight)
+        {
+            lastScaleX = window.innerWidth
+            lastScaleY = window.innerHeight
+
+            resizeCanvas()
+
+            waveNum = Math.round(canvas.width/13);
+            waveHeight = canvas.height/3;
+        
+            for(let i=0; i<waveNum; i++)
+            { 
+                seaPoint[i] = 
+                {
+                    x : i/waveNum * canvas.width,
+                    y : 0,
+                    spd : 0
+                }
+        
+            }
+        }
+
+
+
+        ctx.clearRect(0,0,canvas.width,canvas.height)
+
+        ctx.fillStyle = "#99E6F9";
+        ctx.fillRect(0,0,canvas.width,canvas.height)
+
+        ctx.fillStyle = "#3D61D8";
+        ctx.beginPath();
+        ctx.moveTo(0,canvas.height)
+
+        for(let i=0; i<waveNum; i++)
+        {
+            let tempo = Date.now()-time.getTime();
+            let movimentoOnda = (Math.sin(tempo/5000));
+            let movimentoMare = Math.sin(tempo/5000);
+            let ondaVicina = i-Math.round(nu) - waveNum * Math.floor(i-Math.round(nu) / waveNum);
+
+            ctx.lineTo( seaPoint[i].x , waveHeight+(Math.sin( movimentoOnda+seaPoint[ondaVicina].x)*10 )+movimentoMare )
+        }
+        
+        nu+=0.2;
+        if(nu > waveNum)
+        {nu=0}
+
+        ctx.lineTo( canvas.width+16 , waveHeight )
+        ctx.lineTo( canvas.width, canvas.height)
+
+        ctx.fill();
+    }
+
+    initOffline();
+</script>

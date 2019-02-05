@@ -90,6 +90,7 @@ Player = function(name, id, x, y)
             self.life = 100;
         }
 
+        //movimento
         if(self.pRight) 
         {
             self.angle -= 3; 
