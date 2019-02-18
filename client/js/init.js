@@ -1,9 +1,11 @@
+
+//REINDERIZZA A HTTPS
 if(window.location.href == "http://seaofpixel.herokuapp.com/")
 {window.location.replace("https://seaofpixel.herokuapp.com/");}
 
 
 
-//installa service worker
+//INSTALLA IL SERVICE WORKER
 if ('serviceWorker' in navigator) 
 {
     window.addEventListener('load', function() 
@@ -17,7 +19,7 @@ if ('serviceWorker' in navigator)
 }
 
 
-
+//CARICA IL CSS
 let scripts = document.getElementsByTagName("script");
 let src = scripts[scripts.length-1].src;
 let pos = src.search("js");

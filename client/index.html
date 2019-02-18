@@ -106,7 +106,7 @@
     keys[32] = false;
     var touch = false;
     var inGame = false;
-
+    var lastTuch = 0;
     
     initMenu()
 
@@ -177,6 +177,11 @@
     function touchStart(ev) 
     {
         touch = true
+        console.log(Date.now() - lastTuch)
+        if( (Date.now() - lastTuch) < 200)
+        {SETTINGS.openFullscreen();}
+
+        lastTuch = Date.now();
     };
 
     
@@ -209,6 +214,110 @@
         {
             socket.emit("gameStart",login_username.value)
             initGame();
+
+            socket.on('hit',function(data)
+            {   
+                let range = 5*data.num
+                for(let i=0; i<data.num; i++)
+                {GAME.Explosion(Math.random(),data.x+ENGINE.random_range(-range,range),data.y+ENGINE.random_range(-range,range))}
+            });
+
+
+            socket.on('playerDie',function(data)
+            {   
+                let range = 30
+                for(let i=0; i<20; i++)
+                {GAME.Explosion(Math.random(),data.x+ENGINE.random_range(-range,range),data.y+ENGINE.random_range(-range,range))}
+            });
+
+
+            socket.on('ballEnd',function(data)
+            {   
+                GAME.Splash(Math.random(),GAME.Balls.list[data].x,GAME.Balls.list[data].y)
+                delete GAME.Balls.list[data]    
+            });
+
+            socket.on('disconnection',function(data)
+            {  
+                delete GAME.Players.list[data];
+            });
+
+
+            socket.on('newPositions',function(data)
+            {
+                fpsServer = data.fps;
+                let lastOwner = -1;
+                //aggiorna posizione palle 
+                    for(let i = 0 ; i < data.balls.length; i++)
+                    {
+                        
+                        let current = data.balls[i];
+
+                        if(GAME.Balls.list[current.id] == undefined)
+                        {          
+                            GAME.Balls(current.id,current.x, current.y);
+
+                            if(SETTINGS.audio == true && lastOwner != current.owner)
+                            {
+                                let me = GAME.Players.list[id]; 
+                                let au = LOADER.souCannon.cloneNode();
+                                au.volume = ENGINE.clamp(Math.abs( 1-( ENGINE.clamp(ENGINE.point_distance(me.x,me.y,current.x,current.y),0,1000))/1000 ),0,1)                  
+                                au.play();
+                            }
+                            
+                            lastOwner = current.owner
+
+                        }
+                        else
+                        {            
+                            GAME.Balls.list[current.id].x = current.x;
+                            GAME.Balls.list[current.id].y = current.y;
+                        }
+                    }
+
+
+                    //aggiorna posizione giocatori
+                    for(let i = 0 ; i < data.players.length; i++)
+                    {
+                        let current = data.players[i];
+
+                        if(GAME.Players.list[current.id] == undefined)
+                        {          
+                            GAME.Players(current.id, current.x, current.y, current.name, current.angle);
+                        }
+                        else
+                        {            
+                            GAME.Players.list[current.id].x = current.x;
+                            GAME.Players.list[current.id].y = current.y;
+                            GAME.Players.list[current.id].angle = current.angle;
+                            GAME.Players.list[current.id].life = current.life;
+                            GAME.Players.list[current.id].points = current.points;
+                        }
+                    }
+
+
+
+
+
+                    //aggiorna posizione casse 
+                    for(let i = 0 ; i < data.chests.length; i++)
+                    {
+                        let current = data.chests[i];
+
+                        if(GAME.Chest.list[current.id] == undefined)
+                        {          
+                            GAME.Chest(current.id,current.x, current.y);
+                        }
+                        else
+                        {            
+                            GAME.Chest.list[current.id].x = current.x;
+                            GAME.Chest.list[current.id].y = current.y;
+                        }
+                    }
+
+
+            });
+            
         }
         else
         {
@@ -228,109 +337,7 @@
     });
 
     
-    socket.on('hit',function(data)
-    {   
-        let range = 5*data.num
-        for(let i=0; i<data.num; i++)
-        {GAME.Explosion(Math.random(),data.x+ENGINE.random_range(-range,range),data.y+ENGINE.random_range(-range,range))}
-    });
-
-
-    socket.on('playerDie',function(data)
-    {   
-        let range = 30
-        for(let i=0; i<20; i++)
-        {GAME.Explosion(Math.random(),data.x+ENGINE.random_range(-range,range),data.y+ENGINE.random_range(-range,range))}
-    });
-
-
-    socket.on('ballEnd',function(data)
-    {   
-        GAME.Splash(Math.random(),GAME.Balls.list[data].x,GAME.Balls.list[data].y)
-        delete GAME.Balls.list[data]    
-    });
-
-    socket.on('disconnection',function(data)
-    {  
-        delete GAME.Players.list[data];
-    });
-
-
-    socket.on('newPositions',function(data)
-    {
-           fpsServer = data.fps;
-           let lastOwner = -1;
-           //aggiorna posizione palle 
-            for(let i = 0 ; i < data.balls.length; i++)
-            {
-                
-                let current = data.balls[i];
-
-                if(GAME.Balls.list[current.id] == undefined)
-                {          
-                    GAME.Balls(current.id,current.x, current.y);
-
-                    if(SETTINGS.audio == true && lastOwner != current.owner)
-                    {
-                        let me = GAME.Players.list[id]; 
-                        let au = LOADER.souCannon.cloneNode();
-                        au.volume = ENGINE.clamp(Math.abs( 1-( ENGINE.clamp(ENGINE.point_distance(me.x,me.y,current.x,current.y),0,1000))/1000 ),0,1)                  
-                        au.play();
-                    }
-                    
-                    lastOwner = current.owner
-
-                }
-                else
-                {            
-                    GAME.Balls.list[current.id].x = current.x;
-                    GAME.Balls.list[current.id].y = current.y;
-                }
-            }
-
-
-            //aggiorna posizione giocatori
-            for(let i = 0 ; i < data.players.length; i++)
-            {
-                let current = data.players[i];
-
-                if(GAME.Players.list[current.id] == undefined)
-                {          
-                    GAME.Players(current.id, current.x, current.y, current.name, current.angle);
-                }
-                else
-                {            
-                    GAME.Players.list[current.id].x = current.x;
-                    GAME.Players.list[current.id].y = current.y;
-                    GAME.Players.list[current.id].angle = current.angle;
-                    GAME.Players.list[current.id].life = current.life;
-                    GAME.Players.list[current.id].points = current.points;
-                }
-            }
-
-
-
-
-
-            //aggiorna posizione casse 
-            for(let i = 0 ; i < data.chests.length; i++)
-            {
-                let current = data.chests[i];
-
-                if(GAME.Chest.list[current.id] == undefined)
-                {          
-                    GAME.Chest(current.id,current.x, current.y);
-                }
-                else
-                {            
-                    GAME.Chest.list[current.id].x = current.x;
-                    GAME.Chest.list[current.id].y = current.y;
-                }
-            }
-
-
-    });
-
+  
     //fai diventare irreversibilmente il giocatore un bot cheater in grado di muoversi casualente e spararre cannonate infinite
     iAmBot = function()
     {
@@ -346,6 +353,8 @@
         setInterval(avanti, 300)
         spara = () => socket.emit("shoot");
         setInterval(spara,100);
+
+        return "Complimenti, ora sei un bot senza anima ne morale portatore di morte e distruzione"
     }
    
 </script>

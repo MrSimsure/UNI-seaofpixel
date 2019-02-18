@@ -72,8 +72,10 @@ Player = function(name, id, x, y)
     }
 
 
-    self.update = function()
-    {  
+    self.takeDamage = function(dmg)
+    {
+        self.life -= dmg;
+
         //controlla che il giocatore sia ancora vivo
         if(self.life <= 0)
         {
@@ -89,8 +91,14 @@ Player = function(name, id, x, y)
             self.y = Math.random()*2000;
             self.life = 100;
         }
+    }
 
-        //movimento
+
+    self.update = function()
+    {  
+        //ENGINE.mod è piu pesante di ben 2 millisecondi, totalmente inaccettabile, quindi lascio i calcoli dei moduli a mano!
+
+        //se questo giocatore sta premendo il tasto "destra"
         if(self.pRight) 
         {
             self.angle -= 3; 
@@ -98,6 +106,7 @@ Player = function(name, id, x, y)
             {self.angle = 360;}
         }
 
+        //se questo giocatore sta premendo il tasto "sinistra"
         if(self.pLeft)
         {
             self.angle += 3; 
@@ -105,7 +114,7 @@ Player = function(name, id, x, y)
             {self.angle = 0;}
         }
 
-
+        //se questo giocatore sta premendo il tasto "avanti"
         if(self.pUp) 
         {
             if(self.accelleration < self.speed)
@@ -118,9 +127,11 @@ Player = function(name, id, x, y)
         }
 
 
+        //se la nave sta accelerando
         if(self.accelleration > 0) 
         {
-            //controlla collisioni con i forzieri
+
+            //controlla collisioni con tutti i forzieri
             for(let i in GAME.chestList)
             {
                 let current = GAME.chestList[i];
@@ -132,30 +143,31 @@ Player = function(name, id, x, y)
                 }
             }
 
-            //controlla movimento 
-            if(GAME.playerCollision)
-            {
-                let tempX = self.x+ENGINE.lengthdir_x(self.accelleration,self.angle)
-                let tempY = self.y+ENGINE.lengthdir_y(self.accelleration,self.angle)
 
-                let moveX = true
-                let moveY = true;
+            let tempX = self.x+ENGINE.lengthdir_x(self.accelleration,self.angle)
+            let tempY = self.y+ENGINE.lengthdir_y(self.accelleration,self.angle)
+
+            let moveX = true
+            let moveY = true;
                 
-                //controlla se sei ai limiti del mondo
-                if(tempX < 0 || tempX > 2000)
-                {moveX = false;}
+            //controlla se sei ai limiti del mondo
+            if(tempX < 0 || tempX > 2000)
+            {moveX = false;}
 
-                if(tempY < 0 || tempY > 2000)
-                {moveY = false;}
+            if(tempY < 0 || tempY > 2000)
+            {moveY = false;}
 
-                //controlla collisioni con le altre navi
-                for(let i in GAME.playerList)
-                {     
-                    let current = GAME.playerList[i];
-                    let shipHit = false;
 
-                    if(self.id != current.id)
-                    {
+
+            //controlla collisioni con le altre navi
+            for(let i in GAME.playerList)
+            {     
+                let current = GAME.playerList[i];
+                let shipHit = false;
+
+                //se non sei tu fai i dovuti calcoli
+                if(self.id != current.id)
+                {
                         if(tempX > current.x-20 && tempX < current.x+20 && self.y > current.y-20 && self.y < current.y+20)
                         {
                             moveX = false
@@ -171,43 +183,45 @@ Player = function(name, id, x, y)
                         //speronaggio nemico ed esplosioni
                         if(shipHit)
                         {
-                            current.life -= 1;
+                            current.takeDamage(1)
+
                             for(let j in socketList)
                             {
                                 let c = socketList[j];       
                                 c.emit("hit", pack={x:current.x, y:current.y, num:1});       
                             } 
                         }
-                    }
-                
                 }
-
-                //controlla collisioni con isole
-                for(let i in GAME.islandList)
-                {     
-                        let current = GAME.islandList[i];
-
-
-                        if(tempX > current.x-100 && tempX < current.x+100 && self.y > current.y-100 && self.y < current.y+100)
-                        {
-                            moveX = false
-                        }
-
-                        if(tempY > current.y-100 && tempY < current.y+100 && self.x > current.x-100 && self.x < current.x+100)
-                        {
-                            moveY = false
-                        }
-                    
                 
-                }                
-                //se se lo spazio X o Y davanti a te sono liberi muovitici
-                if(moveX) {self.x = tempX;}
-                if(moveY) {self.y = tempY;}
             }
 
-            //aggiorna collisioni
-            self.collider.set(self.x-20, self.y-20, 20, 20)
+            
+            //controlla collisioni con isole
+            for(let i in GAME.islandList)
+            {     
+                    let current = GAME.islandList[i];
+
+                    if(tempX > current.x-100 && tempX < current.x+100 && self.y > current.y-100 && self.y < current.y+100)
+                    {
+                        moveX = false
+                    }
+
+                    if(tempY > current.y-100 && tempY < current.y+100 && self.x > current.x-100 && self.x < current.x+100)
+                    {
+                        moveY = false
+                    }     
+            }                
+                
+            //se se lo spazio X o Y davanti a te sono liberi muovitici
+            if(moveX) {self.x = tempX;}
+            if(moveY) {self.y = tempY;}
+
         }
+
+
+        //aggiorna collisioni
+        self.collider.set(self.x-20, self.y-20, 20, 20)
+        
 
     }
 
@@ -244,7 +258,9 @@ Balls = function(x,y,direction,speed,player)
 
         self.timer += 1 ;
 
-        if(self.timer > 40)
+
+        //tempo di vita della palla
+        if(self.timer > 30)
         {
             for(var i in socketList)
             {
@@ -254,14 +270,16 @@ Balls = function(x,y,direction,speed,player)
             delete GAME.ballList[self.id];  
         }
 
-
+        //controlla collissioni con tutti i giocatori
         for(var i in GAME.playerList)
         {
             var current = GAME.playerList[i];
             if(self.owner != i && self.collider.overlaps(current.collider))
             {
-                current.life -= 10;
+                //fai subire i danni alla nave colpita
+                current.takeDamage(10);
 
+                //manda a tutte le navi l'informazione
                 for(var i in socketList)
                 {
                     var current = socketList[i];
@@ -319,11 +337,15 @@ Island = function(x,y)
 }
 
 
+Kraken = function(x,y)
+{}
+
 //EXPRESS////////////////////////////////////////////////////
 var express = require("express");
 var app = express();
 var server = require("http").Server(app);
-
+var fps;
+var lastLoop;
 //app.use(express.static("client"));
 
 app.get("/", function(req, res)  {  res.sendFile(__dirname + "/client/index.html");});   
@@ -337,6 +359,8 @@ app.get("/.fonts", function(req, res)  { res.sendFile(__dirname + "/.fonts");});
 console.log("server started");
 
 //SOCKET////////////////////////////////////////////////////
+
+
 var io = require("socket.io")(server,{});
 var socketList = {};
 var maxChest = 20;
@@ -347,21 +371,24 @@ for(let i=0; i<maxChest; i++)
     Chest( ENGINE.random_range(0,2000), ENGINE.random_range(0,2000) );
 }
 
-    Island( 70, 100 );
+Island( 70, 100 );
+
+
+
 
 
 //quando viene eseguita una connessione al socket
 io.sockets.on("connection", function(socket)
 {
+        //aggiungi il socket alla lista
         socketList[socket.id] = socket;
 
+        //manda un segnale di connessione avventua al client
         socket.emit("connection", socket.id);
         console.log("connesso  "+socketList[socket.id].id);
 
-
-
-        
-        //RICEVUTO MESSAGGIO DI ATTACCO
+  
+        //aggiungi un ascolto sul messaggio di login
         socket.on("login", function(data)
         {
                 DB.loginUser(data.name, data.password , 
@@ -374,7 +401,7 @@ io.sockets.on("connection", function(socket)
         });  
 
         
-        //RICEVUTO MESSAGGIO DI ATTACCO
+        //aggiungi un ascolto sul messaggio di registrazione
         socket.on("register", function(data)
         {
                 DB.checkUser(data.name, 
@@ -389,7 +416,7 @@ io.sockets.on("connection", function(socket)
 
 
 
-        //quando ricevi un messaggio dal client
+        //aggiungi un ascolto sul messaggio di gameStart
         socket.on("gameStart", function(data)
         {
                 let nome;
@@ -440,7 +467,7 @@ io.sockets.on("connection", function(socket)
         //quando un giocatore si disconnette eliminalo dalla lista giocatori
         socket.on("disconnect", function()
         {
-            //invia i dati ad ogni client
+            //invia l'informazione ad ogni client
             for(let i in socketList)
             {
                 let current = socketList[i];
@@ -456,8 +483,8 @@ io.sockets.on("connection", function(socket)
 });
 
 
-
-updatePlayer = function()
+//aggiorna e raccogli informazioni giocatori
+var updatePlayer = function()
 {
     let pack = [];
     for(let i in GAME.playerList)
@@ -481,7 +508,8 @@ updatePlayer = function()
     return pack;
 }
 
-updateBall = function()
+//aggiorna e raccogli informazioni palle
+var updateBall = function()
 {
     let pack = [];
     for(let i in GAME.ballList)
@@ -504,8 +532,8 @@ updateBall = function()
     return pack;
 }
 
-
-updateChest = function()
+//raccogli informazioni casse
+var updateChest = function()
 {
     let pack = [];
     for(let i in GAME.chestList)
@@ -525,18 +553,17 @@ updateChest = function()
     return pack;
 }
 
-var fps;
-var lastLoop;
+
 //game loop
 var serverUpdate = function()
 {
-
+    //fps del server
     let thisLoop = new Date();
     if(Math.random() > 0.8)
     {fps = Math.floor(1000 / (thisLoop - lastLoop));}
     lastLoop = thisLoop;
 
-
+    //raccogli informazioni su tutte le entità di gioco
     let pack = 
     {
         players: updatePlayer(),
@@ -555,4 +582,5 @@ var serverUpdate = function()
 
 
     
+
 setInterval(serverUpdate ,1000/30);

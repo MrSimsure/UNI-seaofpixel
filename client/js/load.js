@@ -1,6 +1,7 @@
 
 LOADER = {}
 
+//CARICA TUTTE LE IMMAGINI
 LOADER.sprPlayer= GAME.loadImage("spr_player");
 LOADER.sprWater = GAME.loadImage("spr_water");
 LOADER.sprScia =  GAME.loadImage("spr_scia");
@@ -15,11 +16,11 @@ LOADER.sprBussola = GAME.loadImage("spr_bussola")
 LOADER.sprFreccia = GAME.loadImage("spr_freccia")
 LOADER.sprIsland = GAME.loadImage("spr_island")
 
-
+//CARICA TUTTI I SUONI
 LOADER.souCannon = GAME.loadAudio("sou_cannon")
 LOADER.musMenu = GAME.loadAudio("mus_menu")
 
-
+//SALVA TUTTI I DOM
 DOM = {}
 DOM.canvas = document.getElementById("canvas");
 DOM.ctx = canvas.getContext("2d");

@@ -1,7 +1,7 @@
 
 GAME = {};
 
-
+//CARICA IMMAIGINI
 GAME.loadImage = function(name)
 {
     let temp = new Image();
@@ -9,7 +9,7 @@ GAME.loadImage = function(name)
     return temp;
 }
 
-
+//CARICA AUDIO
 GAME.loadAudio = function(name)
 {
     let temp = new Audio();
@@ -17,7 +17,7 @@ GAME.loadAudio = function(name)
     return temp;
 }
 
-
+//CREA UNO SPRITE
 GAME.sprite = function(name, frameNum, width, height, speed)
 {
     var self = {};
@@ -49,7 +49,7 @@ GAME.sprite = function(name, frameNum, width, height, speed)
     return self;    
 }
 
-
+//DISEGNA UNO SPRITE
 GAME.drawSprite = function(sprite,image,x,y,angle,size)
 {
 

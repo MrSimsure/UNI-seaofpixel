@@ -6,10 +6,11 @@ initGame = function()
     inGame = true;
     lastLoop = 0;
 
-
-
+    //BLOCCA IL LOOP DEL MENU
     clearInterval(menu_update)
 
+
+    //INSTANZIA LA NEBBIA AI CONFINI DEL MONDO
     for(let i=-2; i<(room.width/200)+2; i++)
     {
         GAME.Fog(i*200,-180)
@@ -22,14 +23,17 @@ initGame = function()
         GAME.Fog(room.width+200,i*200)
     }
 
-        
+    
+    //CAMBIA LA QUALITA'
+    /*
     if(DOM.Qlow.checked){SETTINGS.quality = 0;}
     if(DOM.Qmed.checked){SETTINGS.quality = 1;}
     if(DOM.Qhig.checked){SETTINGS.quality = 3;}
     if(DOM.Qins.checked){SETTINGS.quality = 50;}
+    */
 
 
-    //SE MOBILE FULLSCREEN E JOYSTICK
+    //SE SU MOBILE ATTIVA FULLSCREEN E JOYSTICK
     if(SETTINGS.onMobile)
     {
         SETTINGS.openFullscreen();     
@@ -45,9 +49,10 @@ initGame = function()
                     });
     }
 
+    //INIZIA LOOP DI GIOCO
     setInterval(clientUpdate ,1000/30); 
 
-
+    //DISPLAY DEI DOOM
     DOM.page_menu.style.display = "none";
     DOM.page_login.style.display = "none";
     DOM.page_game.style.display = "inline";
@@ -61,22 +66,22 @@ initGame = function()
 
 update = function()
 {
-    
-    if(lastScaleX !=window.innerWidth || lastScaleY != window.innerHeight)
-    {
-        lastScaleX = window.innerWidth
-        lastScaleY = window.innerHeight
+        //CONTROLLA LE DIMENSIONI DELLA FINESTRA
+        if(lastScaleX !=window.innerWidth || lastScaleY != window.innerHeight)
+        {
+            lastScaleX = window.innerWidth
+            lastScaleY = window.innerHeight
 
-        SETTINGS.setScaleFactor()
-        SETTINGS.canvasResize()
-    }
+            SETTINGS.setScaleFactor()
+            SETTINGS.canvasResize()
+        }
+
+        //CARICA SE TIENI PREMUTO
+        if(keys[32] || touch == true) //space
+        { if(charge < 10) {charge += 0.5}}
 
 
-    if(keys[32] || touch == true) //space
-    { if(charge < 10) {charge += 0.5}}
-
-
-        //aggiorna fps
+        //AGGIORNA FPS
         let thisLoop = new Date();
         if(Math.random() > 0.8)
         {fpsClient = Math.floor(1000 / (thisLoop - lastLoop));}
@@ -86,13 +91,15 @@ update = function()
         let minDist = 99999999;
         let final = null;
 
-       
+        //CICLA I GIOCATORI 
         for(let i in  GAME.Players.list)
         {
             let current =  GAME.Players.list[i];
 
+            //CREA LA SCIA SOTTO OGNI NAVE
             GAME.Scia(current.x*SETTINGS.globalScaleX,  current.y*SETTINGS.globalScaleY);
     
+            //SE TROVI TE STESSO AGGIORNA LA TELECAMERA E CREA LE ONDE
             if(current.id == id)
             {
                 for(let i=0; i<SETTINGS.quality; i++)
@@ -102,6 +109,7 @@ update = function()
             }
             else
             {    
+                //CALCOLA LA NAVE PIU VICINA A TE
                 let dist = ENGINE.point_distance(me.x,me.y,current.x,current.y)
                 if(dist < minDist)
                 {
@@ -111,7 +119,7 @@ update = function()
             }
         }
 
-        //trova il giocatore piu vicino
+        //TROVA IL GIOCATORE PIU VICINO
         if(final != null)
         {nearPlayer = ENGINE.point_direction(me.x,me.y,final.x,final.y) ;}
         else
@@ -121,7 +129,7 @@ update = function()
         minDist = 999999999;
 
 
-        //trova la cassa piu vicina
+        //TROVA LA CASSA PIU VICINA
         for(let i in  GAME.Chest.list)
         {
             let current =  GAME.Chest.list[i];
@@ -139,7 +147,7 @@ update = function()
         {nearChest = 0}
 
 
-        //joystick
+        //JOYSTICK
         if(SETTINGS.onMobile == true && joystick != null)
         {
             if( joystick.right() )
@@ -164,7 +172,6 @@ draw = function()
         DOM.ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         //disegna la mappa
-        //room.map.draw(ctx, camera.xView, camera.yView);
         DOM.ctx.fillStyle = "#32479C";
         DOM.ctx.fillRect(0,0,canvas.width,canvas.height);
         DOM.ctx.fillStyle = "#000000";
@@ -226,7 +233,7 @@ draw = function()
 
         GAME.drawSprite(sIsola, 0, (150-camera.xView),  (150-camera.yView), 0, 1);
 
-        //disegna splash
+        //disegna la nebbia
         for(let i in  GAME.Fog.list)
         {
             let current =  GAME.Fog.list[i];
@@ -234,7 +241,7 @@ draw = function()
         }
 
 
-        //disegna barra caricamento
+        //disegna barra caricamento cannone
         if(charge > 0)
         {
             let X = GAME.Players.list[id].x*SETTINGS.globalScaleX-camera.xView;
@@ -252,7 +259,7 @@ draw = function()
         DOM.ctx.fillText("FPS C:"+fpsClient, 10,  (480-64)*SETTINGS.globalScaleY);
         DOM.ctx.fillText("FPS S:"+fpsServer, 10,  (480-32)*SETTINGS.globalScaleY);
 
-        //disegna punti
+        //disegna punteggio
         DOM.ctx.fillText("POINTS:"+GAME.Players.list[socket.id].points, 10, 16*SETTINGS.globalScaleY);
 
         //disegna bussola 
