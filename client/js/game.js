@@ -17,11 +17,19 @@ GAME.loadAudio = function(name)
     return temp;
 }
 
+
+GAME.playAudio = function(name,volume)
+{
+    let au = name.cloneNode();
+    au.volume = volume;               
+    au.play();
+}
+
+
 //CREA UNO SPRITE
 GAME.sprite = function(name, frameNum, width, height, speed)
 {
-    var self = {};
-					
+    var self = {};		
     self.image = name;
     self.frameNum = frameNum;
     self.width = width;
@@ -29,15 +37,12 @@ GAME.sprite = function(name, frameNum, width, height, speed)
     self.frameIndex = 0,
     self.tickCount = 0,
     self.ticksPerFrame = speed || 0;
-
     self.update = function () 
     {
         self.tickCount += 1;
-			
         if (self.tickCount > self.ticksPerFrame) 
         {    
-            self.tickCount = 0;
-        
+            self.tickCount = 0;        
             // If the current frame index is in range
             if (self.frameIndex < self.frameNum ) 
             {self.frameIndex += 1;} 
@@ -45,14 +50,12 @@ GAME.sprite = function(name, frameNum, width, height, speed)
             {self.frameIndex = 0; }
         }
     }
-
     return self;    
 }
 
 //DISEGNA UNO SPRITE
 GAME.drawSprite = function(sprite,image,x,y,angle,size)
 {
-
     DOM.ctx.save(); 
     DOM.ctx.translate(x, y);  
     DOM.ctx.rotate(angle * TO_RADIANS);
@@ -67,19 +70,11 @@ GAME.drawSprite = function(sprite,image,x,y,angle,size)
                 -(sprite.height/2), 
                 sprite.width , 
                 sprite.height);
-
     DOM.ctx.restore(); 
-
-
    sprite.update();
- 
-}
+ }
 
-
-
-
-
-///RECTANGLE////////
+//RECTANGLE//
 GAME.Rectangle = function(x, y, w, h)
 {
     var self =
@@ -89,7 +84,6 @@ GAME.Rectangle = function(x, y, w, h)
         w : x + w,
         h : y + h,
     }
-
     self.set = function(x, y, w, h)
     {
         self.x = x;
@@ -97,22 +91,18 @@ GAME.Rectangle = function(x, y, w, h)
         self.w = x + w;
         self.h = y + h;
     }
-
     self.within = function(r) 
     {
         return (r.x <= self.x && r.w >= self.w && r.y <= self.y && r.h >= self.h);
     }       
-
     self.overlaps = function(r) 
     {
         return (self.x < r.w &&  r.x < self.w && self.y < r.h && r.y < self.h);
     }
-
     return self;
 }
 
-
-///CAMERA////////
+//CAMERA//
 GAME.Camera = function(xView, yView, canvas, world)
 {
         var self =
@@ -120,23 +110,18 @@ GAME.Camera = function(xView, yView, canvas, world)
             // position of camera (left-top coordinate)
             xView : xView || 0,
             yView : yView || 0,
-
             // distance from followed object to border before camera starts move
             xDeadZone :canvas.width/2, // min distance to horizontal borders
             yDeadZone: canvas.height/2, // min distance to vertical borders
-
             // viewport dimensions
             wView : canvas.width,
             hView : canvas.height,
-
             // rectangle that represents the viewport
             viewportRect : GAME.Rectangle(xView, yView, canvas.width, canvas.height),           
-
             // rectangle that represents the world's boundary (room's boundary)
             worldRect : GAME.Rectangle(0, 0, world.width, world.height),
         }
-    
-
+        
     self.update = function(followX, followY)
     {
             // moves camera on horizontal axis based on followed object position
@@ -144,19 +129,13 @@ GAME.Camera = function(xView, yView, canvas, world)
                 self.xView = followX - (self.wView - self.xDeadZone);
             else if(followX  - self.xDeadZone < self.xView)
                 self.xView = followX  - self.xDeadZone;
-
-            
-
             // moves camera on vertical axis based on followed object position
             if(followY - self.yView + self.yDeadZone > self.hView)
                 self.yView = followY - (self.hView - self.yDeadZone);
             else if(followY - self.yDeadZone < self.yView)
                 self.yView = followY - self.yDeadZone;
-                             
-     
             // update viewportRect
             self.viewportRect.set(self.xView, self.yView);
-
             // don't let camera leaves the world's boundary
             if(!self.viewportRect.within(self.worldRect))
             {
@@ -169,15 +148,11 @@ GAME.Camera = function(xView, yView, canvas, world)
                 if(self.viewportRect.bottom > self.worldRect.bottom)                    
                     self.yView = self.worldRect.bottom - self.hView;
             }
-
     }
-
     return self;
-
 }
 
-
-///PLAYERS////////
+//PLAYERS//
 GAME.Players = function(id,x,y,name,angle)
 {
    var self = 
@@ -192,13 +167,10 @@ GAME.Players = function(id,x,y,name,angle)
        ponts:0,
    }
 
-
    self.draw = function()
    {   
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
-
-
         for(var n=0; n<23 ; n++)
         {
             GAME.drawSprite(self.sprite, n, X,  Y-SETTINGS.globalScaleY*n, self.angle, 1);
@@ -206,27 +178,20 @@ GAME.Players = function(id,x,y,name,angle)
 
         DOM.ctx.fillStyle = "black";
         DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY,Y-38*SETTINGS.globalScaleY,50*SETTINGS.globalScaleY,5);
-          
         DOM.ctx.fillStyle = "green";
         DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY,Y-38*SETTINGS.globalScaleY,self.life/2*SETTINGS.globalScaleY,5);
-        
         DOM.ctx.fillStyle = "black";
         DOM.ctx.textAlign = "center";
         DOM.ctx.font = (10*SETTINGS.globalScaleX)+"px Georgia";
         DOM.ctx.fillText(self.name, X,  Y-48*SETTINGS.globalScaleY);
         DOM.ctx.textAlign = "left";
-
-        
    }
-
    GAME.Players.list[self.id] = self;
    return self;
 }
 GAME.Players.list = [];
 
-
-
-///BALL///////
+//BALL//
 GAME.Balls = function(id,x,y)
 {
    var self = 
@@ -234,10 +199,8 @@ GAME.Balls = function(id,x,y)
        id:id,
        x:x,
        y:y,  
-       sprite: GAME.sprite(LOADER.sprBall,1,16,16,0)
+       sprite: GAME.sprite(LOADER.sprBall,1,16,16,0),
    }
-
-
    self.draw = function()
    {  
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
@@ -245,14 +208,12 @@ GAME.Balls = function(id,x,y)
 
         GAME.drawSprite(self.sprite, 0, X,  Y, 0, 0.4); 
    }
-
    GAME.Balls.list[self.id] = self;
    return self;
 }
 GAME.Balls.list = [];
 
-
-///SCIA/////////
+//SCIA//
 GAME.Scia = function(x,y)
 {
    var self = 
@@ -261,35 +222,27 @@ GAME.Scia = function(x,y)
        x:x,
        y:y,
        size:1,
-       sprite:GAME.sprite(LOADER.sprScia,1,16,16,0)
+       sprite:GAME.sprite(LOADER.sprScia,1,16,16,0),
    }
-
-   
-   self.update = function()
+      self.update = function()
    {
        self.size -= 0.07;
        if(self.size <= 0.1)
        {
         let index = GAME.Scia.list.indexOf(self);
         GAME.Scia.list.splice(index,1);
-
        }
-       
    }
-
    self.draw = function()
    {
         GAME.drawSprite(self.sprite, 0, self.x-camera.xView, self.y-camera.yView, 0, self.size);
    }
-
-
    GAME.Scia.list[self.num] = self;
    return self;
 }
 GAME.Scia.list = [];
 
-
- ///ONDA//////////
+ //ONDA//
  GAME.Onda = function(x,y)
  {
     var self = 
@@ -301,14 +254,11 @@ GAME.Scia.list = [];
         maxSize: 1,
         size:0,
         speed : Math.random()*2,
-        sprite:GAME.sprite(LOADER.sprOnda,1,64,64,0)
+        sprite:GAME.sprite(LOADER.sprOnda,1,64,64,0),
     }
- 
-    
-    self.update = function()
+     self.update = function()
     {
         self.x += self.speed;
-        
         if(self.grow)
         {
             self.size -= 0.01;
@@ -316,7 +266,6 @@ GAME.Scia.list = [];
             {
                 let index = GAME.Onda.list.indexOf(self);
                 GAME.Onda.list.splice(index,1);
-  
             }
         }
         else
@@ -326,21 +275,16 @@ GAME.Scia.list = [];
             else
             {self.grow = true;}
         }
-        
     }
- 
+
     self.draw = function()
     {
         GAME.drawSprite(self.sprite, 0, self.x-camera.xView, self.y-camera.yView, 0, self.size);
     }
-
-
     GAME.Onda.list[self.num] = self;
     return self;
  }
  GAME.Onda.list = [];
-
-
 
 GAME.Explosion = function(id,x,y)
 {
@@ -349,17 +293,15 @@ GAME.Explosion = function(id,x,y)
        id:id,
        x:x,
        y:y,  
-       sprite: GAME.sprite(LOADER.sprExplosion,10,34,34,1.4+ENGINE.random_range(-1.5,1.5))
+       sprite: GAME.sprite(LOADER.sprExplosion,10,34,34,1.4+ENGINE.random_range(-1.5,1.5)),
    }
-
    self.update = function()
    {
         if(self.sprite.frameIndex >= self.sprite.frameNum-1)
         {
-            delete GAME.Explosion.list[self.id]
+            delete GAME.Explosion.list[self.id];
         }
    }
-
    self.draw = function()
    {  
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
@@ -367,12 +309,10 @@ GAME.Explosion = function(id,x,y)
 
         GAME.drawSprite(self.sprite, self.sprite.frameIndex , X, Y, 0, 1); 
    }
-
    GAME.Explosion.list[self.id] = self;
    return self;
 }
 GAME.Explosion.list = [];
-
 
 GAME.Splash = function(id,x,y)
 {
@@ -381,9 +321,8 @@ GAME.Splash = function(id,x,y)
        id:id,
        x:x,
        y:y,  
-       sprite: GAME.sprite(LOADER.sprSplash,10,34,34,1.4)
+       sprite: GAME.sprite(LOADER.sprSplash,10,34,34,1.4),
    }
-
    self.update = function()
    {
         if(self.sprite.frameIndex >= self.sprite.frameNum-1)
@@ -391,23 +330,18 @@ GAME.Splash = function(id,x,y)
             delete GAME.Splash.list[self.id]
         }
    }
-
    self.draw = function()
    {  
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
-
         GAME.drawSprite(self.sprite, self.sprite.frameIndex , X, Y, 0, 1); 
    }
-
    GAME.Splash.list[self.id] = self;
    return self;
 }
 GAME.Splash.list = [];
 
-
-
-///CHEST///////
+//CHEST//
 GAME.Chest = function(id,x,y)
 {
    var self = 
@@ -415,14 +349,13 @@ GAME.Chest = function(id,x,y)
        id:id,
        x:x,
        y:y,  
-       sprite: GAME.sprite(LOADER.sprChest,3,21,21,2.8)
-   }
+       sprite: GAME.sprite(LOADER.sprChest,3,21,21,2.8),
+    }
 
    self.draw = function()
    {  
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
-
         GAME.drawSprite(self.sprite, self.sprite.frameIndex, X,  Y, 0, 1.4); 
    }
 
@@ -431,8 +364,7 @@ GAME.Chest = function(id,x,y)
 }
 GAME.Chest.list = [];
 
-
-///FOG///////
+//FOG//
 GAME.Fog = function(x,y)
 {
    var self = 
@@ -442,7 +374,7 @@ GAME.Fog = function(x,y)
        y:y,  
        angle:Math.random()*360,
        rot:(Math.random()+0.1)*0.2,
-       sprite: GAME.sprite(LOADER.sprFog,1,256,256,1)
+       sprite: GAME.sprite(LOADER.sprFog,1,256,256,1),
    }
 
    self.draw = function()
@@ -450,12 +382,10 @@ GAME.Fog = function(x,y)
         self.angle += self.rot;
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
-
         DOM.ctx.globalAlpha = 0.8
         GAME.drawSprite(self.sprite, 0, X,  Y, self.angle, 2); 
         DOM.ctx.globalAlpha = 1
    }
-
    GAME.Fog.list[self.id] = self;
    return self;
 }

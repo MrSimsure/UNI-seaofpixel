@@ -10,7 +10,6 @@
     var canvas = document.getElementById("canvas")
     var ctx = canvas.getContext("2d");
 
-
     resizeCanvas = function()
     {
         let W,H;
@@ -28,9 +27,6 @@
 
         ctx.imageSmoothingEnabled = false;
     }
-
-
-
 
     initOffline = function()
     {
@@ -53,12 +49,9 @@
                 y : 0,
                 spd : 0
             }
-
         }
-
         menu_update = setInterval(menuOffline ,1000/90); 
     }
-
 
     menuOffline = function()
     {
@@ -82,11 +75,8 @@
                     y : 0,
                     spd : 0
                 }
-        
             }
         }
-
-
 
         ctx.clearRect(0,0,canvas.width,canvas.height)
 
@@ -116,6 +106,6 @@
 
         ctx.fill();
     }
-
+    
     initOffline();
 </script>

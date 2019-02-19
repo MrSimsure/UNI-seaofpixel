@@ -1,12 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <link rel="manifest" href="/client/manifest.json">
 <meta name="viewport" content="minimal-ui, width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0">
 <meta name="theme-color" content="#4586ef"/>
 <meta name="Description" content="A small JS and HTML5 game about pirates!">
-
-
 
 <style> section { position: absolute; top:0; bottom:0; left:0; right:0;overflow: hidden;} </style>
 
@@ -23,9 +20,8 @@
     <script src="/client/js/game.js"></script>
 </head>
 
-
 <body  id="container" style ="margin:0; overflow-x:hidden; overflow-y:hidden;">
-    
+ 
 <title>Sea of Pixel</title>
 
 <!--PAGINA INIZIALE-->
@@ -48,7 +44,6 @@
     <label id ="splash" class="title" style="font-size: 2.0vw; width: 100%; top:13%; font-weight:300;">frase</label>
 
     <div style="width: 49%; height: 100%;  margin:0 auto;  align-items: center; justify-content: center;">
-        
                 
         <label class="inLabel" for="login_username"   style="top:50%; width:50%;">Username</label>
         <input class="inInput" id="login_username"    style="top:50%; width:50%;" type="text"></input>
@@ -58,13 +53,11 @@
 
     </div>
 
-
     <div style="width: 49%; height: 100%;  margin:0 auto;  align-items: center; justify-content: center;">
         
         <button class="colButton" id="register_button" style=" top:51%;  width:80%;  height:10%;  font-weight:600;">REGISTRATI</button>
         <button class="colButton" id="login_button" style=" top:51%;  width:80%;  height:10%;   font-weight:600;">ENTRA</button>
     </div>
-
 
     <div style="width: 50%; height: 100%;   margin:0 auto;  align-items: center; justify-content: center;">
         
@@ -72,29 +65,24 @@
     </div>
 </div>
 
-
 <!--PAGINA OPZIONI-->
 <div id="page_login"   style="display:none; position:absolute;  z-index:2">
         <div><input type="checkbox" id="Qlow" name="qualiy low">      <label for="Qlow">Low Quality</label>           </div>
         <div><input type="checkbox" id="Qmed" name="qualiy medium">     <label for="Qmed">Medium Quality</label>      </div>
         <div><input type="checkbox" id="Qhig" name="qualiy high">         <label for="Qhig">High Quality</label>      </div>
         <div><input type="checkbox" id="Qins" name="qualiy insane">  <label for="Qins">Destroy my PC Quality</label>  </div>
-
 </div>
-
 
 <!--PAGINA DI GIOCO-->
  <div id="page_game"  style="display:inline; position:relative;  z-index:0">
     <canvas id="canvas" style="  z-index: 1; position:absolute;" width="640" height="480"></canvas>
 </div>
 
-
 <script src="/client/js/load.js"></script>
 <script src="/client/js/loop.js"></script>
 
 <script>
 
-   
     var mainDir = window.location.href
     var moving = false;
     var fpsClient;
@@ -110,7 +98,6 @@
     
     initMenu()
 
-
     //LOGIN
     DOM.login_button.onclick = function()
     {   
@@ -118,15 +105,13 @@
         socket.emit("login", {name:login_username.value,    password:login_password.value});
     }
 
-
-    //LOGIN
+    //REGISTRAZIONE
     DOM.register_button.onclick = function()
     {   
         //INVIA I DATI DI LOGIN E PASSA AL GIOCO
         socket.emit("register", {name:login_username.value,    password:login_password.value});
     }
 
-    
     document.onkeydown = function(event)
     {
         keys = (keys || []);
@@ -143,7 +128,6 @@
         { socket.emit("keyPress", {id:"up", state:true}); moving = true;}
     }
     
-
     document.onkeyup = function(event)
     {
         keys = (keys || []);
@@ -169,10 +153,6 @@
             }
         }
     }    
-    
-
-
-
 
     function touchStart(ev) 
     {
@@ -183,7 +163,6 @@
 
         lastTuch = Date.now();
     };
-
     
     function touchEnd(ev) 
     {
@@ -199,13 +178,11 @@
             }
     };
 
-
     DOM.canvas.addEventListener('touchstart', touchStart, {passive: true}, false);
     DOM.canvas.addEventListener('touchend', touchEnd, {passive: true}, false);
 
     DOM.login_username.onclick = function(){DOM.login_username.style = "top:50%; width:50%;";}
     DOM.login_password.onclick = function(){DOM.login_password.style = "top:55%; width:50%;";}
-    
     
     //CONNESSIONE
     socket.on('acces',function(data)
@@ -220,8 +197,11 @@
                 let range = 5*data.num
                 for(let i=0; i<data.num; i++)
                 {GAME.Explosion(Math.random(),data.x+ENGINE.random_range(-range,range),data.y+ENGINE.random_range(-range,range))}
-            });
 
+                let me = GAME.Players.list[id]; 
+                let volume = ENGINE.clamp(Math.abs( 1-( ENGINE.clamp(ENGINE.point_distance(me.x,me.y,data.x,data.y),0,1000))/1000 ),0,1);
+                GAME.playAudio(LOADER.souHit,volume);
+            });
 
             socket.on('playerDie',function(data)
             {   
@@ -230,19 +210,15 @@
                 {GAME.Explosion(Math.random(),data.x+ENGINE.random_range(-range,range),data.y+ENGINE.random_range(-range,range))}
             });
 
-
             socket.on('ballEnd',function(data)
             {   
                 GAME.Splash(Math.random(),GAME.Balls.list[data].x,GAME.Balls.list[data].y)
                 delete GAME.Balls.list[data]    
             });
-
             socket.on('disconnection',function(data)
             {  
                 delete GAME.Players.list[data];
             });
-
-
             socket.on('newPositions',function(data)
             {
                 fpsServer = data.fps;
@@ -250,7 +226,6 @@
                 //aggiorna posizione palle 
                     for(let i = 0 ; i < data.balls.length; i++)
                     {
-                        
                         let current = data.balls[i];
 
                         if(GAME.Balls.list[current.id] == undefined)
@@ -260,13 +235,10 @@
                             if(SETTINGS.audio == true && lastOwner != current.owner)
                             {
                                 let me = GAME.Players.list[id]; 
-                                let au = LOADER.souCannon.cloneNode();
-                                au.volume = ENGINE.clamp(Math.abs( 1-( ENGINE.clamp(ENGINE.point_distance(me.x,me.y,current.x,current.y),0,1000))/1000 ),0,1)                  
-                                au.play();
+                                let volume = ENGINE.clamp(Math.abs( 1-( ENGINE.clamp(ENGINE.point_distance(me.x,me.y,current.x,current.y),0,1000))/1000 ),0,1);
+                                GAME.playAudio(LOADER.souCannon,volume);                 
                             }
-                            
-                            lastOwner = current.owner
-
+                            lastOwner = current.owner;
                         }
                         else
                         {            
@@ -274,7 +246,6 @@
                             GAME.Balls.list[current.id].y = current.y;
                         }
                     }
-
 
                     //aggiorna posizione giocatori
                     for(let i = 0 ; i < data.players.length; i++)
@@ -295,10 +266,6 @@
                         }
                     }
 
-
-
-
-
                     //aggiorna posizione casse 
                     for(let i = 0 ; i < data.chests.length; i++)
                     {
@@ -314,10 +281,7 @@
                             GAME.Chest.list[current.id].y = current.y;
                         }
                     }
-
-
             });
-            
         }
         else
         {
@@ -326,9 +290,6 @@
         }
     });
 
-
-
-
     //CONNESSIONE
     socket.on('connection',function(data)
     {    
@@ -336,8 +297,6 @@
         console.log("my socket id = "+id);
     });
 
-    
-  
     //fai diventare irreversibilmente il giocatore un bot cheater in grado di muoversi casualente e spararre cannonate infinite
     iAmBot = function()
     {
@@ -353,14 +312,11 @@
         setInterval(avanti, 300)
         spara = () => socket.emit("shoot");
         setInterval(spara,100);
-
         return "Complimenti, ora sei un bot senza anima ne morale portatore di morte e distruzione"
     }
-   
+    
 </script>
 
-
 </body>
-
 
 </html>
