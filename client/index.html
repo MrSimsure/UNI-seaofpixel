@@ -18,6 +18,8 @@
     
     <script src="/client/js/setting.js"></script>
     <script src="/client/js/game.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/5.8.3/firebase.js"></script>
 </head>
 
 <body  id="container" style ="margin:0; overflow-x:hidden; overflow-y:hidden;">
@@ -96,6 +98,18 @@
     var inGame = false;
     var lastTuch = 0;
     
+    // Initialize Firebase
+    var config = 
+    {
+        apiKey: "AIzaSyAX_ecFSz5hGIRMH3dIsn-PlUEdQhWWyvk",
+        authDomain: "sea-of-pixel.firebaseapp.com",
+        databaseURL: "https://sea-of-pixel.firebaseio.com",
+        projectId: "sea-of-pixel",
+        storageBucket: "sea-of-pixel.appspot.com",
+        messagingSenderId: "400694456140"
+    };
+    firebase.initializeApp(config);
+
     initMenu()
 
     //LOGIN
