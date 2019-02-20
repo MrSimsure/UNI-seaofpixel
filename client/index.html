@@ -18,11 +18,11 @@
     
     <script src="/client/js/virtualjoystick.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    
+    <script src="https://www.gstatic.com/firebasejs/5.8.3/firebase.js"></script>
+
     <script src="/client/js/setting.js"></script>
     <script src="/client/js/game.js"></script>
 
-    <script src="https://www.gstatic.com/firebasejs/5.8.3/firebase.js"></script>
 </head>
 
 
@@ -33,7 +33,7 @@
 <!--PAGINA INIZIALE-->
 <div id="page_init"  style="display:inline; position: absolute;   width: 100%; height: 100%;  z-index:2">
     <label class="title" style="width: 100%; top:10%; font-weight:700;">Vuoi abilitare la musica?</label>
-    
+
     <div style="display: inline-block;  width: 49%; height: 100%;   margin:0 auto;">
         <button class="colButton" id="music_button_on" style=" top:50%;  width:30%;  height:30%;  margin:0 auto;    font-weight:600;">SI</button>
     </div>
@@ -52,19 +52,32 @@
     <div style="width: 49%; height: 100%;  margin:0 auto;  align-items: center; justify-content: center;">
         
                 
-        <label class="inLabel" for="login_username"   style="top:50%; width:50%;">Username</label>
-        <input class="inInput" id="login_username"    style="top:50%; width:50%;" type="text"></input>
 
-        <label class="inLabel" for="login_password"   style="top:55%; width:50%;">Password</label>
-        <input class="inInput" id="login_password"    style="top:55%;  width:50%;" type="text"></input>
 
     </div>
 
 
     <div style="width: 49%; height: 100%;  margin:0 auto;  align-items: center; justify-content: center;">
         
-        <button class="colButton" id="register_button" style=" top:51%;  width:80%;  height:10%;  font-weight:600;">REGISTRATI</button>
-        <button class="colButton" id="login_button" style=" top:51%;  width:80%;  height:10%;   font-weight:600;">ENTRA</button>
+            <label class="inLabel" id="login_username_label" for="login_username"   style="top:40%; width:50%;display: none">Username</label>
+            <input class="inInput" id="login_username"    style="top:40%; width:80%;display: none" type="text"></input>
+    
+            <label class="inLabel" id="login_password_label"for="login_password"   style="top:45%; width:50%;display: none">Password</label>
+            <input class="inInput" id="login_password"    style="top:45%;  width:80%;display: none" type="text"></input>
+    
+            <label class="inLabel" id="login_email_label"for="login_email"   style="top:50%; width:50%;display: none">Email</label>
+            <input class="inInput" id="login_email"    style="top:50%;  width:80%;display: none" type="text"></input>
+
+
+            <button class="colButton" id="auth_google"    style=" top:50%;  width:80%;  height:10%;   font-weight:400;">ENTRA CON GOOGLE</button>
+            <button class="colButton" id="auth_email"     style=" top:50%;  width:80%;  height:10%;   font-weight:400;">ENTRA CON EMAIL</button>
+            <button class="colButton" id="auth_quest"     style=" top:50%;  width:80%;  height:10%;   font-weight:400;">ENTRA SENZA REGISTR</button>
+
+            <div style="display: block; position: relative; top:60%; ">    
+            <button class="colButton" id="indietro"   style=" left:8%; top:60%;  width:40%;  height:10%;   font-weight:400;  display: none; ">INDIETRO</button>
+            <button class="colButton" id="avanti"     style=" left:8%; top:60%;  width:40%;  height:10%;   font-weight:400;  display: none;  ">AVANTI</button>
+            </div>
+
     </div>
 
 
@@ -109,36 +122,98 @@
     var touch = false;
     var inGame = false;
     var lastTuch = 0;
-    
-    // Initialize Firebase
+
     var config = 
     {
-        apiKey: "AIzaSyAX_ecFSz5hGIRMH3dIsn-PlUEdQhWWyvk",
-        authDomain: "sea-of-pixel.firebaseapp.com",
-        databaseURL: "https://sea-of-pixel.firebaseio.com",
-        projectId: "sea-of-pixel",
-        storageBucket: "sea-of-pixel.appspot.com",
-        messagingSenderId: "400694456140"
+    apiKey: "AIzaSyAX_ecFSz5hGIRMH3dIsn-PlUEdQhWWyvk",
+    authDomain: "sea-of-pixel.firebaseapp.com",
+    databaseURL: "https://sea-of-pixel.firebaseio.com",
+    projectId: "sea-of-pixel",
+    storageBucket: "sea-of-pixel.appspot.com",
+    messagingSenderId: "400694456140"
     };
     firebase.initializeApp(config);
 
+      
     initMenu()
 
 
-    //LOGIN
-    DOM.login_button.onclick = function()
+    DOM.auth_google.onclick = function()
     {   
-        //INVIA I DATI DI LOGIN E PASSA AL GIOCO
-        socket.emit("login", {name:login_username.value,    password:login_password.value});
+            //INVIA I DATI DI LOGIN E PASSA AL GIOCO
+            var provider = new firebase.auth.GoogleAuthProvider();
+
+            firebase.auth().signInWithPopup(provider).then(function(result) 
+            {
+                // This gives you a Google Access Token. You can use it to access the Google API.
+                var token = result.credential.accessToken;
+                // The signed-in user info.
+                var user = result.user;
+                // ...
+            }).catch(function(error) 
+            {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // The email of the user's account used.
+                var email = error.email;
+                // The firebase.auth.AuthCredential type that was used.
+                var credential = error.credential;
+                // ...
+            });
     }
 
 
-    //LOGIN
-    DOM.register_button.onclick = function()
-    {   
-        //INVIA I DATI DI LOGIN E PASSA AL GIOCO
-        socket.emit("register", {name:login_username.value,    password:login_password.value});
+    DOM.auth_email.onclick = function()
+    {  
+        DOM.auth_email.style.display = "none"
+        DOM.auth_google.style.display = "none"
+        DOM.auth_guest.style.display = "none"
+
+        DOM.login_username.style.display = "block";
+        DOM.login_password.style.display = "block";
+        DOM.login_email.style.display = "block";
+
+        DOM.login_username_label.style.display = "block";
+        DOM.login_password_label.style.display = "block";
+        DOM.login_email_label.style.display = "block";
+
+        DOM.avanti.style.display = "inline-block";
+        DOM.indietro.style.display = "inline-block";
     }
+
+
+
+    DOM.auth_guest.onclick = function()
+    {  
+        DOM.auth_email.style.display = "none"
+        DOM.auth_google.style.display = "none"
+        DOM.auth_guest.style.display = "none"
+
+        DOM.login_username.style.display = "block";
+        DOM.login_username_label.style.display = "block";
+
+        DOM.avanti.style.display = "inline-block";
+        DOM.indietro.style.display = "inline-block";
+
+    }
+
+    firebase.auth().onAuthStateChanged(function(user) 
+        {
+            if (user) 
+            {
+            console.log(user.displayName+"   "+user.email+"   "+user.uid)
+              // User is signed in.
+              var isAnonymous = user.isAnonymous;
+              var uid = user.uid;
+            } 
+            else 
+            {
+              // User is signed out.
+            }
+        });
+
+
 
     
     document.onkeydown = function(event)

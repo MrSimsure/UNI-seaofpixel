@@ -37,9 +37,11 @@
     position: relative; 
     width: 100%; 
     text-align: center;
-    font-size: 2.0vw;
-    margin:0 auto; 
+    font-size: 1.4vw;
+    margin: auto; 
     font-family: pixelFont; 
+    margin-top: 10px;
+    margin-bottom: 10px;
     font-smooth: never;
     n-webkit-font-smoothing : none;
 }
@@ -55,7 +57,7 @@
     font-weight:600; 
     text-align:center;
     font-size: 2.0vw;
-    left:15%;
+    margin:auto;
     font-family: pixelFont; 
     font-smooth: never;
     n-webkit-font-smoothing : none;
@@ -67,10 +69,9 @@
     position:relative; 
     display: block;
     top:50%; 
-    font-size:25px; 
     font-weight:600;
-    font-size: 1.5vw;
-    left:15%;
+    font-size: 1.0vw;
+    margin:auto;
     font-family: pixelFont; 
     font-smooth: never;
     n-webkit-font-smoothing : none;

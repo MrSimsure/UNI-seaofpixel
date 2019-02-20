@@ -41,10 +41,21 @@ DOM.music_off = document.getElementById("music_button_off");
 //page menu
 DOM.login_username = document.getElementById("login_username");
 DOM.login_password = document.getElementById("login_password");
+DOM.login_email= document.getElementById("login_email");
+
+DOM.login_username_label = document.getElementById("login_username_label");
+DOM.login_password_label = document.getElementById("login_password_label");
+DOM.login_email_label= document.getElementById("login_email_label");
 
 DOM.login_button = document.getElementById("login_button");
 DOM.register_button = document.getElementById("register_button");
 
+DOM.avanti = document.getElementById("avanti");
+DOM.indietro = document.getElementById("indietro");
+
+DOM.auth_google = document.getElementById("auth_google");
+DOM.auth_email = document.getElementById("auth_email");
+DOM.auth_guest = document.getElementById("auth_quest");
 
 DOM.Qlow = document.getElementById("Qlow");
 DOM.Qmed = document.getElementById("Qmed");

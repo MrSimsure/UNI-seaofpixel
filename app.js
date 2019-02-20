@@ -2,6 +2,8 @@
 
 require("./client/js/engine.js");
 require("./server/database.js")
+var firebase = require("firebase");
+
 
 var GAME = {}
 GAME.playerList = {};
@@ -358,6 +360,18 @@ app.get("/favicon.ico", function(req, res)  { res.sendFile(__dirname + "/favicon
 app.get("/.fonts", function(req, res)  { res.sendFile(__dirname + "/.fonts");});   
 console.log("server started");
 
+
+   // Initialize Firebase
+    var config = 
+    {
+        apiKey: "AIzaSyAX_ecFSz5hGIRMH3dIsn-PlUEdQhWWyvk",
+        authDomain: "sea-of-pixel.firebaseapp.com",
+        databaseURL: "https://sea-of-pixel.firebaseio.com",
+        projectId: "sea-of-pixel",
+        storageBucket: "sea-of-pixel.appspot.com",
+        messagingSenderId: "400694456140"
+    };
+    firebase.initializeApp(config);
 //SOCKET////////////////////////////////////////////////////
 
 
@@ -391,30 +405,64 @@ io.sockets.on("connection", function(socket)
         //aggiungi un ascolto sul messaggio di login
         socket.on("login", function(data)
         {
-                DB.loginUser(data.name, data.password , 
-                    function(check,points)
-                    {
-                        socket.emit("acces", check);
-
-                    }
-                    );
+            firebase.auth().signInWithEmailAndPassword(data.name, data.password).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;     
+            //socket.emit("acces", true);
+            });
         });  
 
         
+        socket.on("login_google",function(data)
+        {
+            var provider = new firebase.auth.GoogleAuthProvider();
+
+            firebase.auth().signInWithPopup(provider).then(function(result) 
+            {
+                // This gives you a Google Access Token. You can use it to access the Google API.
+                var token = result.credential.accessToken;
+                // The signed-in user info.
+                var user = result.user;
+                // ...
+              }).catch(function(error) 
+              {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // The email of the user's account used.
+                var email = error.email;
+                // The firebase.auth.AuthCredential type that was used.
+                var credential = error.credential;
+                // ...
+              });
+        });
+
         //aggiungi un ascolto sul messaggio di registrazione
         socket.on("register", function(data)
         {
-                DB.checkUser(data.name, 
-                    function(check)
-                    {
-                        if(check == false)
-                        {DB.registerUser(data.name,  data.password); socket.emit("acces", true);}
-                        else
-                        {socket.emit("acces", false);}
-                    });
+            firebase.auth().createUserWithEmailAndPassword(data.name, data.password).catch(function(error) 
+            {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            });
         });  
 
-
+        firebase.auth().onAuthStateChanged(function(user) 
+        {
+            if (user) 
+            {
+            console.log(user.displayName+"   "+user.email+"   "+user.uid)
+              // User is signed in.
+              var isAnonymous = user.isAnonymous;
+              var uid = user.uid;
+            } 
+            else 
+            {
+              // User is signed out.
+            }
+          });
 
         //aggiungi un ascolto sul messaggio di gameStart
         socket.on("gameStart", function(data)
