@@ -18,18 +18,11 @@ initGame = function()
     }
       
     //SE SU MOBILE ATTIVA FULLSCREEN E JOYSTICK
+    
     if(SETTINGS.onMobile)
     {
         //SETTINGS.openFullscreen();     
-        joystick = new VirtualJoystick(
-                    {
-                    mouseSupport: true,
-                    stationaryBase: true,
-                    baseX: 90,
-                    baseY: 260,
-                    limitStickTravel: true,
-                    stickRadius: 50,
-                    });
+
     }
     //INIZIA LOOP DI GIOCO
     game_update = setInterval(clientUpdate ,1000/30); 
@@ -39,6 +32,7 @@ initGame = function()
     DOM.page_menu.style.display = "none";
     DOM.page_game.style.display = "inline";
 }
+
 
 
 update = function()
@@ -117,16 +111,56 @@ update = function()
         {nearChest = 0}
 
         //JOYSTICK
-        if(SETTINGS.onMobile == true && joystick != null)
+        if(SETTINGS.onMobile == true)
         {
-            if( joystick.right() )
-            { socket.emit("keyPress", {id:"right", state:true}); } else { socket.emit("keyPress", {id:"right", state:false}); }
-            if( joystick.left() )
-            {  socket.emit("keyPress", {id:"left", state:true});} else {  socket.emit("keyPress", {id:"left", state:false});}
-            if( joystick.up() )
-            {  socket.emit("keyPress", {id:"up", state:true}); } else {  socket.emit("keyPress", {id:"up", state:false}); }
-            if( joystick.down() )
-            {  socket.emit("keyPress", {id:"down", state:true}); } else {  socket.emit("keyPress", {id:"down", state:false}); }
+            let movingUP = false
+            let movingSX = false
+            let movingDX = false
+
+
+            //left
+            if(GAME.insideRect(tuchX,tuchY,buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize))
+            {
+                movingSX = true;
+            }
+            //right
+            if(GAME.insideRect(tuchX,tuchY,buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize))
+            {
+                movingDX = true;
+            }
+            //up-left
+            if(GAME.insideRect(tuchX,tuchY,buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize))
+            {
+                movingUP = true;
+                movingSX = true;
+            }
+            //up
+            if(GAME.insideRect(tuchX,tuchY,buttonX+buttonMargin*1+buttonSize*1, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize))
+            {
+                movingUP = true;
+            }  
+            //up-right
+            if(GAME.insideRect(tuchX,tuchY,buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize))
+            {
+                movingUP = true;
+                movingDX = true;
+            }    
+    
+    
+            if(movingUP)
+            {socket.emit("keyPress", {id:"up", state:true}); moving = true;}
+            else
+            {socket.emit("keyPress", {id:"up", state:false}); moving = false;}
+    
+            if(movingSX)
+            {socket.emit("keyPress", {id:"left", state:true}); }
+            else
+            {socket.emit("keyPress", {id:"left", state:false}); }
+    
+            if(movingDX)
+            {socket.emit("keyPress", {id:"right", state:true}); }
+            else
+            {socket.emit("keyPress", {id:"right", state:false}); }
         }
 }
 
@@ -213,7 +247,20 @@ draw = function()
         GAME.drawSprite(sFreccia, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearChest, 0.8);
         if(Object.keys(GAME.Players.list).length > 1)
         {GAME.drawSprite(sFreccia, 1, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearPlayer, 0.8);}
+
+
+        
+        DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize);    DOM.ctx.stroke()
+        DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize);    DOM.ctx.stroke()
+        DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize);    DOM.ctx.stroke()
+        DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*1+buttonSize*1, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize);    DOM.ctx.stroke()
+        DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize);    DOM.ctx.stroke()
+
 }
+buttonX = 10
+buttonMargin = 10
+buttonSize = 80
+
 
 clientUpdate = function()
 {

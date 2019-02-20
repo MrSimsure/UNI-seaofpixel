@@ -112,7 +112,8 @@
     var inGame = false;
     var lastTuch = 0;
     var loginType = 0;
-
+    var tuchX = 0;
+    var tuchY = 0;
 
     var config = 
     {
@@ -274,6 +275,8 @@
         {
             socket.emit("logout");
 
+            //if(SETTINGS.onMobile){joystick.destroy();}
+
             clearInterval(game_update);
             socket.removeAllListeners("hit")
             socket.removeAllListeners("playerDie")
@@ -300,7 +303,7 @@
             DOM.auth_guest.style.display = "block"
 
             DOM.page_pause.style.display = "none";
-            DOM.page_menu.style.display = "flex";
+            DOM.page_menu.style.display = "inline-flex";
             
 
 
@@ -353,16 +356,17 @@
     }    
 
     function touchStart(ev) 
-    {   
-        touch = true
-        if( (Date.now() - lastTuch) < 200)
-        {SETTINGS.openFullscreen();}
-
-        lastTuch = Date.now();
+    {     
+        
+        if(ev.touches[0].clientX > screen.width/2   &&  ev.touches[0].clientY > screen.height/2)
+        {touch = true}
+        
     };
     
     function touchEnd(ev) 
     {       
+        tuchX = -1
+        tuchY = -1
             touch = false
             if(charge < 10) 
             {
@@ -373,10 +377,19 @@
                 socket.emit("shoot");
                 charge = 0
             }
+    
     };
 
-    window.addEventListener('touchstart', touchStart, {passive: true}, false);
-    window.addEventListener('touchend', touchEnd, {passive: true}, false);
+    function touchMove(ev)
+    { 
+        tuchX = ev.touches[0].clientX;
+        tuchY = ev.touches[0].clientY; 
+    }
+
+    window.addEventListener('touchstart', touchStart, {passive: false}, false);
+    window.addEventListener('touchend', touchEnd, {passive: false}, false);
+    window.addEventListener('touchmove', touchMove, {passive: false}, false);
+
 
     //CONNESSIONE
     var acces = function()
