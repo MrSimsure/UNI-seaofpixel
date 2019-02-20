@@ -2,7 +2,6 @@
 
 LOADER = {}
 //CARICA TUTTE LE IMMAGINI
-LOADER.sprPlayer= GAME.loadImage("spr_player");
 LOADER.sprWater = GAME.loadImage("spr_water");
 LOADER.sprScia =  GAME.loadImage("spr_scia");
 LOADER.sprOnda =  GAME.loadImage("spr_onda");
@@ -20,8 +19,6 @@ LOADER.souCannon = GAME.loadAudio("sou_cannon");
 LOADER.musMenu = GAME.loadAudio("mus_menu");
 LOADER.souHit = GAME.loadAudio("sou_ship_hit");
 LOADER.souExpl = GAME.loadAudio("sou_cannonball_explosion");
-LOADER.souChest = GAME.loadAudio("sou_chest_sound");
-LOADER.souDown = GAME.loadAudio("sou_ship_downn");
 //CARICA GLI SPRITE DELLA BUSSOLA E DELL'ISOLA
 var sBussola = GAME.sprite(LOADER.sprBussola,1,64,64,1);
 var sFreccia = GAME.sprite(LOADER.sprFreccia,1,64,64,1);

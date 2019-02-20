@@ -269,6 +269,7 @@
 
     DOM.logout.onclick = function()
     {
+        preventDefault()
         firebase.auth().signOut().then(function() 
         {
             socket.emit("logout");
