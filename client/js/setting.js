@@ -1,6 +1,6 @@
 const TO_RADIANS = Math.PI/180;
 
-window.SETTINGS =
+SETTINGS =
 {
     W : 640,
     H : 480,
@@ -13,19 +13,16 @@ window.SETTINGS =
     audio:false,
 }
 
-
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) 
 {SETTINGS.onMobile = true;}
 else
 {SETTINGS.onMobile = false;}
-
 
 //METTI IN FULLSCREEN (solo dopo interazione del client)
 SETTINGS.openFullscreen = function() 
 {
     window.scrollTo(0,1);
     let elem = document.documentElement;
-
     if (elem.requestFullscreen) 
     {elem.requestFullscreen();} 
     else if (elem.mozRequestFullScreen) //Firefox 
@@ -36,20 +33,16 @@ SETTINGS.openFullscreen = function()
     {elem.msRequestFullscreen();}
 }
 
-
 //CAMBIA IL FATTORE DI SCALING DELLO SCHERMO
 SETTINGS.setScaleFactor = function()
 {
     let W,H;
-
     if(window.innerHeight > window.innerWidth)
     { W = window.innerHeight;    H = window.innerWidth}
     else
     { W = window.innerWidth;    H = window.innerHeight}
-
     SETTINGS.globalScaleX = (W)/SETTINGS.W;      
     SETTINGS.globalScaleY = (H)/SETTINGS.H;
-    
     SETTINGS.WINDOW_WIDTH = SETTINGS.W*SETTINGS.globalScaleX;
     SETTINGS.WINDOW_HEIGHT = SETTINGS.H*SETTINGS.globalScaleY;
 }
@@ -59,11 +52,6 @@ SETTINGS.canvasResize = function()
 {
     DOM.canvas.width = SETTINGS.WINDOW_WIDTH;
     DOM.canvas.height = SETTINGS.WINDOW_HEIGHT;  
-
     DOM.ctx.imageSmoothingEnabled = false;
-
     camera = new GAME.Camera(0, 0, DOM.canvas, room);   
-
 }
-
-

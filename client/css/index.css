@@ -4,7 +4,6 @@
     src: url(PixelFont.ttf);
 }
 
-
 .title
 {
     display:inline; 
@@ -12,11 +11,8 @@
     width: 100%; 
     text-align: center;
     font-size: 3.0vw;
-    font-family: pixelFont; 
-    font-smooth: never;
-    n-webkit-font-smoothing : none;
+    font-family: pixelFont;
 }
-
 
 .colLabel
 {
@@ -26,10 +22,7 @@
     text-align: center;
     font-size: 3.0vw;
     font-family: pixelFont; 
-    font-smooth: never;
-    n-webkit-font-smoothing : none;
 }
-
 
 .colButton
 {
@@ -40,14 +33,14 @@
     font-size: 1.4vw;
     margin: auto; 
     font-family: pixelFont; 
+<<<<<<< HEAD
     margin-top: 10px;
     margin-bottom: 10px;
     font-smooth: never;
     n-webkit-font-smoothing : none;
+=======
+>>>>>>> ec532e7b5d959862ad3c619929e54f527a16b1fe
 }
-
-
-
 
 .inLabel
 {
@@ -59,10 +52,7 @@
     font-size: 2.0vw;
     margin:auto;
     font-family: pixelFont; 
-    font-smooth: never;
-    n-webkit-font-smoothing : none;
 }
-
 
 .inInput
 {
@@ -73,6 +63,4 @@
     font-size: 1.0vw;
     margin:auto;
     font-family: pixelFont; 
-    font-smooth: never;
-    n-webkit-font-smoothing : none;
 }
