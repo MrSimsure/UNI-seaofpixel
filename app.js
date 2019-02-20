@@ -1,9 +1,4 @@
 require("./client/js/engine.js");
-
-require("./server/database.js")
-var firebase = require("firebase");
-
-
 require("./server/database.js");
 
 
@@ -61,6 +56,7 @@ Player = function(name, id, x, y)
         points : 0,
         savedPoints : 0,
         collider : Rectangle(x-20,y-20,20, 20),
+        userID:0
     }
 
     self.takeDamage = function(dmg)
@@ -276,6 +272,7 @@ Island = function(x,y)
     GAME.islandList[self.id] = self;
     return self;
 }
+
 Kraken = function(x,y)
 {}
 
@@ -288,24 +285,16 @@ var lastLoop;
 //app.use(express.static("client"));
 app.get("/", function(req, res)  {  res.sendFile(__dirname + "/client/index.html");});   
 app.use("/client", express.static(__dirname + "/client"));
-server.listen(process.env.PORT || 8080);
 app.get("/serviceWorker.js", function(req, res)  { res.sendFile(__dirname + "/serviceWorker.js");});   
 app.get("/favicon.ico", function(req, res)  { res.sendFile(__dirname + "/favicon.ico");});   
 app.get("/.fonts", function(req, res)  { res.sendFile(__dirname + "/.fonts");});   
+
+server.listen(process.env.PORT || 8080);
+
 console.log("server started");
 
 
-   // Initialize Firebase
-    var config = 
-    {
-        apiKey: "AIzaSyAX_ecFSz5hGIRMH3dIsn-PlUEdQhWWyvk",
-        authDomain: "sea-of-pixel.firebaseapp.com",
-        databaseURL: "https://sea-of-pixel.firebaseio.com",
-        projectId: "sea-of-pixel",
-        storageBucket: "sea-of-pixel.appspot.com",
-        messagingSenderId: "400694456140"
-    };
-    firebase.initializeApp(config);
+
 //SOCKET////////////////////////////////////////////////////
 
 
@@ -315,6 +304,7 @@ console.log("server started");
 var io = require("socket.io")(server,{});
 var socketList = {};
 var maxChest = 20;
+
 for(let i=0; i<maxChest; i++)
 {
     Chest( ENGINE.random_range(0,2000), ENGINE.random_range(0,2000) );
@@ -331,21 +321,20 @@ io.sockets.on("connection", function(socket)
         console.log("connesso  "+socketList[socket.id].id);
 
 
-        
-
         //aggiungi un ascolto sul messaggio di gameStart
         socket.on("gameStart", function(data)
         {
                 let nome;
                 //AGGIUNGI IL GIOCATORE ALLA LISTA
-                if(data != undefined)
-                {nome = data}
+                if(data.username != undefined)
+                {nome = data.username}
                 else
                 {nome = ""}
 
                 let player = Player(nome, socket.id, Math.random()*2000,Math.random()*2000);
-                console.log(socket.id+"   "+player.x+"   "+player.y)
-                DB.getPoints(nome, function(point){player.points = point});
+                player.userID = data.id
+
+                //DB.getPoints(nome, function(point){player.points = point});
 
                 //RICEVUTO MESAGGIO DI MOVIMENTO
                 socket.on("keyPress", function(data)

@@ -40,7 +40,7 @@
 </div>
 
 <!--PAGINA MENU PRINCIPALE-->
-<div id="page_menu"  style="display:none; position: absolute;   width: 100%; height: 50%;  z-index:2;  align-items: center; justify-content: center;">
+<div id="page_menu"  style="display:none; position: absolute;   width: 100%; height: 100%;  z-index:2;  align-items: center; justify-content: center;">
     
     <label class="title"style="width: 100%; top:5%;  font-weight:700;">SEA OF PIXEL</label>
     <label id ="splash" class="title" style="font-size: 2.0vw; width: 100%; top:13%; font-weight:300;">frase</label>
@@ -56,11 +56,13 @@
             <label class="inLabel" id="login_username_label" for="login_username"   style="top:40%; width:50%;display: none">Username</label>
             <input class="inInput" id="login_username"    style="top:40%; width:80%;display: none" type="text"></input>
     
-            <label class="inLabel" id="login_password_label"for="login_password"   style="top:45%; width:50%;display: none">Password</label>
-            <input class="inInput" id="login_password"    style="top:45%;  width:80%;display: none" type="text"></input>
+            <label class="inLabel" id="login_email_label"for="login_email"   style="top:45%; width:50%;display: none">Email</label>
+            <input class="inInput" id="login_email"    style="top:45%;  width:80%;display: none" type="text"></input>
+
+            <label class="inLabel" id="login_password_label"for="login_password"   style="top:50%; width:50%;display: none">Password</label>
+            <input class="inInput" id="login_password"    style="top:50%;  width:80%;display: none" type="text"></input>
     
-            <label class="inLabel" id="login_email_label"for="login_email"   style="top:50%; width:50%;display: none">Email</label>
-            <input class="inInput" id="login_email"    style="top:50%;  width:80%;display: none" type="text"></input>
+
 
 
             <button class="colButton" id="auth_google"    style=" top:50%;  width:80%;  height:10%;   font-weight:400;">ENTRA CON GOOGLE</button>
@@ -87,7 +89,7 @@
 </div>
 
 
-<div id="page_pause"  style="display:inline; position:relative;  z-index:0">
+<div id="page_pause"  style="display:none; position:relative;  z-index:0">
     <button class="colButton" id="logout"   style=" left:8%; top:60%;  width:40%;  height:10%;   font-weight:400;  display: block; ">ESCI</button>
 </div>
 
@@ -109,6 +111,8 @@
     var touch = false;
     var inGame = false;
     var lastTuch = 0;
+    var loginType = 0;
+
 
     var config = 
     {
@@ -127,6 +131,7 @@
     //LOGIN
     DOM.auth_google.onclick = function()
     {   
+        loginType = 0;
             //INVIA I DATI DI LOGIN E PASSA AL GIOCO
             var provider = new firebase.auth.GoogleAuthProvider();
 
@@ -152,6 +157,8 @@
 
     DOM.auth_email.onclick = function()
     {  
+        loginType = 1;
+
         DOM.auth_email.style.display = "none"
         DOM.auth_google.style.display = "none"
         DOM.auth_guest.style.display = "none"
@@ -172,7 +179,8 @@
 
     DOM.auth_guest.onclick = function()
     {  
-        
+        loginType = 2;
+
         DOM.auth_email.style.display = "none"
         DOM.auth_google.style.display = "none"
         DOM.auth_guest.style.display = "none"
@@ -207,28 +215,57 @@
 
     DOM.avanti.onclick = function()
     {  
-
-        firebase.auth().signInAnonymously().catch(function(error) 
+        if(loginType == 1)
         {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log("errore nel login = "+errorCode)
-        });
+            firebase.auth().signInWithEmailAndPassword(login_email.value, login_password.value).catch(function(error) 
+            {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log("errore nel login = "+errorCode)
 
-        /*
-        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) 
+                if(errorCode == "auth/user-not-found")
+                {
+                    firebase.auth().createUserWithEmailAndPassword(login_email.value, login_password.value).catch(function(error) 
+                    {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    console.log("errore nella registrazione = "+errorCode)
+                    });
+                }
+
+                if(errorCode == "auth/wrong-password")
+                {
+                    //border: 2px solid red;
+                    DOM.login_password.style = "top:50%;  width:80%; border: 2px solid red;"
+                }
+
+                if(errorCode == "auth/invalid-email")
+                {
+                    //border: 2px solid red;
+                    DOM.login_email.style = "top:45%;  width:80%; border: 2px solid red;"
+                }
+            });
+        }
+
+
+        if(loginType == 2)
         {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        });
-        */
+            firebase.auth().signInAnonymously().catch(function(error) 
+            {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log("errore nel login = "+errorCode)
+            });
+        }
+
     }
 
 
-   
-
+    DOM.login_password.onclick = function(){DOM.login_password.style = "top:50%;  width:80%;"}
+    DOM.login_email.onclick = function(){DOM.login_email.style = "top:45%;  width:80%;"}
 
     DOM.logout.onclick = function()
     {
@@ -246,12 +283,23 @@
             initMenu()
  
 
+            DOM.login_username.style.display = "none";
+            DOM.login_password.style.display = "none";
+            DOM.login_email.style.display = "none";
+
+            DOM.login_username_label.style.display = "none";
+            DOM.login_password_label.style.display = "none";
+            DOM.login_email_label.style.display = "none";
+            
+            DOM.avanti.style.display = "none";
+            DOM.indietro.style.display = "none";
+
             DOM.auth_email.style.display = "block"
             DOM.auth_google.style.display = "block"
             DOM.auth_guest.style.display = "block"
 
             DOM.page_pause.style.display = "none";
-            DOM.page_menu.style.display = "inline";
+            DOM.page_menu.style.display = "flex";
             
 
 
@@ -333,7 +381,7 @@
     //CONNESSIONE
     var acces = function()
     {
-            socket.emit("gameStart",login_username.value)
+            socket.emit("gameStart",{username : login_username.value,   id :firebase.auth().currentUser.uid})
             initGame();
             DOM.page_pause.style.display = "inline";
 
@@ -461,7 +509,13 @@
         {
             if (user) 
             {
+                user.updateProfile(
+                {
+                    displayName: DOM.login_username.value,
+                }).then(function() {}).catch(function(error) {});
+
                 console.log("CONNESSO = "+user.displayName+"   "+user.email+"   "+user.uid)
+                
                 acces()
             } 
             else 
