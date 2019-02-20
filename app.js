@@ -36,7 +36,7 @@ Rectangle = function(x, y, w, h)
     return self;
 }
 
-Player = function(name, id, x, y)
+Player = function(name, id, loginID, x, y)
 {
     var self =
     {
@@ -56,7 +56,7 @@ Player = function(name, id, x, y)
         points : 0,
         savedPoints : 0,
         collider : Rectangle(x-20,y-20,20, 20),
-        userID:0
+        loginID:loginID
     }
 
     self.takeDamage = function(dmg)
@@ -119,7 +119,7 @@ Player = function(name, id, x, y)
                 {
                     self.points += 100;
                     current.changePosition();
-                    DB.updatePoints(self.name, self.points)
+                    DB.updatePoints(self.loginID, self.points)
                 }
             }
             let tempX = self.x+ENGINE.lengthdir_x(self.accelleration,self.angle)
@@ -331,10 +331,21 @@ io.sockets.on("connection", function(socket)
                 else
                 {nome = ""}
 
-                let player = Player(nome, socket.id, Math.random()*2000,Math.random()*2000);
-                player.userID = data.id
+                let player = Player(nome, socket.id, data.id, Math.random()*2000,Math.random()*2000);
 
-                //DB.getPoints(nome, function(point){player.points = point});
+                DB.checkUser(data.id, function(callback) 
+                {
+                    if(callback == true)
+                    {   
+                        DB.getPoints(data.id, function(point){player.points = point});
+                    }
+                    else
+                    {   
+                        DB.registerUser(data.id);
+                    }
+                });
+                
+
 
                 //RICEVUTO MESAGGIO DI MOVIMENTO
                 socket.on("keyPress", function(data)

@@ -20,7 +20,7 @@ initGame = function()
     //SE SU MOBILE ATTIVA FULLSCREEN E JOYSTICK
     if(SETTINGS.onMobile)
     {
-        SETTINGS.openFullscreen();     
+        //SETTINGS.openFullscreen();     
         joystick = new VirtualJoystick(
                     {
                     mouseSupport: true,

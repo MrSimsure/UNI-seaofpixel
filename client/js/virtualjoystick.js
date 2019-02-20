@@ -215,7 +215,7 @@ VirtualJoystick.prototype._onTouchStart	= function(event)
 	if( isValid === false )	return;
 	// dispatch touchStart
 	this.dispatchEvent('touchStart', event);
-	event.preventDefault();
+	//event.preventDefault();
 	// get the first who changed
 	var touch	= event.changedTouches[0];
 	// set the touchIdx of this joystick
@@ -243,7 +243,7 @@ VirtualJoystick.prototype._onTouchEnd	= function(event)
 	// reset touchIdx - mark it as no-touch-in-progress
 	this._touchIdx	= null;
 // no preventDefault to get click event on ios
-event.preventDefault();
+//event.preventDefault();
 	return this._onUp()
 }
 
@@ -257,7 +257,7 @@ VirtualJoystick.prototype._onTouchMove	= function(event)
 	// if touch event with the proper identifier isnt found, do nothing
 	if( i === touchList.length)	return;
 	var touch	= touchList[i];
-	event.preventDefault();
+	//event.preventDefault();
 	var x		= touch.pageX;
 	var y		= touch.pageY;
 	return this._onMove(x, y)

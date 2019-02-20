@@ -269,7 +269,7 @@
 
     DOM.logout.onclick = function()
     {
-        preventDefault()
+        
         firebase.auth().signOut().then(function() 
         {
             socket.emit("logout");
@@ -353,9 +353,8 @@
     }    
 
     function touchStart(ev) 
-    {
+    {   
         touch = true
-        console.log(Date.now() - lastTuch)
         if( (Date.now() - lastTuch) < 200)
         {SETTINGS.openFullscreen();}
 
@@ -363,7 +362,7 @@
     };
     
     function touchEnd(ev) 
-    {
+    {       
             touch = false
             if(charge < 10) 
             {
@@ -376,8 +375,8 @@
             }
     };
 
-    DOM.canvas.addEventListener('touchstart', touchStart, {passive: true}, false);
-    DOM.canvas.addEventListener('touchend', touchEnd, {passive: true}, false);
+    window.addEventListener('touchstart', touchStart, {passive: true}, false);
+    window.addEventListener('touchend', touchEnd, {passive: true}, false);
 
     //CONNESSIONE
     var acces = function()
