@@ -1,11 +1,9 @@
 initGame = function()
 {
-    inGame = true;
     lastLoop = 0;
 
     //BLOCCA IL LOOP DEL MENU
     clearInterval(menu_update);
-
     //INSTANZIA LA NEBBIA AI CONFINI DEL MONDO
     for(let i=-2; i<(room.width/200)+2; i++)
     {
@@ -34,12 +32,14 @@ initGame = function()
                     });
     }
     //INIZIA LOOP DI GIOCO
-    setInterval(clientUpdate ,1000/30); 
+    game_update = setInterval(clientUpdate ,1000/30); 
+
     //DISPLAY DEI DOOM
+    DOM.page_init.style.display = "none";
     DOM.page_menu.style.display = "none";
-    DOM.page_login.style.display = "none";
     DOM.page_game.style.display = "inline";
 }
+
 
 update = function()
 {

@@ -286,6 +286,7 @@ GAME.Scia.list = [];
  }
  GAME.Onda.list = [];
 
+ //EXPLOSION//
 GAME.Explosion = function(id,x,y)
 {
    var self = 
@@ -314,6 +315,7 @@ GAME.Explosion = function(id,x,y)
 }
 GAME.Explosion.list = [];
 
+//SPLASH//
 GAME.Splash = function(id,x,y)
 {
    var self = 
@@ -390,3 +392,50 @@ GAME.Fog = function(x,y)
    return self;
 }
 GAME.Fog.list = [];
+
+
+GAME.clearEntity = function()
+{
+    for(let i in GAME.Onda.list)
+    {       
+        delete  GAME.Onda.list[i];
+    }
+    for(let i in GAME.Scia.list)
+    {       
+        delete  GAME.Scia.list[i];
+    }
+    for(let i in  GAME.Chest.list)
+    {
+        delete  GAME.Chest.list[i];
+    }
+    for(let i in  GAME.Players.list)
+    {
+        delete  GAME.Players.list[i];
+    }
+    for(let i in  GAME.Balls.list)
+    {
+        delete GAME.Balls.list[i];
+    }
+    for(let i in  GAME.Explosion.list)
+    {
+        delete  GAME.Explosion.list[i];
+    }
+    for(let i in  GAME.Splash.list)
+    {
+        delete  GAME.Splash.list[i];
+    }
+    for(let i in  GAME.Fog.list)
+    {
+        delete  GAME.Fog.list[i];
+    }
+
+    GAME.Players.list = [];
+    GAME.Balls.list = [];
+    GAME.Scia.list = [];
+    GAME.Onda.list = [];
+    GAME.Explosion.list = [];
+    GAME.Splash.list = [];
+    GAME.Chest.list = [];
+    GAME.Fog.list = [];
+
+}

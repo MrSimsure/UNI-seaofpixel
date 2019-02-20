@@ -35,8 +35,7 @@ DOM.ctx.imageSmoothingEnabled = false;
 
 DOM.page_init = document.getElementById("page_init");
 DOM.page_menu = document.getElementById("page_menu");
-DOM.page_option = document.getElementById("page_option");
-DOM.page_login = document.getElementById("page_login");
+DOM.page_pause = document.getElementById("page_pause");
 DOM.page_game = document.getElementById("page_game");
 
 //page init
@@ -55,7 +54,7 @@ DOM.login_email_label= document.getElementById("login_email_label");
 DOM.login_button = document.getElementById("login_button");
 DOM.register_button = document.getElementById("register_button");
 
-<<<<<<< HEAD
+
 DOM.avanti = document.getElementById("avanti");
 DOM.indietro = document.getElementById("indietro");
 
@@ -63,12 +62,8 @@ DOM.auth_google = document.getElementById("auth_google");
 DOM.auth_email = document.getElementById("auth_email");
 DOM.auth_guest = document.getElementById("auth_quest");
 
-=======
->>>>>>> ec532e7b5d959862ad3c619929e54f527a16b1fe
-DOM.Qlow = document.getElementById("Qlow");
-DOM.Qmed = document.getElementById("Qmed");
-DOM.Qhig = document.getElementById("Qhig");
-DOM.Qins = document.getElementById("Qins");
+DOM.logout = document.getElementById("logout");
+
 
 DOM.splash = document.getElementById("splash");
 
@@ -86,33 +81,6 @@ room =
 
 camera = new GAME.Camera(0, 0, DOM.canvas, room);   
 
-DOM.Qlow.onchange = function() 
-{
-    DOM.Qmed.checked = false;
-    DOM.Qhig.checked = false;
-    DOM.Qins.checked = false;
-}
-
-DOM.Qmed.onchange = function() 
-{
-    DOM.Qlow.checked = false;
-    DOM.Qhig.checked = false;
-    DOM.Qins.checked = false;
-}
-
-DOM.Qhig.onchange = function() 
-{
-    DOM.Qmed.checked = false;
-    DOM.Qlow.checked = false;
-    DOM.Qins.checked = false;
-}
-
-DOM.Qins.onchange = function() 
-{
-    DOM.Qmed.checked = false;
-    DOM.Qlow.checked = false;
-    DOM.Qhig.checked = false;
-}
 
 DOM.music_on.onclick = function()
 {

@@ -40,7 +40,7 @@
 </div>
 
 <!--PAGINA MENU PRINCIPALE-->
-<div id="page_menu"  style="display:none; position: absolute;   width: 100%; height: 100%;  z-index:2;  align-items: center; justify-content: center;">
+<div id="page_menu"  style="display:none; position: absolute;   width: 100%; height: 50%;  z-index:2;  align-items: center; justify-content: center;">
     
     <label class="title"style="width: 100%; top:5%;  font-weight:700;">SEA OF PIXEL</label>
     <label id ="splash" class="title" style="font-size: 2.0vw; width: 100%; top:13%; font-weight:300;">frase</label>
@@ -80,18 +80,17 @@
     </div>
 </div>
 
-<!--PAGINA OPZIONI-->
-<div id="page_login"   style="display:none; position:absolute;  z-index:2">
-        <div><input type="checkbox" id="Qlow" name="qualiy low">      <label for="Qlow">Low Quality</label>           </div>
-        <div><input type="checkbox" id="Qmed" name="qualiy medium">     <label for="Qmed">Medium Quality</label>      </div>
-        <div><input type="checkbox" id="Qhig" name="qualiy high">         <label for="Qhig">High Quality</label>      </div>
-        <div><input type="checkbox" id="Qins" name="qualiy insane">  <label for="Qins">Destroy my PC Quality</label>  </div>
-</div>
 
 <!--PAGINA DI GIOCO-->
  <div id="page_game"  style="display:inline; position:relative;  z-index:0">
     <canvas id="canvas" style="  z-index: 1; position:absolute;" width="640" height="480"></canvas>
 </div>
+
+
+<div id="page_pause"  style="display:inline; position:relative;  z-index:0">
+    <button class="colButton" id="logout"   style=" left:8%; top:60%;  width:40%;  height:10%;   font-weight:400;  display: block; ">ESCI</button>
+</div>
+
 
 <script src="/client/js/load.js"></script>
 <script src="/client/js/loop.js"></script>
@@ -113,25 +112,20 @@
 
     var config = 
     {
-    apiKey: "AIzaSyAX_ecFSz5hGIRMH3dIsn-PlUEdQhWWyvk",
-    authDomain: "sea-of-pixel.firebaseapp.com",
-    databaseURL: "https://sea-of-pixel.firebaseio.com",
-    projectId: "sea-of-pixel",
-    storageBucket: "sea-of-pixel.appspot.com",
-    messagingSenderId: "400694456140"
+        apiKey: "AIzaSyAX_ecFSz5hGIRMH3dIsn-PlUEdQhWWyvk",
+        authDomain: "sea-of-pixel.firebaseapp.com",
+        databaseURL: "https://sea-of-pixel.firebaseio.com",
+        projectId: "sea-of-pixel",
+        storageBucket: "sea-of-pixel.appspot.com",
+        messagingSenderId: "400694456140"
     };
     firebase.initializeApp(config);
 
       
     initMenu()
 
-<<<<<<< HEAD
-
-    DOM.auth_google.onclick = function()
-=======
     //LOGIN
-    DOM.login_button.onclick = function()
->>>>>>> ec532e7b5d959862ad3c619929e54f527a16b1fe
+    DOM.auth_google.onclick = function()
     {   
             //INVIA I DATI DI LOGIN E PASSA AL GIOCO
             var provider = new firebase.auth.GoogleAuthProvider();
@@ -156,8 +150,6 @@
             });
     }
 
-<<<<<<< HEAD
-
     DOM.auth_email.onclick = function()
     {  
         DOM.auth_email.style.display = "none"
@@ -180,6 +172,7 @@
 
     DOM.auth_guest.onclick = function()
     {  
+        
         DOM.auth_email.style.display = "none"
         DOM.auth_google.style.display = "none"
         DOM.auth_guest.style.display = "none"
@@ -192,33 +185,82 @@
 
     }
 
-    firebase.auth().onAuthStateChanged(function(user) 
-        {
-            if (user) 
-            {
-            console.log(user.displayName+"   "+user.email+"   "+user.uid)
-              // User is signed in.
-              var isAnonymous = user.isAnonymous;
-              var uid = user.uid;
-            } 
-            else 
-            {
-              // User is signed out.
-            }
-        });
 
+    DOM.indietro.onclick = function()
+    {  
+        DOM.auth_email.style.display = "block"
+        DOM.auth_google.style.display = "block"
+        DOM.auth_guest.style.display = "block"
 
+        DOM.login_username.style.display = "none";
+        DOM.login_password.style.display = "none";
+        DOM.login_email.style.display = "none";
 
-    
-=======
-    //REGISTRAZIONE
-    DOM.register_button.onclick = function()
-    {   
-        //INVIA I DATI DI LOGIN E PASSA AL GIOCO
-        socket.emit("register", {name:login_username.value,    password:login_password.value});
+        DOM.login_username_label.style.display = "none";
+        DOM.login_password_label.style.display = "none";
+        DOM.login_email_label.style.display = "none";
+
+        DOM.avanti.style.display = "none";
+        DOM.indietro.style.display = "none";
     }
 
->>>>>>> ec532e7b5d959862ad3c619929e54f527a16b1fe
+
+    DOM.avanti.onclick = function()
+    {  
+
+        firebase.auth().signInAnonymously().catch(function(error) 
+        {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log("errore nel login = "+errorCode)
+        });
+
+        /*
+        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) 
+        {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        });
+        */
+    }
+
+
+   
+
+
+    DOM.logout.onclick = function()
+    {
+        firebase.auth().signOut().then(function() 
+        {
+            socket.emit("logout");
+
+            clearInterval(game_update);
+            socket.removeAllListeners("hit")
+            socket.removeAllListeners("playerDie")
+            socket.removeAllListeners("ballEnd")
+            socket.removeAllListeners("disconect")
+            socket.removeAllListeners("newPositions")
+            GAME.clearEntity();
+            initMenu()
+ 
+
+            DOM.auth_email.style.display = "block"
+            DOM.auth_google.style.display = "block"
+            DOM.auth_guest.style.display = "block"
+
+            DOM.page_pause.style.display = "none";
+            DOM.page_menu.style.display = "inline";
+            
+
+
+        }).catch(function(error) 
+        {
+            console.log("errore nel logout")
+        });
+    }
+
     document.onkeydown = function(event)
     {
         keys = (keys || []);
@@ -288,16 +330,12 @@
     DOM.canvas.addEventListener('touchstart', touchStart, {passive: true}, false);
     DOM.canvas.addEventListener('touchend', touchEnd, {passive: true}, false);
 
-    DOM.login_username.onclick = function(){DOM.login_username.style = "top:50%; width:50%;";}
-    DOM.login_password.onclick = function(){DOM.login_password.style = "top:55%; width:50%;";}
-    
     //CONNESSIONE
-    socket.on('acces',function(data)
-    {    
-        if(data == true)
-        {
+    var acces = function()
+    {
             socket.emit("gameStart",login_username.value)
             initGame();
+            DOM.page_pause.style.display = "inline";
 
             socket.on('hit',function(data)
             {   
@@ -309,21 +347,19 @@
                 let volume = ENGINE.clamp(Math.abs( 1-( ENGINE.clamp(ENGINE.point_distance(me.x,me.y,data.x,data.y),0,1000))/1000 ),0,1);
                 GAME.playAudio(LOADER.souHit,volume);
             });
-
             socket.on('playerDie',function(data)
             {   
                 let range = 30
                 for(let i=0; i<20; i++)
                 {GAME.Explosion(Math.random(),data.x+ENGINE.random_range(-range,range),data.y+ENGINE.random_range(-range,range))}
             });
-
             socket.on('ballEnd',function(data)
             {   
                 GAME.Splash(Math.random(),GAME.Balls.list[data].x,GAME.Balls.list[data].y)
                 delete GAME.Balls.list[data]    
             });
             socket.on('disconnection',function(data)
-            {  
+            { 
                 delete GAME.Players.list[data];
             });
             socket.on('newPositions',function(data)
@@ -389,13 +425,8 @@
                         }
                     }
             });
-        }
-        else
-        {
-            DOM.login_username.style = " position:relative; display:block;top:50%; width:50%; border:solid; border-width:2px;  border-color:red;";
-            DOM.login_password.style = " position:relative; display:block;top:55%; width:50%; border:solid; border-width:2px;  border-color:red;";
-        }
-    });
+        
+    };
 
     //CONNESSIONE
     socket.on('connection',function(data)
@@ -422,6 +453,22 @@
         return "Complimenti, ora sei un bot senza anima ne morale portatore di morte e distruzione"
     }
     
+
+
+
+
+    firebase.auth().onAuthStateChanged(function(user) 
+        {
+            if (user) 
+            {
+                console.log("CONNESSO = "+user.displayName+"   "+user.email+"   "+user.uid)
+                acces()
+            } 
+            else 
+            {
+                console.log("DISCONNESSO")
+            }
+        });
 </script>
 
 </body>

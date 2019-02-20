@@ -1,11 +1,11 @@
 require("./client/js/engine.js");
-<<<<<<< HEAD
+
 require("./server/database.js")
 var firebase = require("firebase");
 
-=======
+
 require("./server/database.js");
->>>>>>> ec532e7b5d959862ad3c619929e54f527a16b1fe
+
 
 var GAME = {}
 GAME.playerList = {};
@@ -294,7 +294,6 @@ app.get("/favicon.ico", function(req, res)  { res.sendFile(__dirname + "/favicon
 app.get("/.fonts", function(req, res)  { res.sendFile(__dirname + "/.fonts");});   
 console.log("server started");
 
-<<<<<<< HEAD
 
    // Initialize Firebase
     var config = 
@@ -310,9 +309,9 @@ console.log("server started");
 //SOCKET////////////////////////////////////////////////////
 
 
-=======
+
 //SOCKET//
->>>>>>> ec532e7b5d959862ad3c619929e54f527a16b1fe
+
 var io = require("socket.io")(server,{});
 var socketList = {};
 var maxChest = 20;
@@ -320,7 +319,7 @@ for(let i=0; i<maxChest; i++)
 {
     Chest( ENGINE.random_range(0,2000), ENGINE.random_range(0,2000) );
 }
-Island( 70, 100 );
+
 
 //quando viene eseguita una connessione al socket
 io.sockets.on("connection", function(socket)
@@ -330,78 +329,10 @@ io.sockets.on("connection", function(socket)
         //manda un segnale di connessione avventua al client
         socket.emit("connection", socket.id);
         console.log("connesso  "+socketList[socket.id].id);
-        //aggiungi un ascolto sul messaggio di login
-        socket.on("login", function(data)
-        {
-<<<<<<< HEAD
-            firebase.auth().signInWithEmailAndPassword(data.name, data.password).catch(function(error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;     
-            //socket.emit("acces", true);
-            });
-=======
-                DB.loginUser(data.name, data.password , 
-                    function(check,points)
-                    {
-                        socket.emit("acces", check);
-                    });
->>>>>>> ec532e7b5d959862ad3c619929e54f527a16b1fe
-        });  
+
+
         
-        socket.on("login_google",function(data)
-        {
-            var provider = new firebase.auth.GoogleAuthProvider();
 
-            firebase.auth().signInWithPopup(provider).then(function(result) 
-            {
-                // This gives you a Google Access Token. You can use it to access the Google API.
-                var token = result.credential.accessToken;
-                // The signed-in user info.
-                var user = result.user;
-                // ...
-              }).catch(function(error) 
-              {
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                // The email of the user's account used.
-                var email = error.email;
-                // The firebase.auth.AuthCredential type that was used.
-                var credential = error.credential;
-                // ...
-              });
-        });
-
-        //aggiungi un ascolto sul messaggio di registrazione
-        socket.on("register", function(data)
-        {
-            firebase.auth().createUserWithEmailAndPassword(data.name, data.password).catch(function(error) 
-            {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            });
-        });  
-
-<<<<<<< HEAD
-        firebase.auth().onAuthStateChanged(function(user) 
-        {
-            if (user) 
-            {
-            console.log(user.displayName+"   "+user.email+"   "+user.uid)
-              // User is signed in.
-              var isAnonymous = user.isAnonymous;
-              var uid = user.uid;
-            } 
-            else 
-            {
-              // User is signed out.
-            }
-          });
-
-=======
->>>>>>> ec532e7b5d959862ad3c619929e54f527a16b1fe
         //aggiungi un ascolto sul messaggio di gameStart
         socket.on("gameStart", function(data)
         {
@@ -411,8 +342,11 @@ io.sockets.on("connection", function(socket)
                 {nome = data}
                 else
                 {nome = ""}
+
                 let player = Player(nome, socket.id, Math.random()*2000,Math.random()*2000);
+                console.log(socket.id+"   "+player.x+"   "+player.y)
                 DB.getPoints(nome, function(point){player.points = point});
+
                 //RICEVUTO MESAGGIO DI MOVIMENTO
                 socket.on("keyPress", function(data)
                 {
@@ -447,6 +381,21 @@ io.sockets.on("connection", function(socket)
             delete socketList[socket.id];
             delete GAME.playerList[socket.id];
         });
+
+
+        //quando un giocatore si disconnette eliminalo dalla lista giocatori
+        socket.on("logout", function()
+        {
+            socket.removeAllListeners("keyPress")
+            socket.removeAllListeners("shoot")
+            //invia l'informazione ad ogni client
+            for(let i in socketList)
+            {
+                let current = socketList[i];
+                current.emit("disconnection", socket.id);
+            } 
+            delete GAME.playerList[socket.id];
+        });        
 });
 
 //aggiorna e raccogli informazioni giocatori
