@@ -168,6 +168,7 @@ draw = function()
 {   
         //pulisci il canvas
         DOM.ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
         //disegna la mappa
         DOM.ctx.fillStyle = "#32479C";
         DOM.ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -236,12 +237,12 @@ draw = function()
             DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY, Y+30*SETTINGS.globalScaleY, charge*5*SETTINGS.globalScaleY, 5);
         }
         //disegna fps
-        DOM.ctx.fillStyle = "black";
-        DOM.ctx.font = (8*SETTINGS.globalScaleX)+"px Georgia";
-        DOM.ctx.fillText("FPS C:"+fpsClient, 10,  (480-64)*SETTINGS.globalScaleY);
-        DOM.ctx.fillText("FPS S:"+fpsServer, 10,  (480-32)*SETTINGS.globalScaleY);
+        //DOM.ctx.fillStyle = "black";
+        //DOM.ctx.font = (8*SETTINGS.globalScaleX)+"px pixelFont";
+        //DOM.ctx.fillText("FPS C:"+fpsClient, 10,  (480-64)*SETTINGS.globalScaleY);
+
         //disegna punteggio
-        DOM.ctx.fillText("POINTS:"+GAME.Players.list[socket.id].points, 10, 100*SETTINGS.globalScaleY);
+        DOM.ctx.fillText("POINTS:"+GAME.Players.list[socket.id].points, 10, (window.innerHeight-50));
         //disegna bussola 
         GAME.drawSprite(sBussola, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, 0, 1);
         GAME.drawSprite(sFreccia, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearChest, 0.8);

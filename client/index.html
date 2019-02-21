@@ -13,9 +13,9 @@
     <script src="/client/js/init.js"></script>
     <script src="/client/js/engine.js"></script>
     
-    <script src="/client/js/virtualjoystick.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.8.3/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-auth.js"></script>
 
     <script src="/client/js/setting.js"></script>
     <script src="/client/js/game.js"></script>
@@ -91,10 +91,10 @@
 
 <div id="page_pause"  style="display:none; position:relative;  z-index:0">
 
-    <button class="colButton" id="audio"        style=" left:25%; top:20%;  width:50%;  height:10%;  margin:10px; font-weight:400;  display: inline; position:fixed; ">AUDIO</button>
-    <button class="colButton" id="fullscreen"   style=" left:25%; top:30%;  width:50%;  height:10%;  margin:10px; font-weight:400;  display: inline; position:fixed; ">FULLSCREEN</button>
-    <button class="colButton" id="logout"       style=" left:25%; top:40%;  width:50%;  height:10%;   margin:10px; font-weight:400;  display: inline; position:fixed; ">LOGOUT</button>
-    <button class="colButton" id="back"         style=" left:25%; top:60%;  width:50%;  height:10%;  margin:10px; font-weight:400;  display: inline; position:fixed; ">INDIETRO</button>
+    <button class="menuButton" id="audio"        style=" top:20%; ">AUDIO</button>
+    <button class="menuButton" id="fullscreen"   style=" top:30%; ">FULLSCREEN</button>
+    <button class="menuButton" id="logout"       style=" top:40%; ">LOGOUT</button>
+    <button class="menuButton" id="back"         style=" top:60%; ">INDIETRO</button>
 </div>
 
 
@@ -217,82 +217,80 @@
 
         switch(loginType)
         {
+            //LOGIN CON GOOGLE
             case 0 :
             {
-                //INVIA I DATI DI LOGIN E PASSA AL GIOCO
+                
                 var provider = new firebase.auth.GoogleAuthProvider();
 
                 firebase.auth().signInWithPopup(provider).then(function(result) 
                 {
-                    // This gives you a Google Access Token. You can use it to access the Google API.
                     var token = result.credential.accessToken;
-                    // The signed-in user info.
                     var user = result.user;
-                    // ...
+
                 }).catch(function(error) 
                 {
-                    // Handle Errors here.
                     var errorCode = error.code;
                     var errorMessage = error.message;
-                    // The email of the user's account used.
                     var email = error.email;
-                    // The firebase.auth.AuthCredential type that was used.
                     var credential = error.credential;
-                    // ...
                 });
                 break;
             }
 
-        case 1 :
-        {
-            firebase.auth().signInWithEmailAndPassword(login_email.value, login_password.value).catch(function(error) 
+            //LOGIN CON EMAIL
+            case 1 :
             {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            console.log("errore nel login = "+errorCode)
-
-                if(errorCode == "auth/user-not-found")
+                firebase.auth().signInWithEmailAndPassword(login_email.value, login_password.value).catch(function(error) 
                 {
-                    firebase.auth().createUserWithEmailAndPassword(login_email.value, login_password.value).catch(function(error) 
-                    {
                     // Handle Errors here.
                     var errorCode = error.code;
                     var errorMessage = error.message;
-                    console.log("errore nella registrazione = "+errorCode)
-                    });
-                }
+                    console.log("errore nel login = "+errorCode)
 
-                if(errorCode == "auth/wrong-password")
-                {
-                    //border: 2px solid red;
-                    DOM.login_password.style = "top:50%;  width:80%; border: 2px solid red;"
-                }
+                    if(errorCode == "auth/user-not-found")
+                    {
+                        firebase.auth().createUserWithEmailAndPassword(login_email.value, login_password.value).catch(function(error) 
+                        {
+                        // Handle Errors here.
+                        var errorCode = error.code;
+                        var errorMessage = error.message;
+                        console.log("errore nella registrazione = "+errorCode)
+                        });
+                    }
 
-                if(errorCode == "auth/invalid-email")
-                {
-                    //border: 2px solid red;
-                    DOM.login_email.style = "top:45%;  width:80%; border: 2px solid red;"
-                }
-            });
+                    if(errorCode == "auth/wrong-password")
+                    {
+                        //border: 2px solid red;
+                        DOM.login_password.style = "top:50%;  width:80%; border: 2px solid red;"
+                    }
 
-            break;
-        }
+                    if(errorCode == "auth/invalid-email")
+                    {
+                        //border: 2px solid red;
+                        DOM.login_email.style = "top:45%;  width:80%; border: 2px solid red;"
+                    }
+                });
 
+                break;
+            }
 
-        case 2 :
-        {
-            firebase.auth().signInAnonymously().catch(function(error) 
+            //LOGIN COME GUEST
+            case 2 :
             {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            console.log("errore nel login = "+errorCode)
-            });
-            break;
+                firebase.auth().signInAnonymously().catch(function(error) 
+                {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log("errore nel login = "+errorCode)
+                });
+                break;
+            }
+
         }
 
-    }
+        
     }
 
 
@@ -306,12 +304,12 @@
         {
             socket.emit("logout");
             SETTINGS.inGame = false
-            //if(SETTINGS.onMobile){joystick.destroy();}
 
             clearInterval(game_update);
             socket.removeAllListeners("hit")
             socket.removeAllListeners("playerDie")
             socket.removeAllListeners("ballEnd")
+            ocket.removeAllListeners("chestEnd")
             socket.removeAllListeners("disconect")
             socket.removeAllListeners("newPositions")
             GAME.clearEntity();
@@ -433,8 +431,6 @@
     
     function touchEnd(ev) 
     {       
-        
-
         tuchX = -1
         tuchY = -1
         touch = false
@@ -465,7 +461,18 @@
     //CONNESSIONE
     var acces = function()
     {
-            socket.emit("gameStart",{username : login_username.value,   id :firebase.auth().currentUser.uid})
+            let user = firebase.auth().currentUser;
+            let name = "";
+            
+            if(DOM.login_username.value != "" && DOM.login_username.value != user.displayName)
+            {
+                name = DOM.login_username.value;
+                user.updateProfile({displayName: DOM.login_username.value,}).then(function() {}).catch(function(error) {});
+            }
+            else
+            {name =user.displayName;}
+
+            socket.emit("gameStart",{username:name,  id:user.uid, anonymus:user.isAnonymous})
             initGame();
 
             socket.on('hit',function(data)
@@ -488,6 +495,10 @@
             {   
                 GAME.Splash(Math.random(),GAME.Balls.list[data].x,GAME.Balls.list[data].y)
                 delete GAME.Balls.list[data]    
+            });
+            socket.on('chestEnd',function(data)
+            {   
+                delete GAME.Chest.list[data]    
             });
             socket.on('disconnection',function(data)
             { 
@@ -607,14 +618,8 @@
         {
             if (user) 
             {
-                user.updateProfile(
-                {
-                    displayName: DOM.login_username.value,
-                }).then(function() {}).catch(function(error) {});
-
-                console.log("CONNESSO = "+user.displayName+"   "+user.email+"   "+user.uid)
-                
-                acces()
+                console.log("CONNESSO = "+user.displayName+"   "+user.email+"   "+user.uid)            
+               acces()
             } 
             else 
             {

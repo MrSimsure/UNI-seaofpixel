@@ -36,7 +36,7 @@ Rectangle = function(x, y, w, h)
     return self;
 }
 
-Player = function(name, id, loginID, x, y)
+Player = function(name, id, loginID, anonymus, x, y)
 {
     var self =
     {
@@ -56,7 +56,8 @@ Player = function(name, id, loginID, x, y)
         points : 0,
         savedPoints : 0,
         collider : Rectangle(x-20,y-20,20, 20),
-        loginID:loginID
+        loginID:loginID,
+        anonymus:anonymus,
     }
 
     self.takeDamage = function(dmg)
@@ -65,6 +66,20 @@ Player = function(name, id, loginID, x, y)
         //controlla che il giocatore sia ancora vivo
         if(self.life <= 0)
         {
+            let punti = 0;
+            if(self.points >= 1500)
+            {punti = 15}
+            else
+            {punti = (self.points/100)}
+
+            self.points -= punti;
+            DB.updatePoints(self.loginID, self.points)
+
+            for(let n=0; n<punti; n++)
+            {
+                Chest( self.x+ENGINE.random_range(-100,100), self.y+ENGINE.random_range(-100,100) , true);
+            }
+
             //manda a tutti la notifica di morte
             for(let i in socketList)
             {
@@ -119,6 +134,7 @@ Player = function(name, id, loginID, x, y)
                 {
                     self.points += 100;
                     current.changePosition();
+                    
                     DB.updatePoints(self.loginID, self.points)
                 }
             }
@@ -241,7 +257,7 @@ Balls = function(x,y,direction,speed,player)
     return self;
 }
 
-Chest = function(x,y)
+Chest = function(x,y,temp)
 {
     var self = 
     {
@@ -249,13 +265,29 @@ Chest = function(x,y)
         x : x,
         y : y,   
         collider : Rectangle(x-8,y-8,8,8),
+        temp:temp,
     }
+
     self.changePosition = function()
     {
         self.x = ENGINE.random_range(0,2000);
         self.y = ENGINE.random_range(0,2000);
         self.collider.set(self.x-8,self.y-8,8,8);
     }
+
+    self.destroy = function()
+    {
+        for(var i in socketList)
+        {
+            var current = socketList[i];
+            current.emit("chestEnd", self.id);             
+        } 
+        delete GAME.chestList[self.id];
+    }
+
+    if(temp == true)
+    {setTimeout(self.destroy,10000+ENGINE.random_range(-1000,1000)); }
+
     GAME.chestList[self.id] = self;
     return self;
 }
@@ -280,9 +312,8 @@ Kraken = function(x,y)
 var express = require("express");
 var app = express();
 var server = require("http").Server(app);
-var fps;
-var lastLoop;
-//app.use(express.static("client"));
+
+
 app.get("/", function(req, res)  {  res.sendFile(__dirname + "/client/index.html");});   
 app.use("/client", express.static(__dirname + "/client"));
 app.get("/serviceWorker.js", function(req, res)  { res.sendFile(__dirname + "/serviceWorker.js");});   
@@ -297,17 +328,13 @@ console.log("server started");
 
 //SOCKET////////////////////////////////////////////////////
 
-
-
-//SOCKET//
-
 var io = require("socket.io")(server,{});
 var socketList = {};
 var maxChest = 20;
 
 for(let i=0; i<maxChest; i++)
 {
-    Chest( ENGINE.random_range(0,2000), ENGINE.random_range(0,2000) );
+    Chest( ENGINE.random_range(0,2000), ENGINE.random_range(0,2000) , false);
 }
 
 
@@ -331,19 +358,21 @@ io.sockets.on("connection", function(socket)
                 else
                 {nome = ""}
 
-                let player = Player(nome, socket.id, data.id, Math.random()*2000,Math.random()*2000);
+                let player = Player(nome, socket.id, data.id, data.anonymus, Math.random()*2000,Math.random()*2000);
+                console.log(data.id+"   "+data.anonymus)
 
-                DB.checkUser(data.id, function(callback) 
-                {
-                    if(callback == true)
-                    {   
-                        DB.getPoints(data.id, function(point){player.points = point});
-                    }
-                    else
-                    {   
-                        DB.registerUser(data.id);
-                    }
-                });
+                    DB.checkUser(data.id, function(callback) 
+                    {
+                        if(callback == true)
+                        {   
+                            DB.getPoints(data.id, function(point){player.points = point});
+                        }
+                        else
+                        {   
+                            DB.registerUser(data.id);
+                        }
+                    });
+                
                 
 
 
@@ -467,18 +496,12 @@ var updateChest = function()
 //game loop
 var serverUpdate = function()
 {
-    //fps del server
-    let thisLoop = new Date();
-    if(Math.random() > 0.8)
-    {fps = Math.floor(1000 / (thisLoop - lastLoop));}
-    lastLoop = thisLoop;
     //raccogli informazioni su tutte le entità di gioco
     let pack = 
     {
         players: updatePlayer(),
         balls: updateBall(),
         chests: updateChest(),
-        fps:fps,
     }
 
     //invia i dati ad ogni client

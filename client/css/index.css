@@ -4,6 +4,16 @@
     src: url(PixelFont.ttf);
 }
 
+canvas {
+    background-color: black; 
+    font-family:pixelFont;
+}
+#load 
+{
+    font-family:pixelFont;
+    visibility: hidden; 
+    height: 0px;
+}
 .title
 {
     display:inline; 
@@ -36,6 +46,25 @@
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+
+.menuButton
+{
+    left:25%; 
+    width: 50%; 
+    text-align: center;
+    font-size: 1.4vw;
+    margin: auto; 
+    font-family: pixelFont; 
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height:10%;  
+    margin:10px; 
+    font-weight:400;  
+    display: inline; 
+    position:fixed; 
+}
+
 
 .inLabel
 {

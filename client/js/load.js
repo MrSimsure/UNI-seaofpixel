@@ -1,4 +1,4 @@
-
+var f = new FontFace('PixelFont', 'url(PixelFont.ttf)');
 
 LOADER = {}
 //CARICA TUTTE LE IMMAGINI

@@ -182,7 +182,7 @@ GAME.Players = function(id,x,y,name,angle)
         DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY,Y-38*SETTINGS.globalScaleY,self.life/2*SETTINGS.globalScaleY,5);
         DOM.ctx.fillStyle = "black";
         DOM.ctx.textAlign = "center";
-        DOM.ctx.font = (10*SETTINGS.globalScaleX)+"px Georgia";
+        DOM.ctx.font = (10*SETTINGS.globalScaleX)+"px pixelFont";
         DOM.ctx.fillText(self.name, X,  Y-48*SETTINGS.globalScaleY);
         DOM.ctx.textAlign = "left";
    }

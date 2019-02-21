@@ -1,6 +1,6 @@
 {
-    "short_name": "SeasOfPixel",
-    "name": "Seas of Pixel",
+    "short_name": "SeaOfPixel",
+    "name": "Sea of Pixel",
     "start_url": "/client/index.html",
     "display": "fullscreen",
     "orientation": "landscape", 
