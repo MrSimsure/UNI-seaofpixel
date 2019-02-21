@@ -14,6 +14,7 @@ LOADER.sprFog = GAME.loadImage("spr_fog");
 LOADER.sprBussola = GAME.loadImage("spr_bussola");
 LOADER.sprFreccia = GAME.loadImage("spr_freccia");
 LOADER.sprIsland = GAME.loadImage("spr_island");
+LOADER.sprPause = GAME.loadImage("spr_pause");
 //CARICA TUTTI I SUONI
 LOADER.souCannon = GAME.loadAudio("sou_cannon");
 LOADER.musMenu = GAME.loadAudio("mus_menu");
@@ -23,6 +24,7 @@ LOADER.souExpl = GAME.loadAudio("sou_cannonball_explosion");
 var sBussola = GAME.sprite(LOADER.sprBussola,1,64,64,1);
 var sFreccia = GAME.sprite(LOADER.sprFreccia,1,64,64,1);
 var sIsola = GAME.sprite(LOADER.sprIsland,1,200,200,1);
+var sPause = GAME.sprite(LOADER.sprPause,1,100,100,1);
 
 //SALVA TUTTI I DOM
 DOM = {};
@@ -59,8 +61,12 @@ DOM.auth_google = document.getElementById("auth_google");
 DOM.auth_email = document.getElementById("auth_email");
 DOM.auth_guest = document.getElementById("auth_quest");
 
-DOM.logout = document.getElementById("logout");
 
+//page pause
+DOM.logout = document.getElementById("logout");
+DOM.audio = document.getElementById("audio");
+DOM.fullscreen = document.getElementById("fullscreen");
+DOM.back = document.getElementById("back");
 
 DOM.splash = document.getElementById("splash");
 
@@ -87,6 +93,8 @@ DOM.music_on.onclick = function()
 
     LOADER.musMenu.loop = true
     LOADER.musMenu.play()
+
+    setLogin()
 }
 
 DOM.music_off.onclick = function()
@@ -94,6 +102,8 @@ DOM.music_off.onclick = function()
     SETTINGS.audio = false
     DOM.page_init.style.display = "none";
     DOM.page_menu.style.display = "flex";
+
+    setLogin()
 }
 
 let frasi = function()

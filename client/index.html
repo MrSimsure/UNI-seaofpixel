@@ -90,7 +90,11 @@
 
 
 <div id="page_pause"  style="display:none; position:relative;  z-index:0">
-    <button class="colButton" id="logout"   style=" left:8%; top:60%;  width:40%;  height:10%;   font-weight:400;  display: block; ">ESCI</button>
+
+    <button class="colButton" id="audio"        style=" left:25%; top:20%;  width:50%;  height:10%;  margin:10px; font-weight:400;  display: inline; position:fixed; ">AUDIO</button>
+    <button class="colButton" id="fullscreen"   style=" left:25%; top:30%;  width:50%;  height:10%;  margin:10px; font-weight:400;  display: inline; position:fixed; ">FULLSCREEN</button>
+    <button class="colButton" id="logout"       style=" left:25%; top:40%;  width:50%;  height:10%;   margin:10px; font-weight:400;  display: inline; position:fixed; ">LOGOUT</button>
+    <button class="colButton" id="back"         style=" left:25%; top:60%;  width:50%;  height:10%;  margin:10px; font-weight:400;  display: inline; position:fixed; ">INDIETRO</button>
 </div>
 
 
@@ -109,7 +113,6 @@
     var keys = [];
     keys[32] = false;
     var touch = false;
-    var inGame = false;
     var lastTuch = 0;
     var loginType = 0;
     var tuchX = 0;
@@ -126,7 +129,11 @@
     };
     firebase.initializeApp(config);
 
-      
+    if(SETTINGS.audio)
+    {DOM.audio.innerHTML  = "AUDIO OFF"}
+    else
+    {DOM.audio.innerHTML  = "AUDIO ON"}
+
     initMenu()
 
     //LOGIN
@@ -274,7 +281,7 @@
         firebase.auth().signOut().then(function() 
         {
             socket.emit("logout");
-
+            SETTINGS.inGame = false
             //if(SETTINGS.onMobile){joystick.destroy();}
 
             clearInterval(game_update);
@@ -313,6 +320,35 @@
         });
     }
 
+    DOM.audio.onclick = function()
+    {
+        SETTINGS.audio = !SETTINGS.audio
+
+        if(SETTINGS.audio)
+        {
+            DOM.audio.innerHTML  = "AUDIO OFF"
+            LOADER.musMenu.loop = true
+            LOADER.musMenu.play()
+        }
+        else
+        {
+            DOM.audio.innerHTML  = "AUDIO ON"
+            LOADER.musMenu.pause();
+        }
+    }
+
+
+    DOM.fullscreen.onclick = function()
+    {
+        SETTINGS.openFullscreen()
+    }
+
+    DOM.back.onclick = function()
+    {
+        setPause()
+    }
+
+
     document.onkeydown = function(event)
     {
         keys = (keys || []);
@@ -327,6 +363,9 @@
         { socket.emit("keyPress", {id:"right", state:true}); }
          if(event.keyCode == 87 || event.keyCode == 38) //w
         { socket.emit("keyPress", {id:"up", state:true}); moving = true;}
+
+        if(event.keyCode == 27)
+        {setPause()}
     }
     
     document.onkeyup = function(event)
@@ -357,26 +396,34 @@
 
     function touchStart(ev) 
     {     
-        
+        if(SETTINGS.inGame == true)
+        {ev.preventDefault()}
+
         if(ev.touches[0].clientX > screen.width/2   &&  ev.touches[0].clientY > screen.height/2)
         {touch = true}
+
+        if(ev.touches[0].clientX <100 && ev.touches[0].clientY < 100)
+        {setPause()}
         
     };
     
     function touchEnd(ev) 
     {       
+        
+
         tuchX = -1
         tuchY = -1
-            touch = false
-            if(charge < 10) 
-            {
+        touch = false
+
+        if(charge < 10) 
+        {
                 charge = 0
-            }
-            else
-            {
+        }
+        else
+        {
                 socket.emit("shoot");
                 charge = 0
-            }
+        }
     
     };
 
@@ -396,7 +443,6 @@
     {
             socket.emit("gameStart",{username : login_username.value,   id :firebase.auth().currentUser.uid})
             initGame();
-            DOM.page_pause.style.display = "inline";
 
             socket.on('hit',function(data)
             {   
@@ -516,9 +562,24 @@
     
 
 
+    setPause = function()
+    {
+        SETTINGS.inGame = !SETTINGS.inGame
+
+        if(SETTINGS.inGame)
+        {
+            DOM.page_pause.style.display = "none"
+        }
+        else
+        {
+            DOM.page_pause.style.display = "inline"
+        }
+    }
 
 
-    firebase.auth().onAuthStateChanged(function(user) 
+    setLogin = function()
+    {
+        firebase.auth().onAuthStateChanged(function(user) 
         {
             if (user) 
             {
@@ -536,6 +597,8 @@
                 console.log("DISCONNESSO")
             }
         });
+    }
+    
 </script>
 
 </body>

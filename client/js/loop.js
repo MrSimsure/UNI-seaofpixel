@@ -1,7 +1,7 @@
 initGame = function()
 {
     lastLoop = 0;
-
+    SETTINGS.inGame = true
     //BLOCCA IL LOOP DEL MENU
     clearInterval(menu_update);
     //INSTANZIA LA NEBBIA AI CONFINI DEL MONDO
@@ -21,7 +21,7 @@ initGame = function()
     
     if(SETTINGS.onMobile)
     {
-        //SETTINGS.openFullscreen();     
+        SETTINGS.openFullscreen();     
 
     }
     //INIZIA LOOP DI GIOCO
@@ -241,25 +241,35 @@ draw = function()
         DOM.ctx.fillText("FPS C:"+fpsClient, 10,  (480-64)*SETTINGS.globalScaleY);
         DOM.ctx.fillText("FPS S:"+fpsServer, 10,  (480-32)*SETTINGS.globalScaleY);
         //disegna punteggio
-        DOM.ctx.fillText("POINTS:"+GAME.Players.list[socket.id].points, 10, 16*SETTINGS.globalScaleY);
+        DOM.ctx.fillText("POINTS:"+GAME.Players.list[socket.id].points, 10, 100*SETTINGS.globalScaleY);
         //disegna bussola 
         GAME.drawSprite(sBussola, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, 0, 1);
         GAME.drawSprite(sFreccia, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearChest, 0.8);
         if(Object.keys(GAME.Players.list).length > 1)
         {GAME.drawSprite(sFreccia, 1, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearPlayer, 0.8);}
 
+        GAME.drawSprite(sPause,0,25*SETTINGS.globalScaleX,25*SETTINGS.globalScaleY,0,0.6)
 
-        
-        DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize);    DOM.ctx.stroke()
-        DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize);    DOM.ctx.stroke()
-        DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize);    DOM.ctx.stroke()
-        DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*1+buttonSize*1, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize);    DOM.ctx.stroke()
-        DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize);    DOM.ctx.stroke()
-
+        if(SETTINGS.onMobile)
+        {
+            DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize);    DOM.ctx.stroke()
+            DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize);    DOM.ctx.stroke()
+            DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize);    DOM.ctx.stroke()
+            DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*1+buttonSize*1, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize);    DOM.ctx.stroke()
+            DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize);    DOM.ctx.stroke()
+        }
+    
+        if(SETTINGS.inGame == false)
+        {
+            DOM.ctx.beginPath();    
+            DOM.ctx.globalAlpha = 0.7
+            DOM.ctx.fillRect(0, 0,  window.innerWidth, window.innerHeight);   
+            DOM.ctx.globalAlpha = 1 
+        }
 }
 buttonX = 10
-buttonMargin = 10
-buttonSize = 80
+buttonMargin = 2*SETTINGS.globalScaleX
+buttonSize = 50*SETTINGS.globalScaleX
 
 
 clientUpdate = function()

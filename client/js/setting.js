@@ -7,6 +7,7 @@ SETTINGS =
     WINDOW_WIDTH : 640,
     WINDOW_HEIGHT : 480,
     onMobile : false,
+    inGame : false,
     globalScaleX:1,
     globalScaleY:1,
     quality:2,
