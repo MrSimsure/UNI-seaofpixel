@@ -140,27 +140,18 @@
     DOM.auth_google.onclick = function()
     {   
         loginType = 0;
-            //INVIA I DATI DI LOGIN E PASSA AL GIOCO
-            var provider = new firebase.auth.GoogleAuthProvider();
 
-            firebase.auth().signInWithPopup(provider).then(function(result) 
-            {
-                // This gives you a Google Access Token. You can use it to access the Google API.
-                var token = result.credential.accessToken;
-                // The signed-in user info.
-                var user = result.user;
-                // ...
-            }).catch(function(error) 
-            {
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                // The email of the user's account used.
-                var email = error.email;
-                // The firebase.auth.AuthCredential type that was used.
-                var credential = error.credential;
-                // ...
-            });
+        
+        DOM.auth_email.style.display = "none"
+        DOM.auth_google.style.display = "none"
+        DOM.auth_guest.style.display = "none"
+
+        DOM.login_username.style.display = "block";
+        DOM.login_username_label.style.display = "block";
+
+        DOM.avanti.style.display = "inline-block";
+        DOM.indietro.style.display = "inline-block";
+            
     }
 
     DOM.auth_email.onclick = function()
@@ -223,7 +214,36 @@
 
     DOM.avanti.onclick = function()
     {  
-        if(loginType == 1)
+
+        switch(loginType)
+        {
+            case 0 :
+            {
+                //INVIA I DATI DI LOGIN E PASSA AL GIOCO
+                var provider = new firebase.auth.GoogleAuthProvider();
+
+                firebase.auth().signInWithPopup(provider).then(function(result) 
+                {
+                    // This gives you a Google Access Token. You can use it to access the Google API.
+                    var token = result.credential.accessToken;
+                    // The signed-in user info.
+                    var user = result.user;
+                    // ...
+                }).catch(function(error) 
+                {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    // The email of the user's account used.
+                    var email = error.email;
+                    // The firebase.auth.AuthCredential type that was used.
+                    var credential = error.credential;
+                    // ...
+                });
+                break;
+            }
+
+        case 1 :
         {
             firebase.auth().signInWithEmailAndPassword(login_email.value, login_password.value).catch(function(error) 
             {
@@ -255,10 +275,12 @@
                     DOM.login_email.style = "top:45%;  width:80%; border: 2px solid red;"
                 }
             });
+
+            break;
         }
 
 
-        if(loginType == 2)
+        case 2 :
         {
             firebase.auth().signInAnonymously().catch(function(error) 
             {
@@ -267,8 +289,10 @@
             var errorMessage = error.message;
             console.log("errore nel login = "+errorCode)
             });
+            break;
         }
 
+    }
     }
 
 
