@@ -238,11 +238,17 @@ draw = function()
         }
         //disegna fps
         DOM.ctx.fillStyle = "black";
-        //DOM.ctx.font = (8*SETTINGS.globalScaleX)+"px pixelFont";
+        DOM.ctx.font = (6*SETTINGS.globalScaleX)+"px pixelFont";
         //DOM.ctx.fillText("FPS C:"+fpsClient, 10,  (480-64)*SETTINGS.globalScaleY);
 
+        for(let n=0; n<scoreBoard.length; n++)
+        {
+            DOM.ctx.fillText( (scoreBoard.length-n)+"° "+scoreBoard[n].name+"="+scoreBoard[n].points, window.innerWidth-100*SETTINGS.globalScaleX, window.innerHeight-10-10*n*SETTINGS.globalScaleY)
+        }
+
         //disegna punteggio
-        DOM.ctx.fillText("POINTS:"+GAME.Players.list[socket.id].points, 10, (window.innerHeight-50));
+        DOM.ctx.fillText("POINTS:"+GAME.Players.list[socket.id].points, 10, window.innerHeight-10*SETTINGS.globalScaleY);
+
         //disegna bussola 
         GAME.drawSprite(sBussola, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, 0, 1);
         GAME.drawSprite(sFreccia, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearChest, 0.8);
@@ -268,9 +274,7 @@ draw = function()
             DOM.ctx.globalAlpha = 1 
         }
 }
-buttonX = 10
-buttonMargin = 2*SETTINGS.globalScaleX
-buttonSize = 50*SETTINGS.globalScaleX
+
 
 
 clientUpdate = function()

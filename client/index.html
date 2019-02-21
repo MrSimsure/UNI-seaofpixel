@@ -106,17 +106,20 @@
     var mainDir = window.location.href
     var moving = false;
     var fpsClient;
-    var fpsServer;
     var nearPlayer = 0;
     var nearChest = 0;
     var charge = 0;
-    var keys = [];
-    keys[32] = false;
+    var keys = []; keys[32] = false;
     var touch = false;
     var lastTuch = 0;
     var loginType = 0;
     var tuchX = 0;
     var tuchY = 0;
+    var buttonX = 10
+    var buttonMargin = 2*SETTINGS.globalScaleX
+    var buttonSize = 50*SETTINGS.globalScaleX
+    var scoreBoard = [];
+
 
     var config = 
     {
@@ -309,7 +312,7 @@
             socket.removeAllListeners("hit")
             socket.removeAllListeners("playerDie")
             socket.removeAllListeners("ballEnd")
-            ocket.removeAllListeners("chestEnd")
+            socket.removeAllListeners("chestEnd")
             socket.removeAllListeners("disconect")
             socket.removeAllListeners("newPositions")
             GAME.clearEntity();
@@ -338,7 +341,7 @@
 
         }).catch(function(error) 
         {
-            console.log("errore nel logout")
+            console.log("errore nel logout = "+error)
         });
     }
 
@@ -456,7 +459,11 @@
     window.addEventListener('touchstart', touchStart, {passive: false}, false);
     window.addEventListener('touchend', touchEnd, {passive: false}, false);
     window.addEventListener('touchmove', touchMove, {passive: false}, false);
-
+    window.addEventListener("click", function(ev)
+    {
+        if(event.clientX < 150 && event.clientY < 150)
+        {setPause()}
+    });
 
     //CONNESSIONE
     var acces = function()
@@ -508,9 +515,10 @@
             {
                 fpsServer = data.fps;
                 let lastOwner = -1;
+
                 //aggiorna posizione palle 
-                    for(let i = 0 ; i < data.balls.length; i++)
-                    {
+                for(let i = 0 ; i < data.balls.length; i++)
+                {
                         let current = data.balls[i];
 
                         if(GAME.Balls.list[current.id] == undefined)
@@ -530,12 +538,14 @@
                             GAME.Balls.list[current.id].x = current.x;
                             GAME.Balls.list[current.id].y = current.y;
                         }
-                    }
+                }
 
-                    //aggiorna posizione giocatori
-                    for(let i = 0 ; i < data.players.length; i++)
-                    {
+                scoreBoard = [];
+                //aggiorna posizione giocatori
+                for(let i = 0 ; i < data.players.length; i++)
+                {
                         let current = data.players[i];
+                        scoreBoard.push({name:current.name, points:current.points})
 
                         if(GAME.Players.list[current.id] == undefined)
                         {          
@@ -549,11 +559,14 @@
                             GAME.Players.list[current.id].life = current.life;
                             GAME.Players.list[current.id].points = current.points;
                         }
-                    }
 
-                    //aggiorna posizione casse 
-                    for(let i = 0 ; i < data.chests.length; i++)
-                    {
+                        
+                }
+                scoreBoard.sort(function (a, b) {return a.points - b.points;});
+
+                //aggiorna posizione casse 
+                for(let i = 0 ; i < data.chests.length; i++)
+                {
                         let current = data.chests[i];
 
                         if(GAME.Chest.list[current.id] == undefined)
@@ -565,7 +578,7 @@
                             GAME.Chest.list[current.id].x = current.x;
                             GAME.Chest.list[current.id].y = current.y;
                         }
-                    }
+                }
             });
         
     };
