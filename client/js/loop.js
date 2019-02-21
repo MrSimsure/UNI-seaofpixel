@@ -237,7 +237,7 @@ draw = function()
             DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY, Y+30*SETTINGS.globalScaleY, charge*5*SETTINGS.globalScaleY, 5);
         }
         //disegna fps
-        //DOM.ctx.fillStyle = "black";
+        DOM.ctx.fillStyle = "black";
         //DOM.ctx.font = (8*SETTINGS.globalScaleX)+"px pixelFont";
         //DOM.ctx.fillText("FPS C:"+fpsClient, 10,  (480-64)*SETTINGS.globalScaleY);
 

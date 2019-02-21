@@ -72,7 +72,7 @@ Player = function(name, id, loginID, anonymus, x, y)
             else
             {punti = (self.points/100)}
 
-            self.points -= punti;
+            self.points -= punti*100;
             DB.updatePoints(self.loginID, self.points)
 
             for(let n=0; n<punti; n++)
