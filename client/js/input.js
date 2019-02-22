@@ -12,7 +12,8 @@ DOM.music_on.onclick = function()
 
     setLogin()
 
-    SETTINGS.openFullscreen()
+    if(SETTINGS.onMobile)
+    {SETTINGS.openFullscreen()}
 }
 
 DOM.music_off.onclick = function()
@@ -24,7 +25,8 @@ DOM.music_off.onclick = function()
 
     setLogin()
 
-    SETTINGS.openFullscreen()
+    if(SETTINGS.onMobile)
+    {SETTINGS.openFullscreen()}
 }
 
 
@@ -226,7 +228,7 @@ DOM.music_off.onclick = function()
         firebase.auth().signOut().then(function() 
         {
             socket.emit("deleteUser",user.uid)
-            
+
             if(user.isAnonymous)
             {
                 user.delete().then(function() 
