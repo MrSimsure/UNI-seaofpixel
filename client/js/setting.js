@@ -6,12 +6,13 @@ SETTINGS =
     H : 480,
     WINDOW_WIDTH : 640,
     WINDOW_HEIGHT : 480,
-    onMobile : false,
-    inGame : false,
     globalScaleX:1,
     globalScaleY:1,
+    onMobile : false,
+    inGame : false,
     quality:2,
     audio:false,
+    music:false,
 }
 
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) 

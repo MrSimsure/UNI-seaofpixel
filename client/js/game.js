@@ -375,7 +375,7 @@ GAME.Fog = function(x,y)
        x:x,
        y:y,  
        angle:Math.random()*360,
-       rot:(Math.random()+0.1)*0.2,
+       rot:(Math.random()+0.2)*0.2,
        sprite: GAME.sprite(LOADER.sprFog,1,256,256,1),
    }
 
@@ -393,7 +393,7 @@ GAME.Fog = function(x,y)
 }
 GAME.Fog.list = [];
 
-
+//elimina ogni istanza di gioco
 GAME.clearEntity = function()
 {
     for(let i in GAME.Onda.list)
@@ -440,8 +440,7 @@ GAME.clearEntity = function()
 
 }
 
-
-
+//controlla che due punti siano nel riquadro
 GAME.insideRect = function(x,y, x0,y0,x1,y1)
 {
     if(x > x0 && x < x0+x1 && y > y0 && y < y0+y1)

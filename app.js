@@ -133,9 +133,9 @@ Player = function(name, id, loginID, anonymus, x, y)
                 if( self.collider.overlaps(current.collider))
                 {
                     self.points += 100;
-                    current.changePosition();
-                    
+                    current.changePosition();      
                     DB.updatePoints(self.loginID, self.points)
+                    socketList[self.id].emit("chestTaken")
                 }
             }
             let tempX = self.x+ENGINE.lengthdir_x(self.accelleration,self.angle)
@@ -264,15 +264,22 @@ Chest = function(x,y,temp)
         id : Math.random(),
         x : x,
         y : y,   
-        collider : Rectangle(x-8,y-8,8,8),
+        collider : Rectangle(x-12,y-12,12,12),
         temp:temp,
     }
 
     self.changePosition = function()
     {
-        self.x = ENGINE.random_range(0,2000);
-        self.y = ENGINE.random_range(0,2000);
-        self.collider.set(self.x-8,self.y-8,8,8);
+        if(temp)
+        {
+            self.destroy();
+        }
+        else
+        {
+            self.x = ENGINE.random_range(0,2000);
+            self.y = ENGINE.random_range(0,2000);
+            self.collider.set(self.x-12,self.y-12,12,12);
+        }
     }
 
     self.destroy = function()
@@ -395,7 +402,12 @@ io.sockets.on("connection", function(socket)
                     let current =  GAME.playerList[socket.id];
                     Balls(current.x,current.y,current.angle+90,8, socket.id);
                     Balls(current.x,current.y,current.angle+270,8, socket.id);           
-                });              
+                });          
+                
+                socket.on("deleteUser", function(data)
+                {
+                    DB.deletUser(data);
+                });  
         });
 
         //quando un giocatore si disconnette eliminalo dalla lista giocatori

@@ -169,10 +169,11 @@ draw = function()
         //pulisci il canvas
         DOM.ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        //disegna la mappa
+        //disegna il mare
         DOM.ctx.fillStyle = "#32479C";
         DOM.ctx.fillRect(0,0,canvas.width,canvas.height);
-        DOM.ctx.fillStyle = "#000000";
+
+
         //aggiorna e disegna le scie
         for(let i = GAME.Onda.list.length-1 ; i >= 0; i--)
         {       
@@ -219,7 +220,6 @@ draw = function()
             current.update();
             current.draw();
         }
-        GAME.drawSprite(sIsola, 0, (150-camera.xView),  (150-camera.yView), 0, 1);
         //disegna nebbia
         for(let i in  GAME.Fog.list)
         {
@@ -236,18 +236,31 @@ draw = function()
             DOM.ctx.fillStyle = "red";
             DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY, Y+30*SETTINGS.globalScaleY, charge*5*SETTINGS.globalScaleY, 5);
         }
-        //disegna fps
+
         DOM.ctx.fillStyle = "black";
         DOM.ctx.font = (6*SETTINGS.globalScaleX)+"px pixelFont";
-        //DOM.ctx.fillText("FPS C:"+fpsClient, 10,  (480-64)*SETTINGS.globalScaleY);
 
-        for(let n=0; n<scoreBoard.length; n++)
+        //scrivi informazioni di debug
+        if(DEBUG)
         {
-            DOM.ctx.fillText( (scoreBoard.length-n)+"° "+scoreBoard[n].name+"="+scoreBoard[n].points, window.innerWidth-100*SETTINGS.globalScaleX, window.innerHeight-10-10*n*SETTINGS.globalScaleY)
+            DOM.ctx.fillText("FPS:"+fpsClient, 10,  200*SETTINGS.globalScaleY);
+            DOM.ctx.fillText("PLAYERS:"+Object.keys(GAME.Players.list).length, 10,  220*SETTINGS.globalScaleY);
         }
 
-        //disegna punteggio
-        DOM.ctx.fillText("POINTS:"+GAME.Players.list[socket.id].points, 10, window.innerHeight-10*SETTINGS.globalScaleY);
+        //scrivi classifica giocatori
+        for(let n=0; n<scoreBoard.length; n++)
+        {
+            let current = scoreBoard[n];
+
+            if(current.me)
+            {DOM.ctx.fillStyle = "red";}
+            else
+            {DOM.ctx.fillStyle = "black";}
+
+            DOM.ctx.fillText( (scoreBoard.length-n)+"° "+current.name+"="+current.points, window.innerWidth-100*SETTINGS.globalScaleX, window.innerHeight-10-10*n*SETTINGS.globalScaleY)
+        }
+
+        DOM.ctx.fillStyle = "black";
 
         //disegna bussola 
         GAME.drawSprite(sBussola, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, 0, 1);
@@ -255,8 +268,10 @@ draw = function()
         if(Object.keys(GAME.Players.list).length > 1)
         {GAME.drawSprite(sFreccia, 1, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearPlayer, 0.8);}
 
+        //disegna pulsante di pausa
         GAME.drawSprite(sPause,0,25*SETTINGS.globalScaleX,25*SETTINGS.globalScaleY,0,0.6)
 
+        //disegna controlli mobile
         if(SETTINGS.onMobile)
         {
             DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize);    DOM.ctx.stroke()
@@ -266,6 +281,7 @@ draw = function()
             DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize);    DOM.ctx.stroke()
         }
     
+        //disegna sfondo di pausa
         if(SETTINGS.inGame == false)
         {
             DOM.ctx.beginPath();    
@@ -328,9 +344,9 @@ menuDraw = function()
     }
 
     DOM.ctx.clearRect(0,0,DOM.canvas.width,DOM.canvas.height);
-    DOM.ctx.fillStyle = "#99E6F9";
+    DOM.ctx.fillStyle = "#ffb86d";
     DOM.ctx.fillRect(0,0,DOM.canvas.width,DOM.canvas.height);
-    DOM.ctx.fillStyle = "#3D61D8";
+    DOM.ctx.fillStyle = "#746dff";
     DOM.ctx.beginPath();
     DOM.ctx.moveTo(0,DOM.canvas.height);
 

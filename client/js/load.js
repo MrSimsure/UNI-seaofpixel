@@ -16,10 +16,11 @@ LOADER.sprFreccia = GAME.loadImage("spr_freccia");
 LOADER.sprIsland = GAME.loadImage("spr_island");
 LOADER.sprPause = GAME.loadImage("spr_pause");
 //CARICA TUTTI I SUONI
-LOADER.souCannon = GAME.loadAudio("sou_cannon");
 LOADER.musMenu = GAME.loadAudio("mus_menu");
+LOADER.souCannon = GAME.loadAudio("sou_cannon");
 LOADER.souHit = GAME.loadAudio("sou_ship_hit");
-LOADER.souExpl = GAME.loadAudio("sou_cannonball_explosion");
+LOADER.souChest = GAME.loadAudio("sou_chest_sound");
+LOADER.souShipDown = GAME.loadAudio("sou_ship_down");
 //CARICA GLI SPRITE DELLA BUSSOLA E DELL'ISOLA
 var sBussola = GAME.sprite(LOADER.sprBussola,1,64,64,1);
 var sFreccia = GAME.sprite(LOADER.sprFreccia,1,64,64,1);
@@ -53,6 +54,9 @@ DOM.login_email_label= document.getElementById("login_email_label");
 DOM.login_button = document.getElementById("login_button");
 DOM.register_button = document.getElementById("register_button");
 
+DOM.show_password = document.getElementById("show_password");
+DOM.show_password_label = document.getElementById("show_password_label");
+DOM.error_message = document.getElementById("error_message");
 
 DOM.avanti = document.getElementById("avanti");
 DOM.indietro = document.getElementById("indietro");
@@ -65,6 +69,7 @@ DOM.auth_guest = document.getElementById("auth_quest");
 //page pause
 DOM.logout = document.getElementById("logout");
 DOM.audio = document.getElementById("audio");
+DOM.music = document.getElementById("music");
 DOM.fullscreen = document.getElementById("fullscreen");
 DOM.back = document.getElementById("back");
 
@@ -85,26 +90,6 @@ room =
 camera = new GAME.Camera(0, 0, DOM.canvas, room);   
 
 
-DOM.music_on.onclick = function()
-{
-    SETTINGS.audio = true
-    DOM.page_init.style.display = "none";
-    DOM.page_menu.style.display = "flex";
-
-    LOADER.musMenu.loop = true
-    LOADER.musMenu.play()
-
-    setLogin()
-}
-
-DOM.music_off.onclick = function()
-{
-    SETTINGS.audio = false
-    DOM.page_init.style.display = "none";
-    DOM.page_menu.style.display = "flex";
-
-    setLogin()
-}
 
 let frasi = function()
 {

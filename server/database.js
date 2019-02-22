@@ -18,6 +18,18 @@ DB.isStringValide = function(string)
     {return false}
 }
 
+
+//controlla se il nome inserito è gia utilizzato
+DB.deletUser = function(name)
+{
+      var sql = 'DELETE FROM users WHERE username = "'+name+'"';
+      DB.connection.query(sql, function (err, result) 
+      {
+        if (err) throw err;
+      });  
+}
+
+
 //controlla se il nome inserito è gia utilizzato
 DB.checkUser = function(name, callback)
 {

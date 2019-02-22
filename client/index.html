@@ -60,14 +60,15 @@
             <input class="inInput" id="login_email"    style="top:45%;  width:80%;display: none" type="text"></input>
 
             <label class="inLabel" id="login_password_label"for="login_password"   style="top:50%; width:50%;display: none">Password</label>
-            <input class="inInput" id="login_password"    style="top:50%;  width:80%;display: none" type="text"></input>
+            <input class="inInput" id="login_password"  type="password"  style="top:50%;  width:80%; display: none" type="text"></input>
     
-
-
-
+            <input  class="inLabel" type="checkbox" id="show_password" style="top:52%;  width:80%; display: none"></input>
+            <label class="inLabel" id="show_password_label"for="show_password"   style="top:52%; width:50%; display: none; font-weight:200;font-size: 1.0vw;">Show Password</label>
+            <label class="inLabel" id="error_message"  style="color:red; top:55%; width:50%; display: none; font-weight:200;font-size: 1.0vw;"></label>
+            
             <button class="colButton" id="auth_google"    style=" top:50%;  width:80%;  height:10%;   font-weight:400;">ENTRA CON GOOGLE</button>
             <button class="colButton" id="auth_email"     style=" top:50%;  width:80%;  height:10%;   font-weight:400;">ENTRA CON EMAIL</button>
-            <button class="colButton" id="auth_quest"     style=" top:50%;  width:80%;  height:10%;   font-weight:400;">ENTRA SENZA REGISTR</button>
+            <button class="colButton" id="auth_quest"     style=" top:50%;  width:80%;  height:10%;   font-weight:400;">ENTRA ANONIMO</button>
 
             <div style="display: block; position: relative; top:60%; ">    
             <button class="colButton" id="indietro"   style=" left:8%; top:60%;  width:40%;  height:10%;   font-weight:400;  display: none; ">INDIETRO</button>
@@ -91,16 +92,35 @@
 
 <div id="page_pause"  style="display:none; position:relative;  z-index:0">
 
-    <button class="menuButton" id="audio"        style=" top:20%; ">AUDIO</button>
-    <button class="menuButton" id="fullscreen"   style=" top:30%; ">FULLSCREEN</button>
-    <button class="menuButton" id="logout"       style=" top:40%; ">LOGOUT</button>
-    <button class="menuButton" id="back"         style=" top:60%; ">INDIETRO</button>
+    <button class="menuButton" id="audio"        style=" top:15%; ">AUDIO</button>
+    <button class="menuButton" id="music"        style=" top:25%; ">MUSIC</button>
+    <button class="menuButton" id="fullscreen"   style=" top:35%; ">FULLSCREEN</button>
+    <button class="menuButton" id="logout"       style=" top:45%; ">LOGOUT</button>
+    <button class="menuButton" id="back"         style=" top:65%; ">INDIETRO</button>
+</div>
+
+<div id="page_orientation"  style="display:none; position: absolute;  z-index:3">
+    <svg width="1920" height="1080">
+        <rect x="0" y="0" width="1920" height="1080" style="fill:#5a41ff;opacity:1" />
+
+        <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L9,3 z" fill="#ffad41" />
+            </marker>
+        </defs>
+        <line x1="50" y1="400" x2="280" y2="400" stroke="#ffad41" stroke-width="5" marker-end="url(#arrow)" />
+    </svg>
+
+    <label class="title"style="position:fixed; color: white; width: 100%; top:40%;  font-weight:700;">PLEASE ROTATE YOUR PHONE</label>
+
+
+
 </div>
 
 
 <script src="/client/js/load.js"></script>
 <script src="/client/js/loop.js"></script>
-
+<script src="/client/js/input.js"></script>
 <script>
 
     var mainDir = window.location.href
@@ -119,7 +139,7 @@
     var buttonMargin = 2*SETTINGS.globalScaleX
     var buttonSize = 50*SETTINGS.globalScaleX
     var scoreBoard = [];
-
+    var DEBUG = false;
 
     var config = 
     {
@@ -133,246 +153,37 @@
     firebase.initializeApp(config);
 
     if(SETTINGS.audio)
-    {DOM.audio.innerHTML  = "AUDIO OFF"}
+    {
+        DOM.audio.innerHTML  = "AUDIO OFF"
+        DOM.music.innerHTML  = "MUSIC OFF"
+    }
     else
-    {DOM.audio.innerHTML  = "AUDIO ON"}
+    {
+        DOM.audio.innerHTML  = "AUDIO ON"
+        DOM.music.innerHTML  = "MUSIC ON"
+    }
+
 
     initMenu()
 
-    //LOGIN
-    DOM.auth_google.onclick = function()
-    {   
-        loginType = 0;
-
-        
-        DOM.auth_email.style.display = "none"
-        DOM.auth_google.style.display = "none"
-        DOM.auth_guest.style.display = "none"
-
-        DOM.login_username.style.display = "block";
-        DOM.login_username_label.style.display = "block";
-
-        DOM.avanti.style.display = "inline-block";
-        DOM.indietro.style.display = "inline-block";
-            
-    }
-
-    DOM.auth_email.onclick = function()
-    {  
-        loginType = 1;
-
-        DOM.auth_email.style.display = "none"
-        DOM.auth_google.style.display = "none"
-        DOM.auth_guest.style.display = "none"
-
-        DOM.login_username.style.display = "block";
-        DOM.login_password.style.display = "block";
-        DOM.login_email.style.display = "block";
-
-        DOM.login_username_label.style.display = "block";
-        DOM.login_password_label.style.display = "block";
-        DOM.login_email_label.style.display = "block";
-
-        DOM.avanti.style.display = "inline-block";
-        DOM.indietro.style.display = "inline-block";
-    }
-
-
-
-    DOM.auth_guest.onclick = function()
-    {  
-        loginType = 2;
-
-        DOM.auth_email.style.display = "none"
-        DOM.auth_google.style.display = "none"
-        DOM.auth_guest.style.display = "none"
-
-        DOM.login_username.style.display = "block";
-        DOM.login_username_label.style.display = "block";
-
-        DOM.avanti.style.display = "inline-block";
-        DOM.indietro.style.display = "inline-block";
-
-    }
-
-
-    DOM.indietro.onclick = function()
-    {  
-        DOM.auth_email.style.display = "block"
-        DOM.auth_google.style.display = "block"
-        DOM.auth_guest.style.display = "block"
-
-        DOM.login_username.style.display = "none";
-        DOM.login_password.style.display = "none";
-        DOM.login_email.style.display = "none";
-
-        DOM.login_username_label.style.display = "none";
-        DOM.login_password_label.style.display = "none";
-        DOM.login_email_label.style.display = "none";
-
-        DOM.avanti.style.display = "none";
-        DOM.indietro.style.display = "none";
-    }
-
-
-    DOM.avanti.onclick = function()
-    {  
-
-        switch(loginType)
-        {
-            //LOGIN CON GOOGLE
-            case 0 :
-            {
-                
-                var provider = new firebase.auth.GoogleAuthProvider();
-
-                firebase.auth().signInWithPopup(provider).then(function(result) 
-                {
-                    var token = result.credential.accessToken;
-                    var user = result.user;
-
-                }).catch(function(error) 
-                {
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    var email = error.email;
-                    var credential = error.credential;
-                });
-                break;
-            }
-
-            //LOGIN CON EMAIL
-            case 1 :
-            {
-                firebase.auth().signInWithEmailAndPassword(login_email.value, login_password.value).catch(function(error) 
-                {
-                    // Handle Errors here.
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    console.log("errore nel login = "+errorCode)
-
-                    if(errorCode == "auth/user-not-found")
-                    {
-                        firebase.auth().createUserWithEmailAndPassword(login_email.value, login_password.value).catch(function(error) 
-                        {
-                        // Handle Errors here.
-                        var errorCode = error.code;
-                        var errorMessage = error.message;
-                        console.log("errore nella registrazione = "+errorCode)
-                        });
-                    }
-
-                    if(errorCode == "auth/wrong-password")
-                    {
-                        //border: 2px solid red;
-                        DOM.login_password.style = "top:50%;  width:80%; border: 2px solid red;"
-                    }
-
-                    if(errorCode == "auth/invalid-email")
-                    {
-                        //border: 2px solid red;
-                        DOM.login_email.style = "top:45%;  width:80%; border: 2px solid red;"
-                    }
-                });
-
-                break;
-            }
-
-            //LOGIN COME GUEST
-            case 2 :
-            {
-                firebase.auth().signInAnonymously().catch(function(error) 
-                {
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                console.log("errore nel login = "+errorCode)
-                });
-                break;
-            }
-
-        }
-
-        
-    }
-
-
-    DOM.login_password.onclick = function(){DOM.login_password.style = "top:50%;  width:80%;"}
-    DOM.login_email.onclick = function(){DOM.login_email.style = "top:45%;  width:80%;"}
-
-    DOM.logout.onclick = function()
+    if(SETTINGS.onMobile)
     {
-        
-        firebase.auth().signOut().then(function() 
-        {
-            socket.emit("logout");
-            SETTINGS.inGame = false
-
-            clearInterval(game_update);
-            socket.removeAllListeners("hit")
-            socket.removeAllListeners("playerDie")
-            socket.removeAllListeners("ballEnd")
-            socket.removeAllListeners("chestEnd")
-            socket.removeAllListeners("disconect")
-            socket.removeAllListeners("newPositions")
-            GAME.clearEntity();
-            initMenu()
- 
-
-            DOM.login_username.style.display = "none";
-            DOM.login_password.style.display = "none";
-            DOM.login_email.style.display = "none";
-
-            DOM.login_username_label.style.display = "none";
-            DOM.login_password_label.style.display = "none";
-            DOM.login_email_label.style.display = "none";
-            
-            DOM.avanti.style.display = "none";
-            DOM.indietro.style.display = "none";
-
-            DOM.auth_email.style.display = "block"
-            DOM.auth_google.style.display = "block"
-            DOM.auth_guest.style.display = "block"
-
-            DOM.page_pause.style.display = "none";
-            DOM.page_menu.style.display = "inline-flex";
-            
-
-
-        }).catch(function(error) 
-        {
-            console.log("errore nel logout = "+error)
-        });
-    }
-
-    DOM.audio.onclick = function()
-    {
-        SETTINGS.audio = !SETTINGS.audio
-
-        if(SETTINGS.audio)
-        {
-            DOM.audio.innerHTML  = "AUDIO OFF"
-            LOADER.musMenu.loop = true
-            LOADER.musMenu.play()
-        }
+        if(window.orientation == 90 || window.orientation == -90)
+        {page_orientation.style.display = "none";}
         else
-        {
-            DOM.audio.innerHTML  = "AUDIO ON"
-            LOADER.musMenu.pause();
-        }
-    }
+        {page_orientation.style.display = "inline";}
+    }   
 
-
-    DOM.fullscreen.onclick = function()
+    window.addEventListener("orientationchange", function() 
     {
-        SETTINGS.openFullscreen()
-    }
+            if(window.orientation == 90 || window.orientation == -90)
+            {page_orientation.style.display = "none";}
+            else
+            {page_orientation.style.display = "inline";}
+    
+    }, false);
 
-    DOM.back.onclick = function()
-    {
-        setPause()
-    }
-
+  
 
     document.onkeydown = function(event)
     {
@@ -488,15 +299,26 @@
                 for(let i=0; i<data.num; i++)
                 {GAME.Explosion(Math.random(),data.x+ENGINE.random_range(-range,range),data.y+ENGINE.random_range(-range,range))}
 
-                let me = GAME.Players.list[id]; 
-                let volume = ENGINE.clamp(Math.abs( 1-( ENGINE.clamp(ENGINE.point_distance(me.x,me.y,data.x,data.y),0,1000))/1000 ),0,1);
-                GAME.playAudio(LOADER.souHit,volume);
+                //SUONO ESPLOSIONE
+                if(SETTINGS.audio == true)
+                {
+                    let me = GAME.Players.list[id]; 
+                    let volume = ENGINE.clamp(Math.abs( 1-( ENGINE.clamp(ENGINE.point_distance(me.x,me.y,data.x,data.y),0,1000))/1000 ),0,1);
+                    GAME.playAudio(LOADER.souHit,volume);
+                }
             });
             socket.on('playerDie',function(data)
             {   
                 let range = 30
                 for(let i=0; i<20; i++)
                 {GAME.Explosion(Math.random(),data.x+ENGINE.random_range(-range,range),data.y+ENGINE.random_range(-range,range))}
+
+                if(SETTINGS.audio == true)
+                {
+                    let me = GAME.Players.list[id]; 
+                    let volume = ENGINE.clamp(Math.abs( 0.5-( ENGINE.clamp(ENGINE.point_distance(me.x,me.y,data.x,data.y),0,1000))/1000 ),0,1);
+                    GAME.playAudio(LOADER.souShipDown,0.5);
+                }  
             });
             socket.on('ballEnd',function(data)
             {   
@@ -506,6 +328,14 @@
             socket.on('chestEnd',function(data)
             {   
                 delete GAME.Chest.list[data]    
+            });
+            socket.on('chestTaken',function(data)
+            {   
+                //SUONO CASSE
+                if(SETTINGS.audio == true)
+                {
+                    GAME.playAudio(LOADER.souChest,0.5);
+                }  
             });
             socket.on('disconnection',function(data)
             { 
@@ -525,10 +355,11 @@
                         {          
                             GAME.Balls(current.id,current.x, current.y);
 
+                            //SUONO CANNONE
                             if(SETTINGS.audio == true && lastOwner != current.owner)
                             {
                                 let me = GAME.Players.list[id]; 
-                                let volume = ENGINE.clamp(Math.abs( 1-( ENGINE.clamp(ENGINE.point_distance(me.x,me.y,current.x,current.y),0,1000))/1000 ),0,1);
+                                let volume = ENGINE.clamp(Math.abs( 0.4-( ENGINE.clamp(ENGINE.point_distance(me.x,me.y,current.x,current.y),0,1000))/1000 ),0,1);
                                 GAME.playAudio(LOADER.souCannon,volume);                 
                             }
                             lastOwner = current.owner;
@@ -545,7 +376,10 @@
                 for(let i = 0 ; i < data.players.length; i++)
                 {
                         let current = data.players[i];
-                        scoreBoard.push({name:current.name, points:current.points})
+                        let temp = {name:current.name, points:current.points}
+
+                        if(current.id == id) {temp.me = true}else{temp.me = false}
+                        scoreBoard.push(temp)
 
                         if(GAME.Players.list[current.id] == undefined)
                         {          
