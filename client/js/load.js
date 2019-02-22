@@ -15,6 +15,9 @@ LOADER.sprBussola = GAME.loadImage("spr_bussola");
 LOADER.sprFreccia = GAME.loadImage("spr_freccia");
 LOADER.sprIsland = GAME.loadImage("spr_island");
 LOADER.sprPause = GAME.loadImage("spr_pause");
+LOADER.sprKrakenAttack = GAME.loadImage("spr_kraken_attack");
+LOADER.sprKrakenSpawn= GAME.loadImage("spr_kraken_spawn");
+
 //CARICA TUTTI I SUONI
 LOADER.musMenu = GAME.loadAudio("mus_menu");
 LOADER.souCannon = GAME.loadAudio("sou_cannon");

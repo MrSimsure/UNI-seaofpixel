@@ -393,6 +393,29 @@ GAME.Fog = function(x,y)
 }
 GAME.Fog.list = [];
 
+//BALL//
+GAME.Kraken = function(id,x,y)
+{
+   var self = 
+   {
+       id:id,
+       x:x,
+       y:y,  
+       sprite: GAME.sprite(LOADER.sprBall,1,16,16,0),
+   }
+   self.draw = function()
+   {  
+        let X = self.x*SETTINGS.globalScaleX-camera.xView;
+        let Y = self.y*SETTINGS.globalScaleY-camera.yView;
+
+        GAME.drawSprite(self.sprite, 0, X,  Y, 0, 0.4); 
+   }
+   GAME.Kraken.list[self.id] = self;
+   return self;
+}
+GAME.Kraken.list = [];
+
+
 //elimina ogni istanza di gioco
 GAME.clearEntity = function()
 {
