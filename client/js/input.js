@@ -227,10 +227,12 @@ DOM.music_off.onclick = function()
         let user = firebase.auth().currentUser;
         firebase.auth().signOut().then(function() 
         {
-            socket.emit("deleteUser",user.uid)
+            
 
             if(user.isAnonymous)
             {
+                socket.emit("deleteUser",user.uid)
+                
                 user.delete().then(function() 
                 {
                     // User deleted.
