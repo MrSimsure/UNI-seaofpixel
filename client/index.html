@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <link rel="manifest" href="/client/manifest.json">
+<link rel="apple-touch-icon" sizes="192x192" href="img/icon_192.png">
 <meta name="viewport" content="minimal-ui, width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0">
 <meta name="theme-color" content="#4586ef"/>
 <meta name="Description" content="A small JS and HTML5 game about pirates!">
@@ -232,14 +233,23 @@
 
     function touchStart(ev) 
     {     
+        tuchX = ev.touches[0].clientX;
+        tuchY = ev.touches[0].clientY; 
+
+        
+
         if(SETTINGS.inGame == true)
         {ev.preventDefault()}
 
-        if(ev.touches[0].clientX > screen.width/2   &&  ev.touches[0].clientY > screen.height/2)
+        if( ev.touches[0].clientX <100 && ev.touches[0].clientY < 100 )
+        {setPause()}
+        
+        if( (ev.touches[0].clientX > screen.width/2   &&  ev.touches[0].clientY > screen.height/2) || (ev.touches[1].clientX > screen.width/2   &&  ev.touches[1].clientY > screen.height/2) )
         {touch = true}
 
-        if(ev.touches[0].clientX <100 && ev.touches[0].clientY < 100)
-        {setPause()}
+
+
+        
         
     };
     
@@ -265,6 +275,8 @@
     { 
         tuchX = ev.touches[0].clientX;
         tuchY = ev.touches[0].clientY; 
+
+        ev.preventDefault()
     }
 
     window.addEventListener('touchstart', touchStart, {passive: false}, false);
