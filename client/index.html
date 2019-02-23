@@ -425,6 +425,25 @@
                             GAME.Chest.list[current.id].y = current.y;
                         }
                 }
+
+
+                //aggiorna posizione kraken 
+                for(let i = 0 ; i < data.kraken.length; i++)
+                {
+                        let current = data.kraken[i];
+
+                        if(GAME.Kraken.list[current.id] == undefined)
+                        {          
+                            GAME.Kraken(current.id,current.x, current.y, current.state);
+                        }
+                        else
+                        {            
+                            GAME.Kraken.list[current.id].x = current.x;
+                            GAME.Kraken.list[current.id].y = current.y;
+                            GAME.Kraken.list[current.id].state = current.state;
+                            console.log(current.state)
+                        }
+                }
             });
         
     };

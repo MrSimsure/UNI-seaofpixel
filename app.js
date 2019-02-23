@@ -6,7 +6,8 @@ var GAME = {}
 GAME.playerList = {};
 GAME.ballList = {};
 GAME.chestList = {};
-GAME.islandList = {};
+GAME.krakenList = {};
+
 GAME.playerCollision = true;
 
 Rectangle = function(x, y, w, h)
@@ -180,15 +181,15 @@ Player = function(name, id, loginID, anonymus, x, y)
                 
             }
             //controlla collisioni con isole
-            for(let i in GAME.islandList)
+            for(let i in GAME.krakenList)
             {     
-                    let current = GAME.islandList[i];
+                    let current = GAME.krakenList[i];
 
-                    if(tempX > current.x-100 && tempX < current.x+100 && self.y > current.y-100 && self.y < current.y+100)
+                    if(tempX > current.x-20 && tempX < current.x+20 && self.y > current.y-20 && self.y < current.y+20)
                     {
                         moveX = false
                     }
-                    if(tempY > current.y-100 && tempY < current.y+100 && self.x > current.x-100 && self.x < current.x+100)
+                    if(tempY > current.y-20 && tempY < current.y+20 && self.x > current.x-20 && self.x < current.x+20)
                     {
                         moveY = false
                     }     
@@ -299,21 +300,77 @@ Chest = function(x,y,temp)
     return self;
 }
 
-Island = function(x,y)
+Kraken = function(x,y)
 {
     var self = 
     {
         id : Math.random(),
         x : x,
         y : y,   
-        collider : Rectangle(x-100,y-100,100,100),
+        collider : Rectangle(x-12,y-12,12,12),
+        state:-1,
+        timer:50,
     }
-    GAME.islandList[self.id] = self;
+
+
+    self.update = function()
+    {
+        switch(self.state)
+        {
+            //attacco
+            case 0 :
+            {
+                    if(self.timer > 0)
+                    {
+                        self.timer --;
+                    }
+                    else
+                    {
+                        self.state = 1;
+                        self.timer = 50;
+                    }
+
+                    break;
+            }
+
+            //immersione
+            case 1 :
+            {
+                    if(self.timer > 0)
+                    {
+                        self.timer --;
+                    }
+                    else
+                    {
+                        self.state = -1;
+                        self.timer = 50;
+                        self.x += ENGINE.random_range(-100,100)
+                        self.y += ENGINE.random_range(-100,100)
+                        self.collider.set(self.x-20,self.y-20,20,20);
+                    }
+                break;
+            }
+
+            //emersione
+            case -1 :
+            {
+                    if(self.timer > 0)
+                    {
+                        self.timer --;
+                    }
+                    else
+                    {
+                        self.state = 0;
+                        self.timer = 200;
+                    }
+                break;
+            }
+        }
+    }
+
+    GAME.krakenList[self.id] = self;
     return self;
 }
-
-Kraken = function(x,y)
-{}
 
 //EXPRESS//
 var express = require("express");
@@ -366,6 +423,7 @@ io.sockets.on("connection", function(socket)
                 {nome = ""}
 
                 let player = Player(nome, socket.id, data.id, data.anonymus, Math.random()*2000,Math.random()*2000);
+                Kraken(player.x, player.y)
                 console.log(data.id+"   "+data.anonymus)
 
                     DB.checkUser(data.id, function(callback) 
@@ -504,7 +562,27 @@ var updateChest = function()
     }        
     return pack;
 }
-
+//raccogli informazioni casse
+var updateKraken = function()
+{
+    let pack = [];
+    for(let i in GAME.krakenList)
+    {
+        let current = GAME.krakenList[i];
+        current.update();
+        if(current != undefined)
+        {
+            pack.push
+            ({
+                id : current.id,
+                x : current.x,
+                y : current.y,
+                state : current.state,
+            });
+        }
+    }        
+    return pack;
+}
 //game loop
 var serverUpdate = function()
 {
@@ -514,6 +592,7 @@ var serverUpdate = function()
         players: updatePlayer(),
         balls: updateBall(),
         chests: updateChest(),
+        kraken: updateKraken(),
     }
 
     //invia i dati ad ogni client

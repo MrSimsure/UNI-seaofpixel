@@ -200,6 +200,13 @@ draw = function()
             let current =  GAME.Players.list[i];
             current.draw();
         }
+        //disegna tutti i kraken
+        for(let i in  GAME.Kraken.list)
+        {
+            let current =  GAME.Kraken.list[i];
+            current.update();
+            current.draw();
+        }
         //disegna palle di cannone
         for(let i in  GAME.Balls.list)
         {

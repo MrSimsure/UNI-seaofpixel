@@ -394,22 +394,55 @@ GAME.Fog = function(x,y)
 GAME.Fog.list = [];
 
 //BALL//
-GAME.Kraken = function(id,x,y)
+GAME.Kraken = function(id,x,y,state)
 {
    var self = 
    {
        id:id,
        x:x,
        y:y,  
-       sprite: GAME.sprite(LOADER.sprBall,1,16,16,0),
+       spriteSpawn : GAME.sprite(LOADER.sprKrakenSpawn,10,85,122,2),
+       priteDespawn : GAME.sprite(LOADER.sprKrakenSpawn,10,85,122,-2),
+       spriteAttack : GAME.sprite(LOADER.sprKrakenAttack,23,85,122,2),
+       sprite: null,
+       state: state,
    }
+
+   self.update = function()
+   {
+       if(self.state == -1 && self.sprite != self.spriteSpawn)
+       {
+           self.sprite = self.spriteSpawn;
+           if(self.sprite.frameIndex >= self.sprite.frameNum-1)
+           {
+            self.sprite = self.spriteAttack;
+           }
+       }
+
+       if(self.state == 1 && self.sprite != self.priteDespawn)
+       {
+           self.sprite = self.priteDespawn;
+           if(self.sprite.frameIndex >= self.sprite.frameNum-1)
+           {
+            self.sprite = self.spriteAttack;
+           }
+       }
+
+       if(self.state == 0 && self.sprite != self.spriteAttack)
+       {
+           self.sprite = self.spriteAttack;
+       }
+   
+   }
+
    self.draw = function()
    {  
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
 
-        GAME.drawSprite(self.sprite, 0, X,  Y, 0, 0.4); 
+        GAME.drawSprite(self.sprite, self.sprite.frameIndex, X,  Y, 0, 2); 
    }
+
    GAME.Kraken.list[self.id] = self;
    return self;
 }
