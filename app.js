@@ -185,11 +185,11 @@ Player = function(name, id, loginID, anonymus, x, y)
             {     
                     let current = GAME.krakenList[i];
 
-                    if(tempX > current.x-20 && tempX < current.x+20 && self.y > current.y-20 && self.y < current.y+20)
+                    if(tempX > current.x-20 && tempX < current.x+20 && self.y > current.y+20 && self.y < current.y+40)
                     {
                         moveX = false
                     }
-                    if(tempY > current.y-20 && tempY < current.y+20 && self.x > current.x-20 && self.x < current.x+20)
+                    if(tempY > current.y-20 && tempY < current.y+20 && self.x > current.y+20 && self.x < current.x+40)
                     {
                         moveY = false
                     }     
