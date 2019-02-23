@@ -307,7 +307,7 @@ Kraken = function(x,y)
         id : Math.random(),
         x : x,
         y : y,   
-        collider : Rectangle(x-12,y-12,12,12),
+        collider : Rectangle(x-20,y+20,20,20),
         state:-1,
         timer:50,
     }
@@ -346,7 +346,7 @@ Kraken = function(x,y)
                         self.timer = 50;
                         self.x += ENGINE.random_range(-100,100)
                         self.y += ENGINE.random_range(-100,100)
-                        self.collider.set(self.x-20,self.y-20,20,20);
+                        self.collider.set(self.x-20,self.y+20,20,20);
                     }
                 break;
             }
