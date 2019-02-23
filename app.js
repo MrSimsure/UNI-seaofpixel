@@ -189,7 +189,7 @@ Player = function(name, id, loginID, anonymus, x, y)
                     {
                         moveX = false
                     }
-                    if(tempY > current.y-20 && tempY < current.y+20 && self.x > current.y+20 && self.x < current.x+40)
+                    if(tempY > current.y+20 && tempY < current.y+40 && self.x > current.x-20 && self.x < current.x+20)
                     {
                         moveY = false
                     }     
