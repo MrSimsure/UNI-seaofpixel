@@ -142,7 +142,7 @@
     var DEBUG = false;
     var menu_update;
     var game_update;
-    var removeLogin;
+    var pageFocus = true;
 
 
     var config = 
@@ -374,7 +374,8 @@
             socket.on('closeSession',function(data)
             {           
                 DOM.logout.click();
-                alert("You are logged on multiple page. Close them!");
+                if(pageFocus)
+                {alert("Avevi gia effettuato l'accesso su un'altra pagina, quella sessione ora è stata chiusa.");}
             });
             socket.on('newPositions',function(data)
             {
@@ -518,12 +519,15 @@
 
     setLogin = function()
     {
-        removeLogin = firebase.auth().onAuthStateChanged(function(user) 
+        firebase.auth().onAuthStateChanged(function(user) 
         {
             if (user) 
             {
+                if(pageFocus == true)
+                {
                 console.log("CONNESSO = "+user.displayName+"   "+user.email+"   "+user.uid)            
                 acces()
+                }
             } 
             else 
             {
@@ -534,16 +538,10 @@
     
 
     window.onfocus = function()
-    {
-        if(removeLogin == null && DOM.page_init.style.display == "none") 
-        {setLogin()}
-    }
+    {pageFocus = true}
 
     window.onblur = function()
-    {
-        removeLogin();
-        removeLogin = null;
-    }
+    {pageFocus = false}
 
 </script>
 

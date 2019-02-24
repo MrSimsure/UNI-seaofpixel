@@ -472,7 +472,6 @@ io.sockets.on("connection", function(socket)
                 for(let i in socketList)
                 {
                     let current = socketList[i];
-                    console.log(i+"   "+current.uid)
                     if(current.uid == data.id)
                     {
                         current.uid = -1;

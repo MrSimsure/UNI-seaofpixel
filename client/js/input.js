@@ -125,7 +125,7 @@ DOM.music_off.onclick = function()
 
 
     DOM.avanti.onclick = function()
-    {  
+    {  console.log("focus="+pageFocus)
         let nameLenght = DOM.login_username.value.length;
         if(nameLenght == 0 || nameLenght > 20)
         {
