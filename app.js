@@ -465,20 +465,14 @@ io.sockets.on("connection", function(socket)
                 {nome = ""}
 
                 let player = Player(nome, socket.id, data.id, data.anonymus, Math.random()*2000,Math.random()*2000);
-                Kraken(player.x, player.y)
-                console.log(data.id+"   "+data.anonymus)
-
-                    DB.checkUser(data.id, function(callback) 
-                    {
+   
+                DB.checkUser(data.id, function(callback) 
+                {
                         if(callback == true)
-                        {   
-                            DB.getPoints(data.id, function(point){player.points = point});
-                        }
+                        {DB.getPoints(data.id, function(point){player.points = point});}
                         else
-                        {   
-                            DB.registerUser(data.id);
-                        }
-                    });
+                        {DB.registerUser(data.id);}
+                });
                 
                 
 
@@ -646,3 +640,32 @@ var serverUpdate = function()
 }  
 
 setInterval(serverUpdate ,1000/30);
+
+
+setInterval(function()
+{
+    let chance = 0;
+    let playerNum = Object.keys(GAME.playerList).length;
+    let krakenNum = Object.keys(GAME.krakenList).length;
+
+    if(playerNum > 0 && krakenNum == 0)
+    {
+        switch(playerNum)
+        {
+            case 1 : {chance = 100; break;}
+            case 2 : {chance = 80; break;}
+            case 3 : {chance = 60; break;}
+            case 4 : {chance = 40; break;}
+            case 5 : {chance = 20; break;}
+            default : {chance = 10; break;}
+        }
+
+        if(Math.random()*100 <= chance)
+        {
+            let num = ENGINE.random_range(0,playerNum-1)
+            let key = Object.keys(GAME.playerList)[num]
+            let chosen = GAME.playerList[key]
+            Kraken(chosen.x+ENGINE.random_range(-200,200), chosen.y+ENGINE.random_range(-200,200))   
+        }
+    }   
+}, 30000)
