@@ -405,7 +405,7 @@ GAME.Kraken = function(id,x,y,state)
        newY:y,
        spriteSpawn : GAME.sprite(LOADER.sprKrakenSpawn,10,85,122,2),
        spriteDespawn : GAME.sprite(LOADER.sprKrakenDespawn,10,85,122,2),
-       spriteAttack : GAME.sprite(LOADER.sprKrakenAttack,23,85,122,2),
+       spriteAttack : GAME.sprite(LOADER.sprKrakenAttack,11,85,122,2),
        sprite: null,
        state: state,
        life:500,
@@ -459,9 +459,9 @@ GAME.Kraken = function(id,x,y,state)
         GAME.drawSprite(self.sprite, self.sprite.frameIndex, X,  Y, 0, 2); 
 
         DOM.ctx.fillStyle = "black";
-        DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY,Y+100*SETTINGS.globalScaleY,50*SETTINGS.globalScaleY,5);
+        DOM.ctx.fillRect(X-35*SETTINGS.globalScaleY,Y+120*SETTINGS.globalScaleY,50*SETTINGS.globalScaleY,5);
         DOM.ctx.fillStyle = "green";
-        DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY,Y+100*SETTINGS.globalScaleY,self.life/10*SETTINGS.globalScaleY,5);
+        DOM.ctx.fillRect(X-35*SETTINGS.globalScaleY,Y+120*SETTINGS.globalScaleY,self.life/10*SETTINGS.globalScaleY,5);
    }
 
    GAME.Kraken.list[self.id] = self;
