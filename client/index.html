@@ -140,6 +140,10 @@
     var buttonSize = 50*SETTINGS.globalScaleX
     var scoreBoard = [];
     var DEBUG = false;
+    var menu_update;
+    var game_update;
+    var removeLogin;
+
 
     var config = 
     {
@@ -345,7 +349,7 @@
                 delete GAME.Kraken.list[data.id]    
 
                 let range = 50
-                for(let i=0; i<40; i++)
+                for(let i=0; i<20; i++)
                 {GAME.Explosion(Math.random(),data.x+ENGINE.random_range(-range,range),data.y+ENGINE.random_range(-range,range))}
 
                 if(SETTINGS.audio == true)
@@ -366,6 +370,11 @@
             socket.on('disconnection',function(data)
             { 
                 delete GAME.Players.list[data];
+            });
+            socket.on('closeSession',function(data)
+            {           
+                DOM.logout.click();
+                alert("You are logged on multiple page. Close them!");
             });
             socket.on('newPositions',function(data)
             {
@@ -509,7 +518,7 @@
 
     setLogin = function()
     {
-        firebase.auth().onAuthStateChanged(function(user) 
+        removeLogin = firebase.auth().onAuthStateChanged(function(user) 
         {
             if (user) 
             {
@@ -523,6 +532,13 @@
         });
     }
     
+
+    window.onfocus = function()
+    {if(DOM.page_init.style.display = "none") setLogin()}
+
+    window.onblur = function()
+    {removeLogin();}
+
 </script>
 
 </body>

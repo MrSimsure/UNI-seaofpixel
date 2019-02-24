@@ -371,7 +371,7 @@ Kraken = function(x,y)
             let tentativi = 0;
             do
             {
-                if(tentativi > 50) {self.destroy()}
+                if(tentativi > 50) {self.timer = 200; return;}
                 tempColl = false;
                 tempX = self.x+ENGINE.random_range(-200,200)
                 tempY = self.y+ENGINE.random_range(-200,200)
@@ -449,8 +449,11 @@ for(let i=0; i<maxChest; i++)
 //quando viene eseguita una connessione al socket
 io.sockets.on("connection", function(socket)
 {
+        socket.uid = -1;
         //aggiungi il socket alla lista
         socketList[socket.id] = socket;
+        
+        
         //manda un segnale di connessione avventua al client
         socket.emit("connection", socket.id);
         console.log("connesso  "+socketList[socket.id].id);
@@ -466,8 +469,24 @@ io.sockets.on("connection", function(socket)
                 else
                 {nome = ""}
 
+                for(let i in socketList)
+                {
+                    let current = socketList[i];
+                    console.log(i+"   "+current.uid)
+                    if(current.uid == data.id)
+                    {
+                        current.uid = -1;
+                        socket.uid = -1;
+                        current.emit("closeSession");
+                        socket.emit("closeSession");
+                        return;
+                    }
+                    
+                } 
+           
                 let player = Player(nome, socket.id, data.id, data.anonymus, Math.random()*2000,Math.random()*2000);
-   
+                socket.uid = data.id
+
                 DB.checkUser(data.id, function(callback) 
                 {
                         if(callback == true)
@@ -525,6 +544,7 @@ io.sockets.on("connection", function(socket)
         {
             socket.removeAllListeners("keyPress")
             socket.removeAllListeners("shoot")
+            socket.removeAllListeners("deleteUser")
             //invia l'informazione ad ogni client
             for(let i in socketList)
             {

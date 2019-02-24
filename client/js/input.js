@@ -42,6 +42,7 @@ DOM.music_off.onclick = function()
 
         DOM.login_username.style.display = "block";
         DOM.login_username_label.style.display = "block";
+        DOM.error_message.style.display = "block";
 
         DOM.avanti.style.display = "inline-block";
         DOM.indietro.style.display = "inline-block";
@@ -84,6 +85,7 @@ DOM.music_off.onclick = function()
 
         DOM.login_username.style.display = "block";
         DOM.login_username_label.style.display = "block";
+        DOM.error_message.style.display = "block";
 
         DOM.avanti.style.display = "inline-block";
         DOM.indietro.style.display = "inline-block";
@@ -124,89 +126,102 @@ DOM.music_off.onclick = function()
 
     DOM.avanti.onclick = function()
     {  
-
-        switch(loginType)
+        let nameLenght = DOM.login_username.value.length;
+        if(nameLenght == 0 || nameLenght > 20)
         {
-            //LOGIN CON GOOGLE
-            case 0 :
+            if(nameLenght == 0)
+            { DOM.error_message.innerHTML = "Username too small"}
+            if(nameLenght > 20)
+            { DOM.error_message.innerHTML = "Username too large"}
+
+            DOM.login_username.style = "top:40%;  width:80%; border: 2px solid red;"
+                                   
+        }
+        else
+        {
+            switch(loginType)
             {
-                
-                var provider = new firebase.auth.GoogleAuthProvider();
-
-                firebase.auth().signInWithPopup(provider).then(function(result) 
+                //LOGIN CON GOOGLE
+                case 0 :
                 {
-                    var token = result.credential.accessToken;
-                    var user = result.user;
+                    
+                    var provider = new firebase.auth.GoogleAuthProvider();
 
-                }).catch(function(error) 
-                {
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    var email = error.email;
-                    var credential = error.credential;
-                });
-                break;
-            }
+                    firebase.auth().signInWithPopup(provider).then(function(result) 
+                    {
+                        var token = result.credential.accessToken;
+                        var user = result.user;
 
-            //LOGIN CON EMAIL
-            case 1 :
-            {
-                firebase.auth().signInWithEmailAndPassword(login_email.value, login_password.value).catch(function(error) 
+                    }).catch(function(error) 
+                    {
+                        var errorCode = error.code;
+                        var errorMessage = error.message;
+                        var email = error.email;
+                        var credential = error.credential;
+                    });
+                    break;
+                }
+
+                //LOGIN CON EMAIL
+                case 1 :
                 {
+                    firebase.auth().signInWithEmailAndPassword(DOM.login_email.value, DOM.login_password.value).catch(function(error) 
+                    {
+                        // Handle Errors here.
+                        var errorCode = error.code;
+                        var errorMessage = error.message;
+                        console.log("errore nel login = "+errorCode)
+
+                        if(errorCode == "auth/user-not-found")
+                        {
+                            firebase.auth().createUserWithEmailAndPassword(DOM.login_email.value, DOM.login_password.value).catch(function(error) 
+                            {
+                                // Handle Errors here.
+                                var errorCode = error.code;
+                                var errorMessage = error.message;
+                                console.log("errore nella registrazione = "+errorCode)
+
+                                if(errorCode == "auth/weak-password")
+                                {
+                                    DOM.login_password.style = "top:50%;  width:80%; border: 2px solid red;"
+                                    DOM.error_message.innerHTML = "Weak Password"
+                                }
+                                });
+                        }
+
+                        if(errorCode == "auth/wrong-password")
+                        {
+                            DOM.login_password.style = "top:50%;  width:80%; border: 2px solid red;"
+                            DOM.error_message.innerHTML = "Wrong Password"
+                        }
+
+                        if(errorCode == "auth/invalid-email")
+                        {
+                            DOM.login_email.style = "top:45%;  width:80%; border: 2px solid red;"
+                            DOM.error_message.innerHTML = "Invalid Email"
+                        }
+
+
+                        
+                    });
+
+                    break;
+                }
+
+                //LOGIN COME GUEST
+                case 2 :
+                {
+                    firebase.auth().signInAnonymously().catch(function(error) 
+                    {
                     // Handle Errors here.
                     var errorCode = error.code;
                     var errorMessage = error.message;
                     console.log("errore nel login = "+errorCode)
+                    });
+                    break;
+                }
 
-                    if(errorCode == "auth/user-not-found")
-                    {
-                        firebase.auth().createUserWithEmailAndPassword(login_email.value, login_password.value).catch(function(error) 
-                        {
-                            // Handle Errors here.
-                            var errorCode = error.code;
-                            var errorMessage = error.message;
-                            console.log("errore nella registrazione = "+errorCode)
-
-                            if(errorCode == "auth/weak-password")
-                            {
-                                DOM.login_password.style = "top:50%;  width:80%; border: 2px solid red;"
-                                DOM.error_message.innerHTML = "Weak Password"
-                            }
-                            });
-                    }
-
-                    if(errorCode == "auth/wrong-password")
-                    {
-                        DOM.login_password.style = "top:50%;  width:80%; border: 2px solid red;"
-                        DOM.error_message.innerHTML = "Wrong Password"
-                    }
-
-                    if(errorCode == "auth/invalid-email")
-                    {
-                        DOM.login_email.style = "top:45%;  width:80%; border: 2px solid red;"
-                        DOM.error_message.innerHTML = "Invalid Email"
-                    }
-
-
-                    
-                });
-
-                break;
             }
-
-            //LOGIN COME GUEST
-            case 2 :
-            {
-                firebase.auth().signInAnonymously().catch(function(error) 
-                {
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                console.log("errore nel login = "+errorCode)
-                });
-                break;
-            }
-
         }
 
         
@@ -214,7 +229,7 @@ DOM.music_off.onclick = function()
 
 
 
-    
+    DOM.login_username.onclick = function(){DOM.login_username.style = "top:40%;  width:80%;"}
     DOM.login_password.onclick = function(){DOM.login_password.style = "top:50%;  width:80%;"}
     DOM.login_email.onclick = function(){DOM.login_email.style = "top:45%;  width:80%;"}
 
@@ -227,8 +242,6 @@ DOM.music_off.onclick = function()
         let user = firebase.auth().currentUser;
         firebase.auth().signOut().then(function() 
         {
-            
-
             if(user.isAnonymous)
             {
                 socket.emit("deleteUser",user.uid)

@@ -25,6 +25,7 @@ initGame = function()
 
     }
     //INIZIA LOOP DI GIOCO
+    clearInterval(game_update);
     game_update = setInterval(clientUpdate ,1000/30); 
 
     //DISPLAY DEI DOOM
@@ -259,13 +260,19 @@ draw = function()
         for(let n=0; n<scoreBoard.length; n++)
         {
             let current = scoreBoard[n];
+            let YY = 0;
 
             if(current.me)
             {DOM.ctx.fillStyle = "red";}
             else
             {DOM.ctx.fillStyle = "black";}
 
-            DOM.ctx.fillText( (scoreBoard.length-n)+"° "+current.name+"="+current.points, window.innerWidth-100*SETTINGS.globalScaleX, window.innerHeight-10-10*n*SETTINGS.globalScaleY)
+            if(SETTINGS.onMobile)
+            {YY = window.innerHeight-120-10*n*SETTINGS.globalScaleY}
+            else
+            {YY = window.innerHeight-10-10*n*SETTINGS.globalScaleY}
+
+            DOM.ctx.fillText( (scoreBoard.length-n)+"° "+current.name+"="+current.points, 5*SETTINGS.globalScaleX, YY)
         }
 
         DOM.ctx.fillStyle = "black";
@@ -325,6 +332,7 @@ initMenu = function()
             spd : 0,
         }
     }
+    clearInterval(menu_update);
     menu_update = setInterval(menuDraw ,1000/90);  
 }
 
