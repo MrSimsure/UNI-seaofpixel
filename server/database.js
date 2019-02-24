@@ -25,7 +25,8 @@ DB.deletUser = function(name)
       var sql = 'DELETE FROM users WHERE username = "'+name+'"';
       DB.connection.query(sql, function (err, result) 
       {
-        if (err) throw err;
+        if (err) return false;//throw err;
+        return true;
       });  
 }
 
@@ -34,8 +35,8 @@ DB.deletUser = function(name)
 DB.checkUser = function(name, callback)
 {
           DB.connection.query("SELECT username FROM users", function (err, result, fields) 
-          {
-                if (err) throw err;
+          {     
+                if (err) return callback(false); //throw err;
 
                 for(let i=0; i<result.length; i++)
                 {
@@ -53,7 +54,8 @@ DB.registerUser = function(name)
           var sql = "INSERT INTO users (username, points) VALUES ('"+name+"',0)";
           DB.connection.query(sql, function (err, result) 
           {
-            if (err) throw err;
+            if (err) return false;//throw err;
+            return true;
           });  
 }
 
@@ -63,7 +65,8 @@ DB.updatePoints = function(name,points)
               var sql = "UPDATE users SET points = "+points+" WHERE username= '"+name+"'";
               DB.connection.query(sql, function (err, result) 
               {
-                if (err) throw err;
+                if (err) return false;//throw err;
+                return true;
               });     
 }
 
@@ -73,7 +76,7 @@ DB.getPoints = function(name, callback)
 {
           DB.connection.query("SELECT  username,points FROM users", function (err, result, fields) 
           {
-                if (err) throw err;
+                if (err) return callback(-1);//throw err;
 
                 for(let i=0; i<result.length; i++)
                 {

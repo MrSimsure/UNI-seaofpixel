@@ -401,36 +401,52 @@ GAME.Kraken = function(id,x,y,state)
        id:id,
        x:x,
        y:y,  
+       newX:x,
+       newY:y,
        spriteSpawn : GAME.sprite(LOADER.sprKrakenSpawn,10,85,122,2),
-       priteDespawn : GAME.sprite(LOADER.sprKrakenSpawn,10,85,122,-2),
+       spriteDespawn : GAME.sprite(LOADER.sprKrakenDespawn,10,85,122,2),
        spriteAttack : GAME.sprite(LOADER.sprKrakenAttack,23,85,122,2),
        sprite: null,
        state: state,
+       life:500,
    }
 
    self.update = function()
    {
-       if(self.state == -1 && self.sprite != self.spriteSpawn)
+       //emersione
+       if(self.state == 0)
        {
-           self.sprite = self.spriteSpawn;
+            if(self.sprite != self.spriteSpawn)
+            {
+                self.sprite = self.spriteSpawn;
+                self.sprite.frameIndex = 0;
+            }
+
            if(self.sprite.frameIndex >= self.sprite.frameNum-1)
            {
-            self.sprite = self.spriteAttack;
+                self.state = 1;
+                self.sprite = self.spriteAttack;
+                self.sprite.frameIndex = 0;
            }
        }
 
-       if(self.state == 1 && self.sprite != self.priteDespawn)
+       //immersione
+       if(self.state == 2)
        {
-           self.sprite = self.priteDespawn;
-           if(self.sprite.frameIndex >= self.sprite.frameNum-1)
-           {
-            self.sprite = self.spriteAttack;
-           }
-       }
+            if(self.sprite != self.spriteDespawn)
+            {
+                self.sprite = self.spriteDespawn;
+                self.sprite.frameIndex = 0;
+            }
 
-       if(self.state == 0 && self.sprite != self.spriteAttack)
-       {
-           self.sprite = self.spriteAttack;
+            if(self.sprite.frameIndex >= self.sprite.frameNum-1)
+            {
+                 self.state = 0;
+                 self.sprite = self.spriteSpawn;
+                 self.sprite.frameIndex = 0;
+                 self.x = self.newX;
+                 self.y = self.newY;
+            }
        }
    
    }
@@ -441,6 +457,11 @@ GAME.Kraken = function(id,x,y,state)
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
 
         GAME.drawSprite(self.sprite, self.sprite.frameIndex, X,  Y, 0, 2); 
+
+        DOM.ctx.fillStyle = "black";
+        DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY,Y+100*SETTINGS.globalScaleY,50*SETTINGS.globalScaleY,5);
+        DOM.ctx.fillStyle = "green";
+        DOM.ctx.fillRect(X-25*SETTINGS.globalScaleY,Y+100*SETTINGS.globalScaleY,self.life/10*SETTINGS.globalScaleY,5);
    }
 
    GAME.Kraken.list[self.id] = self;

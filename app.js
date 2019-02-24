@@ -185,11 +185,11 @@ Player = function(name, id, loginID, anonymus, x, y)
             {     
                     let current = GAME.krakenList[i];
 
-                    if(tempX > current.x-20 && tempX < current.x+20 && self.y > current.y-20 && self.y < current.y+20)
+                    if(tempX > current.x-70 && tempX < current.x+50 && self.y > current.y+20 && self.y < current.y+150)
                     {
                         moveX = false
                     }
-                    if(tempY > current.y-20 && tempY < current.y+20 && self.x > current.x-20 && self.x < current.x+20)
+                    if(tempY > current.y+20 && tempY < current.y+150 && self.x > current.x-70 && self.x < current.x+50)
                     {
                         moveY = false
                     }     
@@ -253,6 +253,25 @@ Balls = function(x,y,direction,speed,player)
                 break;
             }
         }
+
+        for(var i in GAME.krakenList)
+        {
+            var current = GAME.krakenList[i];
+            if(self.owner != i && self.collider.overlaps(current.collider))
+            {
+                //fai subire i danni alla nave colpita
+                current.takeDamage(10)
+                //manda a tutte le navi l'informazione
+                for(var i in socketList)
+                {
+                    var current = socketList[i];
+                    current.emit("ballEnd", self.id);         
+                    current.emit("hit", pack={x:self.x, y:self.y, num:3});       
+                } 
+                delete GAME.ballList[self.id];  
+                break;
+            }
+        }
     }
     GAME.ballList[self.id] = self;
     return self;
@@ -294,7 +313,7 @@ Chest = function(x,y,temp)
     }
 
     if(temp == true)
-    {setTimeout(self.destroy,10000+ENGINE.random_range(-1000,1000)); }
+    {setTimeout(self.destroy,30000+ENGINE.random_range(-1000,1000)); }
 
     GAME.chestList[self.id] = self;
     return self;
@@ -307,63 +326,63 @@ Kraken = function(x,y)
         id : Math.random(),
         x : x,
         y : y,   
-        collider : Rectangle(x-12,y-12,12,12),
-        state:-1,
-        timer:50,
+        collider : Rectangle(x-50,y-40,80,170),
+        timer:200,
+        life:500,
     }
 
+    self.destroy = function()
+    {
+        for(var i in socketList)
+        {
+            var current = socketList[i];
+            current.emit("krakenEnd", {id:self.id, x:self.x, y:self.y+80});             
+        } 
+        delete GAME.krakenList[self.id];
+    }
 
+    self.takeDamage = function(dmg)
+    {
+        self.life -= dmg;
+        //controlla che il giocatore sia ancora vivo
+        if(self.life <= 0)
+        {
+            for(let n=0; n<30; n++)
+            {
+                Chest( self.x+ENGINE.random_range(-100,100), self.y+ENGINE.random_range(-100,100) , true);
+            }
+            self.destroy();
+        }
+    }
     self.update = function()
     {
-        switch(self.state)
+
+        if(self.timer > 0)
         {
-            //attacco
-            case 0 :
-            {
-                    if(self.timer > 0)
-                    {
-                        self.timer --;
-                    }
-                    else
-                    {
-                        self.state = 1;
-                        self.timer = 50;
-                    }
+            self.timer --;
+        }
+        else
+        {
+            self.state = -1;
+            self.timer = 200;
+            self.x += ENGINE.random_range(-100,100)
+            self.y += ENGINE.random_range(-100,100)
+            self.collider.set(self.x-50,self.y-40,80,170);
+        }
 
-                    break;
-            }
 
-            //immersione
-            case 1 :
+        for(let i in GAME.playerList)
+        {     
+            let current = GAME.playerList[i];
+            if(ENGINE.point_distance(self.x,self.y+100,current.x,current.y)<100)
             {
-                    if(self.timer > 0)
-                    {
-                        self.timer --;
-                    }
-                    else
-                    {
-                        self.state = -1;
-                        self.timer = 50;
-                        self.x += ENGINE.random_range(-100,100)
-                        self.y += ENGINE.random_range(-100,100)
-                        self.collider.set(self.x-20,self.y-20,20,20);
-                    }
-                break;
-            }
+                current.takeDamage(1)
 
-            //emersione
-            case -1 :
-            {
-                    if(self.timer > 0)
-                    {
-                        self.timer --;
-                    }
-                    else
-                    {
-                        self.state = 0;
-                        self.timer = 200;
-                    }
-                break;
+                for(let j in socketList)
+                {
+                    let c = socketList[j];       
+                    c.emit("hit", pack={x:current.x, y:current.y, num:1});       
+                } 
             }
         }
     }
@@ -577,7 +596,7 @@ var updateKraken = function()
                 id : current.id,
                 x : current.x,
                 y : current.y,
-                state : current.state,
+                life:current.life,
             });
         }
     }        
