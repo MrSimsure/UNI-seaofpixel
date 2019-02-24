@@ -185,19 +185,11 @@ Player = function(name, id, loginID, anonymus, x, y)
             {     
                     let current = GAME.krakenList[i];
 
-<<<<<<< HEAD
                     if(tempX > current.x-70 && tempX < current.x+50 && self.y > current.y+20 && self.y < current.y+150)
                     {
                         moveX = false
                     }
                     if(tempY > current.y+20 && tempY < current.y+150 && self.x > current.x-70 && self.x < current.x+50)
-=======
-                    if(tempX > current.x-20 && tempX < current.x+20 && self.y > current.y+20 && self.y < current.y+40)
-                    {
-                        moveX = false
-                    }
-                    if(tempY > current.y+20 && tempY < current.y+40 && self.x > current.x-20 && self.x < current.x+20)
->>>>>>> d11c023169733e686426a076a791c715e2bd526f
                     {
                         moveY = false
                     }     
@@ -373,8 +365,31 @@ Kraken = function(x,y)
         {
             self.state = -1;
             self.timer = 200;
-            self.x += ENGINE.random_range(-100,100)
-            self.y += ENGINE.random_range(-100,100)
+            let tempX = -1;
+            let tempY = -1;
+            let tempColl = false;
+            let tentativi = 0;
+            do
+            {
+                if(tentativi > 50) {self.destroy()}
+                tempColl = false;
+                tempX = self.x+ENGINE.random_range(-200,200)
+                tempY = self.y+ENGINE.random_range(-200,200)
+                for(let i in GAME.playerList)
+                {     
+                    let current = GAME.playerList[i];
+                    if(ENGINE.point_distance(tempX,tempY+100,current.x,current.y)<200)
+                    {tempColl = true;}
+                }
+                tentativi++;
+            }
+            while
+            (
+                tempX < 0 || tempX > 2000 || tempY < 0 || tempY > 2000 || tempColl == true
+            )
+
+            self.x = tempX
+            self.y = tempY
             self.collider.set(self.x-50,self.y-40,80,170);
         }
 
