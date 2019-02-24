@@ -437,6 +437,8 @@ console.log("server started");
 var io = require("socket.io")(server,{});
 var socketList = {};
 var maxChest = 20;
+var fps;
+var lastLoop;
 
 for(let i=0; i<maxChest; i++)
 {
@@ -622,6 +624,12 @@ var updateKraken = function()
 //game loop
 var serverUpdate = function()
 {
+    //AGGIORNA FPS
+    let thisLoop = new Date();
+    if(Math.random() > 0.8)
+    {fps = Math.floor(1000 / (thisLoop - lastLoop));}
+    lastLoop = thisLoop;
+
     //raccogli informazioni su tutte le entità di gioco
     let pack = 
     {
@@ -629,6 +637,7 @@ var serverUpdate = function()
         balls: updateBall(),
         chests: updateChest(),
         kraken: updateKraken(),
+        fps:fps,
     }
 
     //invia i dati ad ogni client

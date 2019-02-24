@@ -250,8 +250,9 @@ draw = function()
         //scrivi informazioni di debug
         if(DEBUG)
         {
-            DOM.ctx.fillText("FPS:"+fpsClient, 10,  200*SETTINGS.globalScaleY);
-            DOM.ctx.fillText("PLAYERS:"+Object.keys(GAME.Players.list).length, 10,  220*SETTINGS.globalScaleY);
+            DOM.ctx.fillText("FPS CLIENT:"+fpsClient, 10,  200*SETTINGS.globalScaleY);
+            DOM.ctx.fillText("FPS SERVER:"+fpsServer, 10,  220*SETTINGS.globalScaleY);
+            DOM.ctx.fillText("PLAYERS:"+Object.keys(GAME.Players.list).length, 10,  240*SETTINGS.globalScaleY);
         }
 
         //scrivi classifica giocatori
