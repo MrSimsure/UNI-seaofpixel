@@ -523,7 +523,7 @@
             if (user) 
             {
                 console.log("CONNESSO = "+user.displayName+"   "+user.email+"   "+user.uid)            
-               acces()
+                acces()
             } 
             else 
             {
@@ -534,10 +534,16 @@
     
 
     window.onfocus = function()
-    {if(DOM.page_init.style.display = "none") setLogin()}
+    {
+        if(removeLogin != null && DOM.page_init.style.display == "none") 
+        {setLogin()}
+    }
 
     window.onblur = function()
-    {removeLogin();}
+    {
+        removeLogin();
+        removeLogin = null;
+    }
 
 </script>
 
