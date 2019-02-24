@@ -668,4 +668,4 @@ setInterval(function()
             Kraken(chosen.x+ENGINE.random_range(-200,200), chosen.y+ENGINE.random_range(-200,200))   
         }
     }   
-}, 30000)
+}, 300000)
