@@ -122,18 +122,18 @@ update = function()
             //left
             if(GAME.insideRect(tuchX,tuchY,buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize))
             {
-                movingSX = true;
+                movingDX = true;
             }
             //right
             if(GAME.insideRect(tuchX,tuchY,buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize))
             {
-                movingDX = true;
+                movingSX = true;
             }
             //up-left
             if(GAME.insideRect(tuchX,tuchY,buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize))
             {
                 movingUP = true;
-                movingSX = true;
+                movingDX = true;
             }
             //up
             if(GAME.insideRect(tuchX,tuchY,buttonX+buttonMargin*1+buttonSize*1, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize))
@@ -144,7 +144,7 @@ update = function()
             if(GAME.insideRect(tuchX,tuchY,buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize))
             {
                 movingUP = true;
-                movingDX = true;
+                movingSX = true;
             }    
     
     
