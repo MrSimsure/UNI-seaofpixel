@@ -160,13 +160,13 @@
 
     if(SETTINGS.audio)
     {
-        DOM.audio.innerHTML  = "AUDIO OFF"
-        DOM.music.innerHTML  = "MUSIC OFF"
+        DOM.audio.innerHTML  = "AUDIO ON"
+        DOM.music.innerHTML  = "MUSIC ON"
     }
     else
     {
-        DOM.audio.innerHTML  = "AUDIO ON"
-        DOM.music.innerHTML  = "MUSIC ON"
+        DOM.audio.innerHTML  = "AUDIO OFF"
+        DOM.music.innerHTML  = "MUSIC OFF"
     }
 
 
@@ -308,13 +308,13 @@
             let user = firebase.auth().currentUser;
             let name = "";
             
-            if(DOM.login_username.value != "" && DOM.login_username.value != user.displayName)
+            if(DOM.login_username.value != user.displayName)
             {
                 name = DOM.login_username.value;
                 user.updateProfile({displayName: DOM.login_username.value,}).then(function() {}).catch(function(error) {});
             }
             else
-            {name =user.displayName;}
+            {name = user.displayName;}
 
             socket.emit("gameStart",{username:name,  id:user.uid, anonymus:user.isAnonymous})
             initGame();
@@ -536,7 +536,7 @@
             {
                 if(pageFocus == true)
                 {
-                console.log("CONNESSO = "+user.displayName+"   "+user.email+"   "+user.uid)            
+                //console.log("CONNESSO = "+user.displayName+"   "+user.email+"   "+user.uid)            
                 acces()
                 }
             } 
