@@ -367,7 +367,7 @@ Kraken = function(x,y)
             let tempX = -1;
             let tempY = -1;
             let tempColl = false;
-            let tentativi = 0;
+            let tentativi = 51;
             do
             {
                 if(tentativi > 50) {self.timer = 200; return;}
