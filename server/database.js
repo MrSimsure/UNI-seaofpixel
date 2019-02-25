@@ -19,7 +19,7 @@ DB.isStringValide = function(string)
 }
 
 
-//controlla se il nome inserito è gia utilizzato
+//cancella un utente dal DB
 DB.deletUser = function(name)
 {
       var sql = 'DELETE FROM users WHERE username = "'+name+'"';
@@ -71,7 +71,7 @@ DB.updatePoints = function(name,points)
 }
 
 
-//controlla se username e password sono corretti
+//quando effettui il log controlla i punti dell'utente nel DB
 DB.getPoints = function(name, callback)
 {
           DB.connection.query("SELECT  username,points FROM users", function (err, result, fields) 
