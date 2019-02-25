@@ -485,7 +485,7 @@ io.sockets.on("connection", function(socket)
            
                 let player = Player(nome, socket.id, data.id, data.anonymus, Math.random()*2000,Math.random()*2000);
                 socket.uid = data.id
-
+                Kraken(player.x+ENGINE.random_range(-200,200), player.y+ENGINE.random_range(-200,200))   
                 DB.checkUser(data.id, function(callback) 
                 {
                         if(callback == true)

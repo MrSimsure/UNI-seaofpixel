@@ -409,6 +409,7 @@ GAME.Kraken = function(id,x,y,state)
        sprite: null,
        state: state,
        life:500,
+       spawn:true,
    }
 
    self.update = function()
@@ -462,8 +463,17 @@ GAME.Kraken = function(id,x,y,state)
         DOM.ctx.fillRect(X-35*SETTINGS.globalScaleY,Y+120*SETTINGS.globalScaleY,50*SETTINGS.globalScaleY,5);
         DOM.ctx.fillStyle = "green";
         DOM.ctx.fillRect(X-35*SETTINGS.globalScaleY,Y+120*SETTINGS.globalScaleY,self.life/10*SETTINGS.globalScaleY,5);
-   }
 
+        if(self.spawn)
+        {
+        DOM.ctx.fillStyle = "black";
+        DOM.ctx.font = (10*SETTINGS.globalScaleX)+"px pixelFont";
+        DOM.ctx.textAlign = "center";
+        DOM.ctx.fillText("Il kraken è emerso dagli abissi. Uccidilo per ottenere tesori!",window.innerWidth/2,100*SETTINGS.globalScaleY)
+        DOM.ctx.textAlign = "left";
+        }
+   }
+   setTimeout(function(){self.spawn = false},10000)
    GAME.Kraken.list[self.id] = self;
    return self;
 }
