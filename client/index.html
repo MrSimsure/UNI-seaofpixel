@@ -182,10 +182,10 @@
 
     window.addEventListener("orientationchange", function() 
     {
-            if(window.orientation == 90 || window.orientation == -90)
-            {page_orientation.style.display = "none";}
-            else
-            {page_orientation.style.display = "inline";}
+        if(window.orientation == 90 || window.orientation == -90)
+        {page_orientation.style.display = "none";}
+        else
+        {page_orientation.style.display = "inline";}
     
     }, false);
 
@@ -228,8 +228,7 @@
                 charge = 0
             }
             else
-            {
-                
+            {           
                 socket.emit("shoot");
                 charge = 0
             }
@@ -239,9 +238,7 @@
     function touchStart(ev) 
     {     
         tuchX = ev.touches[0].clientX;
-        tuchY = ev.touches[0].clientY; 
-
-        
+        tuchY = ev.touches[0].clientY;   
 
         if(SETTINGS.inGame == true)
         {ev.preventDefault()}
@@ -253,11 +250,6 @@
         let H = window.innerHeight-buttonMargin*2-buttonSize*2;
         if( (ev.touches[0].clientX > W   &&  ev.touches[0].clientY > H) || (ev.touches[1].clientX > W   &&  ev.touches[1].clientY >H ) )
         {touch = true}
-
-
-
-        
-        
     };
     
     function touchEnd(ev) 
@@ -268,12 +260,12 @@
 
         if(charge < 10) 
         {
-                charge = 0
+            charge = 0
         }
         else
         {
-                socket.emit("shoot");
-                charge = 0
+            socket.emit("shoot");
+            charge = 0
         }
     
     };
