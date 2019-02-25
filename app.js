@@ -55,7 +55,6 @@ Player = function(name, id, loginID, anonymus, x, y)
         angle : 0,
         life : 100,
         points : 0,
-        savedPoints : 0,
         collider : Rectangle(x-20,y-20,20, 20),
         loginID:loginID,
         anonymus:anonymus,
@@ -571,7 +570,6 @@ var updatePlayer = function()
             angle: current.angle,
             life: current.life,
             points: current.points,
-            savedPoints: current.savedPoints,
         });
     }    
     return pack;
