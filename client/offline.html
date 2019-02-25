@@ -11,6 +11,24 @@
     <canvas id="canvas" style="  z-index: 1; position:absolute;" width="640" height="480"></canvas>
 </div>
 
+<div id="page_orientation"  style="display:none; position: absolute;  z-index:3">
+    <svg width="1920" height="1080">
+        <rect x="0" y="0" width="1920" height="1080" style="fill:#5a41ff;opacity:1" />
+
+        <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L9,3 z" fill="#ffad41" />
+            </marker>
+        </defs>
+        <line x1="50" y1="400" x2="280" y2="400" stroke="#ffad41" stroke-width="5" marker-end="url(#arrow)" />
+    </svg>
+
+    <label class="title"style="display:inline;text-align: center;font-size: 3.0vw;position:fixed; color: white; width: 100%; top:40%;  font-weight:700;">PLEASE ROTATE YOUR PHONE</label>
+
+
+
+</div>
+
 
 
 <script>
@@ -87,10 +105,10 @@
 
         ctx.clearRect(0,0,canvas.width,canvas.height)
 
-        ctx.fillStyle = "#99E6F9";
+        ctx.fillStyle = "#ffb86d";
         ctx.fillRect(0,0,canvas.width,canvas.height)
 
-        ctx.fillStyle = "#3D61D8";
+        ctx.fillStyle = "#746dff";
         ctx.beginPath();
         ctx.moveTo(0,canvas.height)
 
@@ -115,6 +133,23 @@
     }
     
     initOffline();
+
+
+    
+        if(window.orientation == 90 || window.orientation == -90)
+        {document.getElementById("page_orientation").style.display = "none";}
+        else
+        {document.getElementById("page_orientation").style.display = "inline";}
+    
+
+    window.addEventListener("orientationchange", function() 
+    {
+            if(window.orientation == 90 || window.orientation == -90)
+            {document.getElementById("page_orientation").style.display = "none";}
+            else
+            {document.getElementById("page_orientation").style.display = "inline";}
+    
+    }, false);
 </script>
 
 </body>
