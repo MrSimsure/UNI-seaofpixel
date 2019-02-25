@@ -278,9 +278,16 @@
 
     function touchMove(ev)
     { 
+        if(ev.touches[0].clientX > screen.width/2   &&  ev.touches[0].clientY > screen.height/2)
+        {
+        tuchX = ev.touches[1].clientX;
+        tuchY = ev.touches[1].clientY; 
+        }
+        else
+        {
         tuchX = ev.touches[0].clientX;
         tuchY = ev.touches[0].clientY; 
-
+        }
         ev.preventDefault()
     }
 
