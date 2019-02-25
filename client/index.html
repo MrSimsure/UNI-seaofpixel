@@ -249,7 +249,9 @@
         if( ev.touches[0].clientX <100 && ev.touches[0].clientY < 100 )
         {setPause()}
         
-        if( (ev.touches[0].clientX > screen.width/2   &&  ev.touches[0].clientY > screen.height/2) || (ev.touches[1].clientX > screen.width/2   &&  ev.touches[1].clientY > screen.height/2) )
+        let W = window.innerWidth-buttonMargin*2-buttonSize*2;
+        let H = window.innerHeight-buttonMargin*2-buttonSize*2;
+        if( (ev.touches[0].clientX > W   &&  ev.touches[0].clientY > H) || (ev.touches[1].clientX > W   &&  ev.touches[1].clientY >H ) )
         {touch = true}
 
 

@@ -289,6 +289,7 @@ draw = function()
         //disegna controlli mobile
         if(SETTINGS.onMobile)
         {
+            DOM.ctx.globalAlpha = 0.7
             //sx
             GAME.drawSprite(sArrow,0,(buttonX+buttonMargin*0+buttonSize*0)+buttonSize/2, (window.innerHeight-buttonMargin*1-buttonSize)+buttonSize/2,180,1)
             DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize);    DOM.ctx.stroke()
@@ -304,6 +305,12 @@ draw = function()
             
             GAME.drawSprite(sArrow,0,(buttonX+buttonMargin*2+buttonSize*2)+buttonSize/2, (window.innerHeight-buttonMargin*2-buttonSize)-buttonSize/2,315,1)
             DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize);    DOM.ctx.stroke()
+
+            DOM.ctx.beginPath()
+            DOM.ctx.arc( (window.innerWidth-buttonMargin*2-buttonSize*2)+buttonSize, ( window.innerHeight-buttonMargin*2-buttonSize*2)+buttonSize, buttonSize, 0, 2*Math.PI,false)
+            DOM.ctx.stroke()
+
+            DOM.ctx.globalAlpha = 1
         }
     
         //disegna sfondo di pausa
