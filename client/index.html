@@ -136,15 +136,16 @@
     var tuchX = 0;
     var tuchY = 0;
     var buttonX = 10
-    var buttonMargin = 2*SETTINGS.globalScaleX
-    var buttonSize = 50*SETTINGS.globalScaleX
+    var buttonMargin = 3*SETTINGS.globalScaleX
+    var buttonSize = 60*SETTINGS.globalScaleX
     var scoreBoard = [];
     var DEBUG = false;
     var menu_update;
     var game_update;
     var pageFocus = true;
     var krakenSpawn = false;
-    
+    var socket = io();
+    var id = 0;
 
     var config = 
     {

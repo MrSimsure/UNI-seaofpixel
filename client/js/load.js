@@ -18,6 +18,7 @@ LOADER.sprPause = GAME.loadImage("spr_pause");
 LOADER.sprKrakenAttack = GAME.loadImage("spr_kraken_attack");
 LOADER.sprKrakenSpawn= GAME.loadImage("spr_kraken_spawn");
 LOADER.sprKrakenDespawn= GAME.loadImage("spr_kraken_despawn");
+LOADER.sprArrow= GAME.loadImage("spr_arrow");
 //CARICA TUTTI I SUONI
 LOADER.musMenu = GAME.loadAudio("mus_menu");
 LOADER.souCannon = GAME.loadAudio("sou_cannon");
@@ -29,6 +30,7 @@ var sBussola = GAME.sprite(LOADER.sprBussola,1,64,64,1);
 var sFreccia = GAME.sprite(LOADER.sprFreccia,1,64,64,1);
 var sIsola = GAME.sprite(LOADER.sprIsland,1,200,200,1);
 var sPause = GAME.sprite(LOADER.sprPause,1,100,100,1);
+var sArrow = GAME.sprite(LOADER.sprArrow,1,50,50,1);
 
 //SALVA TUTTI I DOM
 DOM = {};
@@ -79,9 +81,7 @@ DOM.back = document.getElementById("back");
 DOM.splash = document.getElementById("splash");
 
 //connettiti al server
-var socket = io();
-var id = 0;
-var joystick = null;
+
 
 // setup an object that represents the room
 room = 
@@ -126,6 +126,12 @@ let frasi = function()
     frasiArr[n] = 'Sequel trilogy is trash';  n++;
     frasiArr[n] = 'Italian Trap in trash!';  n++;
     frasiArr[n] = 'MISSION 1 START!';  n++;
+    frasiArr[n] = 'Orsù gente alle barche!';  n++;
+    frasiArr[n] = 'Orsù, ditemi: che ne è stato della mia nave!? ';  n++;
+    frasiArr[n] = 'E questo senza neanche un doppio rum!';  n++;
+    frasiArr[n] = "L'Olandese deve avere un capitano";  n++;
+    frasiArr[n] = 'Parte della nave, parte della ciurma';  n++;
+    frasiArr[n] = 'I morti non parlano';  n++;
 
     return frasiArr[ENGINE.random_range(0,frasiArr.length-1)];
 }

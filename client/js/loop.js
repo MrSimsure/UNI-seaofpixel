@@ -268,7 +268,7 @@ draw = function()
             {DOM.ctx.fillStyle = "black";}
 
             if(SETTINGS.onMobile)
-            {YY = window.innerHeight-120-10*n*SETTINGS.globalScaleY}
+            {YY = window.innerHeight-buttonSize*3-10*n*SETTINGS.globalScaleY}
             else
             {YY = window.innerHeight-10-10*n*SETTINGS.globalScaleY}
 
@@ -289,10 +289,20 @@ draw = function()
         //disegna controlli mobile
         if(SETTINGS.onMobile)
         {
+            //sx
+            GAME.drawSprite(sArrow,0,(buttonX+buttonMargin*0+buttonSize*0)+buttonSize/2, (window.innerHeight-buttonMargin*1-buttonSize)+buttonSize/2,180,1)
             DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize);    DOM.ctx.stroke()
+            //dx
+            GAME.drawSprite(sArrow,0,(buttonX+buttonMargin*2+buttonSize*2)+buttonSize/2, (window.innerHeight-buttonMargin*1-buttonSize)+buttonSize/2,0,1)
             DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize);    DOM.ctx.stroke()
+            //up-sx
+            GAME.drawSprite(sArrow,0,(buttonX+buttonMargin*0+buttonSize*0)+buttonSize/2, (window.innerHeight-buttonMargin*2-buttonSize*2)+buttonSize/2,225,1)
             DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize);    DOM.ctx.stroke()
+            //up
+            GAME.drawSprite(sArrow,0,(buttonX+buttonMargin*1+buttonSize*1)+buttonSize/2, (window.innerHeight-buttonMargin*2-buttonSize)-buttonSize/2,270,1)
             DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*1+buttonSize*1, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize);    DOM.ctx.stroke()
+            
+            GAME.drawSprite(sArrow,0,(buttonX+buttonMargin*2+buttonSize*2)+buttonSize/2, (window.innerHeight-buttonMargin*2-buttonSize)-buttonSize/2,315,1)
             DOM.ctx.beginPath();    DOM.ctx.rect(buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize);    DOM.ctx.stroke()
         }
     
