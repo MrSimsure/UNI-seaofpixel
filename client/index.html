@@ -194,6 +194,8 @@
 
     document.onkeydown = function(event)
     {
+        if(SETTINGS.inGame == true)
+        {
         keys = (keys || []);
         keys[event.keyCode]=true;
         
@@ -209,10 +211,13 @@
 
         if(event.keyCode == 27)
         {setPause()}
+        }
     }
     
     document.onkeyup = function(event)
     {
+        if(SETTINGS.inGame == true)
+        {
         keys = (keys || []);
         keys[event.keyCode]=false;
 
@@ -233,6 +238,7 @@
                 socket.emit("shoot");
                 charge = 0
             }
+        }
         }
     }    
 
