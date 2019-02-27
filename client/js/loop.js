@@ -122,27 +122,18 @@ update = function()
             //left
             if(GAME.insideRect(tuchX,tuchY,buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize))
             {
-                if(GAME.Players.list[id].angle > 0 && GAME.Players.list[id].angle > 180)
-                {movingDX = true;}
-                else
-                {movingSX = true;}
+                movingSX = true;
             }
             //right
             if(GAME.insideRect(tuchX,tuchY,buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*1-buttonSize, buttonSize,buttonSize))
             {
-                if(GAME.Players.list[id].angle > 0 && GAME.Players.list[id].angle > 180)
-                {movingSX = true;}
-                else
-                {movingDX = true;}
+                movingDX = true;
             }
             //up-left
             if(GAME.insideRect(tuchX,tuchY,buttonX+buttonMargin*0+buttonSize*0, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize))
             {
                 movingUP = true;
-                if(GAME.Players.list[id].angle > 0 && GAME.Players.list[id].angle > 180)
-                {movingDX = true;}
-                else
-                {movingSX = true;}
+                movingSX = true;
             }
             //up
             if(GAME.insideRect(tuchX,tuchY,buttonX+buttonMargin*1+buttonSize*1, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize))
@@ -153,13 +144,10 @@ update = function()
             if(GAME.insideRect(tuchX,tuchY,buttonX+buttonMargin*2+buttonSize*2, window.innerHeight-buttonMargin*2-buttonSize*2, buttonSize,buttonSize))
             {
                 movingUP = true;
-                if(GAME.Players.list[id].angle > 0 && GAME.Players.list[id].angle > 180)
-                {movingSX = true;}
-                else
-                {movingDX = true;}
+                movingDX = true;
             }    
     
-            console.log(GAME.Players.list[id].angle)
+    
             if(movingUP)
             {socket.emit("keyPress", {id:"up", state:true}); moving = true;}
             else
