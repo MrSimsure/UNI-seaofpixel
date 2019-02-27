@@ -676,22 +676,11 @@ setInterval(function()
 
     if(playerNum > 0 && krakenNum == 0)
     {
-        switch(playerNum)
-        {
-            case 1 : {chance = 100; break;}
-            case 2 : {chance = 80; break;}
-            case 3 : {chance = 60; break;}
-            case 4 : {chance = 40; break;}
-            case 5 : {chance = 20; break;}
-            default : {chance = 10; break;}
-        }
-
-        if(Math.random()*100 <= chance)
-        {
+        
             let num = ENGINE.random_range(0,playerNum-1)
             let key = Object.keys(GAME.playerList)[num]
             let chosen = GAME.playerList[key]
             Kraken(chosen.x+ENGINE.random_range(-200,200), chosen.y+ENGINE.random_range(-200,200))   
-        }
+    
     }   
-}, 300000)
+}, 400000)
