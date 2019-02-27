@@ -14,11 +14,19 @@ SETTINGS =
     audio:false,
     music:false,
 }
+<<<<<<< HEAD
 
 
 
 SETTINGS.onMobile = 'ontouchstart' in window;
 
+=======
+console.log(navigator.userAgent)
+if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) 
+{SETTINGS.onMobile = true;}
+else
+{SETTINGS.onMobile = false;}
+>>>>>>> 58c4a2955b3e75435d9d65c53f541f41ffdc22ab
 
 //METTI IN FULLSCREEN (solo dopo interazione del client)
 SETTINGS.openFullscreen = function() 
