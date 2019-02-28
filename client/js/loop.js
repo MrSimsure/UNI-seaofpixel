@@ -396,10 +396,12 @@ menuDraw = function()
         let movimentoMare = Math.sin(tempo/5000);
         let ondaVicina = ENGINE.mod(i-Math.round(nu),waveNum);
         DOM.ctx.lineTo( seaPoint[i].x , waveHeight+(Math.sin( movimentoOnda+seaPoint[ondaVicina].x)*10 )+movimentoMare );
+        /*
         DOM.ctx.fillStyle = "#000";
         DOM.ctx.beginPath();
         DOM.ctx.arc(seaPoint[i].x , waveHeight+(Math.sin( movimentoOnda+seaPoint[ondaVicina].x)*10 )+movimentoMare, 5, 0, 2 * Math.PI);
         DOM.ctx.fill()
+        */
     }    
     nu+=0.2;
     if(nu > waveNum)
