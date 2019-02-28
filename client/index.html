@@ -194,23 +194,23 @@
 
     document.onkeydown = function(event)
     {
-        if(SETTINGS.inGame == true)
-        {
-        keys = (keys || []);
-        keys[event.keyCode]=true;
         
-        if(event.keyCode == 16)
-        {AUDIO = !AUDIO}
+        if(DOM.page_menu.style.display == "none")
+        {
+            keys = (keys || []);
+            keys[event.keyCode]=true;
 
-        if(event.keyCode == 68 || event.keyCode == 39) //d 
-        { socket.emit("keyPress", {id:"left", state:true}); }
-         if(event.keyCode == 65 || event.keyCode == 37) //a
-        { socket.emit("keyPress", {id:"right", state:true}); }
-         if(event.keyCode == 87 || event.keyCode == 38) //w
-        { socket.emit("keyPress", {id:"up", state:true}); moving = true;}
+            if(event.keyCode == 68 || event.keyCode == 39) //d 
+            { socket.emit("keyPress", {id:"left", state:true}); }
+            if(event.keyCode == 65 || event.keyCode == 37) //a
+            { socket.emit("keyPress", {id:"right", state:true}); }
+            if(event.keyCode == 87 || event.keyCode == 38) //w
+            { socket.emit("keyPress", {id:"up", state:true}); moving = true;}
 
-        if(event.keyCode == 27)
-        {setPause()}
+            if(event.keyCode == 27)
+            {
+                setPause()
+            }
         }
     }
     
@@ -241,6 +241,23 @@
         }
         }
     }    
+
+    if (document.addEventListener)
+    {
+        document.addEventListener('webkitfullscreenchange', exitHandler, false);
+        document.addEventListener('mozfullscreenchange', exitHandler, false);
+        document.addEventListener('fullscreenchange', exitHandler, false);
+        document.addEventListener('MSFullscreenChange', exitHandler, false);
+    }
+
+    function exitHandler()
+    {//sta merda non funge
+        if (SETTINGS.fullscreen == true)
+        {
+            DOM.fullscreen.innerHTML = "FULLSCREEN"
+            SETTINGS.fullscreen = false;     
+        }
+    }
 
     function touchStart(ev) 
     {     
@@ -349,6 +366,11 @@
             {   
                 GAME.Splash(Math.random(),GAME.Balls.list[data].x,GAME.Balls.list[data].y)
                 delete GAME.Balls.list[data]    
+            });
+            socket.on('tsunamiEnd',function(data)
+            {   
+                GAME.Splash(Math.random(),GAME.Tsunami.list[data].x,GAME.Tsunami.list[data].y)
+                delete GAME.Tsunami.list[data];  
             });
             socket.on('chestEnd',function(data)
             {   
@@ -479,6 +501,24 @@
                                 GAME.Kraken.list[current.id].newX = current.x;
                                 GAME.Kraken.list[current.id].newY = current.y;              
                             }
+                        }
+                }
+
+                //aggiorna posizione kraken 
+                for(let i = 0 ; i < data.tsunami.length; i++)
+                {
+                        let current = data.tsunami[i];
+
+                        if(GAME.Tsunami.list[current.id] == undefined)
+                        {          
+                            GAME.Tsunami(current.id,current.x, current.y,current.dir);
+                        }
+                        else
+                        {            
+                            GAME.Tsunami.list[current.id].x = current.x;
+                            GAME.Tsunami.list[current.id].y = current.y;              
+                            GAME.Tsunami.list[current.id].dir = current.dir;    
+                            GAME.Tsunami.list[current.id].size = current.size;      
                         }
                 }
             });

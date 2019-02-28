@@ -54,12 +54,12 @@ GAME.sprite = function(name, frameNum, width, height, speed)
 }
 
 //DISEGNA UNO SPRITE
-GAME.drawSprite = function(sprite,image,x,y,angle,size)
+GAME.drawSprite = function(sprite,image,x,y,angle,scale_x,scale_y)
 {
     DOM.ctx.save(); 
     DOM.ctx.translate(x, y);  
     DOM.ctx.rotate(angle * TO_RADIANS);
-    DOM.ctx.scale(size*SETTINGS.globalScaleX, size*SETTINGS.globalScaleY);
+    DOM.ctx.scale(scale_x*SETTINGS.globalScaleX, scale_y*SETTINGS.globalScaleY);
     DOM.ctx.drawImage(
                 sprite.image, 
                 image * sprite.width , 
@@ -173,7 +173,7 @@ GAME.Players = function(id,x,y,name,angle)
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
         for(var n=0; n<23 ; n++)
         {
-            GAME.drawSprite(self.sprite, n, X,  Y-SETTINGS.globalScaleY*n, self.angle, 1);
+            GAME.drawSprite(self.sprite, n, X,  Y-SETTINGS.globalScaleY*n, self.angle, 1,1);
         }
 
         DOM.ctx.fillStyle = "black";
@@ -206,7 +206,7 @@ GAME.Balls = function(id,x,y)
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
 
-        GAME.drawSprite(self.sprite, 0, X,  Y, 0, 0.4); 
+        GAME.drawSprite(self.sprite, 0, X,  Y, 0, 0.4,0.4); 
    }
    GAME.Balls.list[self.id] = self;
    return self;
@@ -235,7 +235,7 @@ GAME.Scia = function(x,y)
    }
    self.draw = function()
    {
-        GAME.drawSprite(self.sprite, 0, self.x-camera.xView, self.y-camera.yView, 0, self.size);
+        GAME.drawSprite(self.sprite, 0, self.x-camera.xView, self.y-camera.yView, 0, self.size,self.size);
    }
    GAME.Scia.list[self.num] = self;
    return self;
@@ -279,7 +279,7 @@ GAME.Scia.list = [];
 
     self.draw = function()
     {
-        GAME.drawSprite(self.sprite, 0, self.x-camera.xView, self.y-camera.yView, 0, self.size);
+        GAME.drawSprite(self.sprite, 0, self.x-camera.xView, self.y-camera.yView, 0, self.size,self.size);
     }
     GAME.Onda.list[self.num] = self;
     return self;
@@ -308,7 +308,7 @@ GAME.Explosion = function(id,x,y)
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
 
-        GAME.drawSprite(self.sprite, self.sprite.frameIndex , X, Y, 0, 1); 
+        GAME.drawSprite(self.sprite, self.sprite.frameIndex , X, Y, 0, 1,1); 
    }
    GAME.Explosion.list[self.id] = self;
    return self;
@@ -336,7 +336,7 @@ GAME.Splash = function(id,x,y)
    {  
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
-        GAME.drawSprite(self.sprite, self.sprite.frameIndex , X, Y, 0, 1); 
+        GAME.drawSprite(self.sprite, self.sprite.frameIndex , X, Y, 0, 1,1); 
    }
    GAME.Splash.list[self.id] = self;
    return self;
@@ -358,7 +358,7 @@ GAME.Chest = function(id,x,y)
    {  
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
-        GAME.drawSprite(self.sprite, self.sprite.frameIndex, X,  Y, 0, 1.4); 
+        GAME.drawSprite(self.sprite, self.sprite.frameIndex, X,  Y, 0, 1.4,1.4); 
    }
 
    GAME.Chest.list[self.id] = self;
@@ -385,7 +385,7 @@ GAME.Fog = function(x,y)
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
         DOM.ctx.globalAlpha = 0.8
-        GAME.drawSprite(self.sprite, 0, X,  Y, self.angle, 2); 
+        GAME.drawSprite(self.sprite, 0, X,  Y, self.angle, 2,2); 
         DOM.ctx.globalAlpha = 1
    }
    GAME.Fog.list[self.id] = self;
@@ -457,7 +457,7 @@ GAME.Kraken = function(id,x,y,state)
         let X = self.x*SETTINGS.globalScaleX-camera.xView;
         let Y = self.y*SETTINGS.globalScaleY-camera.yView;
 
-        GAME.drawSprite(self.sprite, self.sprite.frameIndex, X,  Y, 0, 2); 
+        GAME.drawSprite(self.sprite, self.sprite.frameIndex, X,  Y, 0, 2,2); 
 
         DOM.ctx.fillStyle = "black";
         DOM.ctx.fillRect(X-35*SETTINGS.globalScaleY,Y+120*SETTINGS.globalScaleY,50*SETTINGS.globalScaleY,5);
@@ -479,6 +479,32 @@ GAME.Kraken = function(id,x,y,state)
 }
 GAME.Kraken.list = [];
 
+//TSUNAMI//
+GAME.Tsunami = function(id,x,y,dir)
+{
+   var self = 
+   {
+       id:id,
+       x:x,
+       y:y,  
+       sprite: GAME.sprite(LOADER.sprTsunami,1,96,96,0),
+       dir:dir,
+       size:1,
+   }
+   self.draw = function()
+   {  
+        let X = self.x*SETTINGS.globalScaleX-camera.xView;
+        let Y = self.y*SETTINGS.globalScaleY-camera.yView;
+        let scale_x = self.size;
+
+        if(self.dir > 90 && self.dir < 270) {scale_x = -self.size}
+        GAME.drawSprite(self.sprite, 0, X,  Y, 0, scale_x,self.size); 
+        DOM.ctx.scale(1,1);
+   }
+   GAME.Tsunami.list[self.id] = self;
+   return self;
+}
+GAME.Tsunami.list = [];
 
 //elimina ogni istanza di gioco
 GAME.clearEntity = function()
@@ -515,7 +541,14 @@ GAME.clearEntity = function()
     {
         delete  GAME.Fog.list[i];
     }
-
+    for(let i in  GAME.Kraken.list)
+    {
+        delete  GAME.Kraken.list[i];
+    }
+    for(let i in  GAME.Tsunami.list)
+    {
+        delete  GAME.Tsunami.list[i];
+    }
     GAME.Players.list = [];
     GAME.Balls.list = [];
     GAME.Scia.list = [];
@@ -524,6 +557,8 @@ GAME.clearEntity = function()
     GAME.Splash.list = [];
     GAME.Chest.list = [];
     GAME.Fog.list = [];
+    GAME.Kraken.list = [];
+    GAME.Tsunami.list = [];
 
 }
 

@@ -13,7 +13,11 @@ DOM.music_on.onclick = function()
     setLogin()
 
     if(SETTINGS.onMobile)
-    {SETTINGS.openFullscreen()}
+    {
+        SETTINGS.openFullscreen();
+        SETTINGS.fullscreen = true;   
+        DOM.fullscreen.innerHTML = "WINDOWED"
+    }
 }
 
 DOM.music_off.onclick = function()
@@ -26,7 +30,11 @@ DOM.music_off.onclick = function()
     setLogin()
 
     if(SETTINGS.onMobile)
-    {SETTINGS.openFullscreen()}
+    {
+        SETTINGS.openFullscreen();
+        SETTINGS.fullscreen = true;
+        DOM.fullscreen.innerHTML = "WINDOWED"
+    }
 }
 
 
@@ -265,6 +273,7 @@ DOM.music_off.onclick = function()
             socket.removeAllListeners("chestEnd")
             socket.removeAllListeners("krakenEnd")
             socket.removeAllListeners("chestTaken")
+            socket.removeAllListeners("tsunamiEnd")
             socket.removeAllListeners("disconect")
             socket.removeAllListeners("newPositions")
             GAME.clearEntity();
@@ -336,7 +345,18 @@ DOM.music_off.onclick = function()
 
     DOM.fullscreen.onclick = function()
     {
-        SETTINGS.openFullscreen()
+        SETTINGS.fullscreen = !SETTINGS.fullscreen;
+
+        if(SETTINGS.fullscreen)
+        {
+            SETTINGS.openFullscreen();
+            DOM.fullscreen.innerHTML = "WINDOWED"
+        }
+        else
+        {
+            document.exitFullscreen();
+            DOM.fullscreen.innerHTML = "FULLSCREEN"
+        }
     }
 
     DOM.back.onclick = function()

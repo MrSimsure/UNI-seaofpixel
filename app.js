@@ -7,6 +7,7 @@ GAME.playerList = {};
 GAME.ballList = {};
 GAME.chestList = {};
 GAME.krakenList = {};
+GAME.tsunamiList = {};
 
 GAME.playerCollision = true;
 
@@ -390,6 +391,13 @@ Kraken = function(x,y)
             self.x = tempX
             self.y = tempY
             self.collider.set(self.x-50,self.y-40,80,170);
+            setTimeout(function()
+            {
+                for(let i=0; i<360; i+=20)
+                {
+                Tsunami(self.x,self.y+90,i,4)
+                }
+            }, 1000)
         }
 
 
@@ -408,10 +416,74 @@ Kraken = function(x,y)
             }
         }
     }
-
+    setTimeout(function()
+    {
+        for(let i=0; i<360; i+=20)
+        {
+        Tsunami(self.x,self.y+90,i,5)
+        }
+    }, 1000)
     GAME.krakenList[self.id] = self;
     return self;
 }
+
+Tsunami = function(x,y,direction,speed)
+{
+    var self = 
+    {
+        id : Math.random(),
+        x : x,
+        y : y,   
+        spdX : Math.cos(direction/180*Math.PI)*speed,
+        spdY : Math.sin(direction/180*Math.PI)*speed,
+        timer : 0,
+        collider : Rectangle(x-25,y-25,25,25),
+        dir:direction,
+        size:1,
+    }
+    self.update = function()
+    {
+        self.x += self.spdX;
+        self.y += self.spdY;
+        self.collider.set(self.x-25, self.y-25, 25, 25)
+        self.timer += 1 ;
+        self.size -= 1/300;
+        //tempo di vita della palla
+        if(self.timer > 200)
+        {
+            for(let i in socketList)
+            {
+                let current = socketList[i];
+                current.emit("tsunamiEnd", self.id);             
+            } 
+            delete GAME.tsunamiList[self.id];  
+        }
+        //controlla collissioni con tutti i giocatori
+        for(let i in GAME.playerList)
+        {
+            let current = GAME.playerList[i];
+            if(self.owner != i && self.collider.overlaps(current.collider))
+            {
+                //fai subire i danni alla nave colpita
+                current.takeDamage(10);
+                //manda a tutte le navi l'informazione
+                for(let i in socketList)
+                {
+                    let c = socketList[i];
+                    c.emit("tsunamiEnd", self.id);         
+                    c.emit("hit", pack={x:self.x, y:self.y, num:5});       
+                } 
+                delete GAME.tsunamiList[self.id];  
+                break;
+            }
+        }
+
+    
+    }
+    GAME.tsunamiList[self.id] = self;
+    return self;
+}
+
 
 //EXPRESS//
 var express = require("express");
@@ -484,7 +556,8 @@ io.sockets.on("connection", function(socket)
            
                 let player = Player(nome, socket.id, data.id, data.anonymus, Math.random()*2000,Math.random()*2000);
                 socket.uid = data.id
-
+                Kraken(player.x+ENGINE.random_range(-200,200), player.y+ENGINE.random_range(-200,200))   
+    
                 DB.checkUser(data.id, function(callback) 
                 {
                         if(callback == true)
@@ -638,6 +711,29 @@ var updateKraken = function()
     }        
     return pack;
 }
+//raccogli informazioni casse
+var updateTsunami= function()
+{
+    let pack = [];
+    for(let i in GAME.tsunamiList)
+    {
+        let current = GAME.tsunamiList[i];
+        current.update();
+        current = GAME.tsunamiList[i];
+        if(current != undefined)
+        {
+            pack.push
+            ({
+                id : current.id,
+                x : current.x,
+                y : current.y,
+                dir : current.dir,
+                size: current.size,
+            });
+        }
+    }        
+    return pack;
+}
 //game loop
 var serverUpdate = function()
 {
@@ -654,6 +750,7 @@ var serverUpdate = function()
         balls: updateBall(),
         chests: updateChest(),
         kraken: updateKraken(),
+        tsunami: updateTsunami(),
         fps:fps,
     }
 

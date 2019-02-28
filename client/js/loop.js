@@ -214,6 +214,12 @@ draw = function()
             let current =  GAME.Balls.list[i];
             current.draw();
         }
+        //disegna nebbia
+        for(let i in  GAME.Tsunami.list)
+        {
+            let current =  GAME.Tsunami.list[i];
+            current.draw();
+        }
         //disegna esplosioni
         for(let i in  GAME.Explosion.list)
         {
@@ -278,13 +284,13 @@ draw = function()
         DOM.ctx.fillStyle = "black";
 
         //disegna bussola 
-        GAME.drawSprite(sBussola, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, 0, 1);
-        GAME.drawSprite(sFreccia, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearChest, 0.8);
+        GAME.drawSprite(sBussola, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, 0, 1,1);
+        GAME.drawSprite(sFreccia, 0, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearChest, 0.8,0.8);
         if(Object.keys(GAME.Players.list).length > 1)
-        {GAME.drawSprite(sFreccia, 1, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearPlayer, 0.8);}
+        {GAME.drawSprite(sFreccia, 1, (640-32)*SETTINGS.globalScaleX,  32*SETTINGS.globalScaleY, nearPlayer, 0.8,0.8);}
 
         //disegna pulsante di pausa
-        GAME.drawSprite(sPause,0,25*SETTINGS.globalScaleX,25*SETTINGS.globalScaleY,0,0.6)
+        GAME.drawSprite(sPause,0,25*SETTINGS.globalScaleX,25*SETTINGS.globalScaleY,0,0.6,0.6)
 
         //disegna controlli mobile
         if(SETTINGS.onMobile)
@@ -390,6 +396,10 @@ menuDraw = function()
         let movimentoMare = Math.sin(tempo/5000);
         let ondaVicina = ENGINE.mod(i-Math.round(nu),waveNum);
         DOM.ctx.lineTo( seaPoint[i].x , waveHeight+(Math.sin( movimentoOnda+seaPoint[ondaVicina].x)*10 )+movimentoMare );
+        DOM.ctx.fillStyle = "#000";
+        DOM.ctx.beginPath();
+        DOM.ctx.arc(seaPoint[i].x , waveHeight+(Math.sin( movimentoOnda+seaPoint[ondaVicina].x)*10 )+movimentoMare, 5, 0, 2 * Math.PI);
+        DOM.ctx.fill()
     }    
     nu+=0.2;
     if(nu > waveNum)

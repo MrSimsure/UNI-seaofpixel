@@ -13,6 +13,7 @@ SETTINGS =
     quality:2,
     audio:false,
     music:false,
+    fullscreen:false,
 }
 
 
